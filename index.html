@@ -256,14 +256,14 @@ button{font-family:inherit;}
 
 .hero h1{
   opacity:0;
-  animation:heroFadeDrop 4s cubic-bezier(.1,.1,.1,1) both;
-  animation-delay:0.7s;
+  animation:heroFadeDrop 4s cubic-bezier(.5,1,.7,1) both;
+  animation-delay:0.75s;
 }
 
 .hero p.lede{
   opacity:0;
   animation:heroFadeIn 3s ease-out both;
-  animation-delay:1s;
+  animation-delay:1.5s;
 }
 
 .hero-scroll-cue{
@@ -383,18 +383,6 @@ button{font-family:inherit;}
 .btn-outline:hover{
   border-color:var(--brass-bright);
   color:var(--brass-bright);
-}
-
-.btn-line{
-  background:transparent;
-  border-color:var(--line);
-  color:var(--ink);
-}
-
-.btn-line:hover{
-  border-color:var(--brass);
-  color:var(--brass);
-  transform:translateY(-2px);
 }
 
 .hero-bulbs{
@@ -583,7 +571,33 @@ button{font-family:inherit;}
 .process-section .wrap{
   position:relative;
   z-index:2;
+}
 
+.prices-section{
+  position:relative;
+  background-image: url("images/BannerTimber_Image.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow:hidden;
+}
+
+.prices-section::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(
+    160deg,
+    rgba(19,17,15,1) 0%,
+    rgba(19,17,15,0.6) 45%,
+    rgba(19,17,15,1) 100%
+  );
+  z-index:1;
+}
+
+.prices-section .wrap{
+  position:relative;
+  z-index:2;
 }
 
 
@@ -953,6 +967,151 @@ button{font-family:inherit;}
 }
 .social-link svg{width:18px;height:18px;}
 .social-link:hover{color:var(--walnut-soft);transform:translateY(-2px);}
+
+/* ============ PACKAGES (INTERACTIVE MENU) ============ */
+
+.menu-picker{
+  max-width:620px;
+  margin:0 auto;
+  text-align:center;
+}
+
+.menu-tiers{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:40px;
+}
+
+.menu-tier{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  padding:14px 10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--cream-dim);
+  cursor:pointer;
+  transition:border-color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.menu-tier:hover{
+  transform:translateY(-2px);
+  border-color:var(--brass);
+}
+
+.menu-tier.active{
+  background:var(--walnut);
+  border-color:var(--walnut);
+}
+
+.menu-tier-name{
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+}
+
+.menu-tier.active .menu-tier-name{color:var(--cream);}
+
+.menu-tier-range{
+  font-size:11.5px;
+  color:var(--ink-soft);
+  letter-spacing:0.02em;
+}
+
+.menu-tier.active .menu-tier-range{color:var(--brass-bright);}
+
+.menu-display{
+  display:flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:36px;
+  margin-bottom:26px;
+}
+
+.menu-count{
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:clamp(38px,6vw,52px);
+  color:var(--ink);
+  line-height:1;
+}
+
+.menu-count small{
+  display:block;
+  margin-top:6px;
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  color:var(--ink-soft);
+}
+
+.menu-price{
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:clamp(38px,6vw,52px);
+  color:var(--brass);
+  line-height:1;
+}
+
+.menu-price small{
+  font-size:0.55em;
+  vertical-align:top;
+  margin-right:2px;
+  color:var(--brass);
+}
+
+.menu-slider{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:6px;
+  border-radius:999px;
+  background:var(--line);
+  outline:none;
+  cursor:pointer;
+  margin:0 0 10px;
+}
+
+.menu-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:var(--brass);
+  border:3px solid var(--cream);
+  box-shadow:0 0 0 1px var(--brass), 0 4px 10px rgba(20,18,16,0.25);
+  cursor:pointer;
+}
+
+.menu-slider::-moz-range-thumb{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:var(--brass);
+  border:3px solid var(--cream);
+  box-shadow:0 0 0 1px var(--brass), 0 4px 10px rgba(20,18,16,0.25);
+  cursor:pointer;
+}
+
+.menu-scale{
+  display:flex;
+  justify-content:space-between;
+  font-size:11.5px;
+  color:var(--ink-soft);
+  letter-spacing:0.04em;
+}
+
+@media (max-width:540px){
+  .menu-tiers{gap:8px;}
+  .menu-tier{padding:12px 4px;}
+  .menu-display{gap:22px;}
+}
 
 /* ============ WAGON INTERACTIVE ============ */
 
@@ -1397,28 +1556,6 @@ button{font-family:inherit;}
   transition: border-color .15s ease;
 }
 
-/* ===============================
-   REQUIRED FIELD VALIDATION
-================================= */
-
-.form-group input.invalid,
-.form-group select.invalid{
-  border-color: #B3261E;
-}
-
-.field-error{
-  display: none;
-  margin-top: 6px;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: #B3261E;
-  line-height: 1.4;
-}
-
-.field-error.show{
-  display: block;
-}
-
 /* Reset checkboxes/radios so they don't inherit the full-width input styling
    above (this was the cause of checkboxes overlapping their label text) */
 .form-group input[type="checkbox"],
@@ -1482,14 +1619,6 @@ button{font-family:inherit;}
 
 .form-group select:valid{
   color: var(--ink);
-}
-
-/* Dropdown list items (e.g. Wedding, Corporate, Party) render with
-   browser-default black text regardless of the select's own color —
-   force them to match the site's main text color. */
-.form-group select option{
-  color: var(--ink);
-  background: #fff;
 }
 
 /* ===============================
@@ -1961,251 +2090,6 @@ footer p.tag{
 }
 
 
-/* ============ PACKAGES ============ */
-.pkg-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:28px;
-  align-items:stretch;
-  margin-bottom:52px;
-}
-
-.pkg-card{
-  position:relative;
-  background:var(--cream-dim);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:36px 30px;
-  display:flex;
-  flex-direction:column;
-  transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
-}
-
-.pkg-card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 26px 60px -25px rgba(20,18,16,0.25);
-  border-color:var(--brass);
-}
-
-.pkg-popular{
-  background:var(--walnut-soft);
-  border-color:var(--brass);
-  transform:scale(1.035);
-  box-shadow:0 30px 70px -30px rgba(20,18,16,0.4);
-}
-.pkg-popular:hover{
-  transform:scale(1.035) translateY(-6px);
-}
-
-.pkg-ribbon{
-  position:absolute;
-  top:-13px;
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--brass);
-  color:var(--walnut);
-  font-family:'Syne',sans-serif;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  padding:6px 16px;
-  border-radius:20px;
-  white-space:nowrap;
-}
-
-.pkg-name{
-  font-family:'Syne',sans-serif;
-  font-size:21px;
-  font-weight:700;
-  margin:0 0 8px;
-  color:var(--ink);
-}
-.pkg-popular .pkg-name{color:var(--cream);}
-
-.pkg-tagline{
-  font-size:13.5px;
-  color:var(--ink-soft);
-  line-height:1.55;
-  margin:0 0 22px;
-}
-.pkg-popular .pkg-tagline{color:var(--cream-dim);}
-
-.pkg-price{
-  font-family:'Syne',sans-serif;
-  font-size:32px;
-  font-weight:700;
-  color:var(--ink);
-  margin-bottom:22px;
-  padding-bottom:22px;
-  border-bottom:1px solid var(--line);
-}
-.pkg-popular .pkg-price{
-  color:var(--brass-bright);
-  border-bottom-color:var(--line-on-dark);
-}
-
-.pkg-price .from{
-  display:block;
-  font-family:'Inter',sans-serif;
-  font-size:11px;
-  font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:var(--ink-soft);
-  margin-bottom:5px;
-}
-.pkg-popular .pkg-price .from{color:rgba(244,239,230,0.6);}
-
-.pkg-price .unit{
-  font-family:'Inter',sans-serif;
-  font-size:13px;
-  font-weight:500;
-  color:var(--ink-soft);
-  margin-left:6px;
-}
-.pkg-popular .pkg-price .unit{color:rgba(244,239,230,0.6);}
-
-.pkg-list{
-  list-style:none;
-  margin:0 0 24px;
-  padding:0;
-  display:flex;
-  flex-direction:column;
-  gap:11px;
-  flex:1;
-}
-.pkg-list li{
-  font-size:13.5px;
-  color:var(--ink-soft);
-  line-height:1.5;
-  padding-left:24px;
-  position:relative;
-}
-.pkg-popular .pkg-list li{color:var(--cream-dim);}
-
-.pkg-list li::before{
-  content:'';
-  position:absolute;
-  left:0;
-  top:4px;
-  width:15px;
-  height:15px;
-  border-radius:50%;
-  border:1px solid var(--brass);
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C68A45' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center/9px no-repeat;
-}
-.pkg-popular .pkg-list li::before{
-  border-color:var(--brass-bright);
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E0A85F' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center/9px no-repeat;
-}
-
-.pkg-ideal{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-bottom:26px;
-}
-.pkg-ideal span{
-  font-size:11px;
-  font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:.03em;
-  color:var(--brass);
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:5px 12px;
-}
-.pkg-popular .pkg-ideal span{
-  color:var(--brass-bright);
-  border-color:var(--line-on-dark);
-}
-
-.pkg-btn{
-  justify-content:center;
-  width:100%;
-  margin-top:auto;
-}
-
-/* ---- Custom package callout ---- */
-.pkg-custom{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:32px;
-  background:var(--walnut-soft);
-  color:var(--cream);
-  border-radius:16px;
-  padding:40px 44px;
-  margin-bottom:70px;
-}
-.pkg-custom h3{
-  font-size:23px;
-  margin:0 0 8px;
-  color:var(--cream);
-}
-.pkg-custom p{
-  font-size:14.5px;
-  color:var(--cream-dim);
-  line-height:1.6;
-  margin:0;
-  max-width:520px;
-}
-.pkg-custom .btn{flex-shrink:0;}
-
-/* ---- Pricing breakdown ---- */
-.breakdown-scroll{
-  overflow-x:auto;
-  margin-bottom:16px;
-}
-.breakdown-table{
-  min-width:640px;
-  border:1px solid var(--line);
-  border-radius:14px;
-  overflow:hidden;
-}
-.breakdown-row{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr 1fr 1.3fr;
-  gap:10px;
-  padding:16px 22px;
-  align-items:center;
-}
-.breakdown-row:not(:last-child){
-  border-bottom:1px solid var(--line);
-}
-.breakdown-row span{
-  font-size:13.5px;
-  color:var(--ink-soft);
-}
-.breakdown-row span:first-child{
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  color:var(--ink);
-}
-.breakdown-row span:last-child{
-  font-weight:600;
-  color:var(--brass);
-}
-.breakdown-head{background:var(--cream-dim);}
-.breakdown-head span{
-  font-size:11px !important;
-  font-weight:700 !important;
-  text-transform:uppercase;
-  letter-spacing:.05em;
-  color:var(--ink-soft) !important;
-  font-family:'Inter',sans-serif !important;
-}
-.breakdown-note{
-  font-size:12.5px;
-  color:var(--ink-soft);
-  line-height:1.6;
-  margin:0;
-  max-width:640px;
-}
-
 /* ============ RESPONSIVE ============ */
 @media (max-width:880px){
   .hero{min-height:auto;padding-bottom:60px;}
@@ -2215,10 +2099,6 @@ footer p.tag{
   .hero-scroll-cue{display:none;}
   .steps-row{grid-template-columns:1fr;gap:30px;}
   .gear-grid{grid-template-columns:repeat(2,1fr);}
-  .pkg-grid{grid-template-columns:1fr;}
-  .pkg-popular{transform:none;}
-  .pkg-popular:hover{transform:translateY(-6px);}
-  .pkg-custom{flex-direction:column;align-items:flex-start;text-align:left;padding:32px;}
   .mosaic{grid-template-columns:repeat(2,1fr);grid-auto-rows:130px;}
   .m-a,.m-b,.m-c,.m-d,.m-e,.m-f,.m-g,.m-h{grid-column:auto;grid-row:auto;}
   .m-a{grid-column:1/3;grid-row:auto;}
@@ -2291,7 +2171,7 @@ footer p.tag{
 <div class="section-divider timber"></div>
 
 
-<!-- ================= HOW IT WORKS (dark) ================= -->
+<!-- ================= THE PROCESS (dark) ================= -->
 <section class="section section-tight section-dark process-section" id="how" style="padding: 50px 0;">
   <div class="wrap">
     <div class="section-head reveal">
@@ -2638,233 +2518,6 @@ const wagonData = {
 
 
 
-
-<!-- ================= PACKAGES ================= -->
-<section class="section section-tight" id="packages">
-  <div class="wrap">
-
-    <div class="section-head left reveal">
-      <div class="eyebrow"><span class="bulb-dot"></span> Packages</div>
-      <h2>Coffee experiences tailored to your event.</h2>
-      <p>
-        Whether you're hosting an intimate celebration, wedding, corporate function
-        or community event, Blend &amp; Brew brings specialty coffee, friendly
-        service and a beautifully presented coffee cart to create an experience
-        your guests will remember.
-      </p>
-    </div>
-
-    <div class="pkg-grid reveal-stagger">
-
-      <!-- ================= THE SOCIAL ================= -->
-      <div class="pkg-card">
-
-        <div class="pkg-name">The Social</div>
-
-        <p class="pkg-tagline">
-          Perfect for intimate gatherings and smaller celebrations.
-        </p>
-
-        <div class="pkg-price">
-          <span class="from">From</span>$550
-          <span class="unit">/ up to 50 guests</span>
-        </div>
-
-        <ul class="pkg-list">
-          <li>Up to 50 guests</li>
-          <li>2 hours of professional barista service</li>
-          <li>Full espresso coffee menu</li>
-          <li>Dairy &amp; alternative milk options</li>
-          <li>Premium locally roasted coffee beans</li>
-          <li>Cups, lids, napkins &amp; stirrers included</li>
-          <li>Complete setup &amp; pack down</li>
-        </ul>
-
-        <div class="pkg-ideal">
-          <span>Birthday Parties</span>
-          <span>Baby Showers</span>
-          <span>Office Gatherings</span>
-        </div>
-
-        <a href="#book" class="btn btn-line pkg-btn">
-          Get a Quote
-        </a>
-
-      </div>
-
-      <!-- ================= THE SIGNATURE ================= -->
-      <div class="pkg-card pkg-popular">
-
-        <div class="pkg-ribbon">Most Popular</div>
-
-        <div class="pkg-name">The Signature</div>
-
-        <p class="pkg-tagline">
-          Our signature coffee experience for weddings, celebrations and corporate events.
-        </p>
-
-        <div class="pkg-price">
-          <span class="from">From</span>$950
-          <span class="unit">/ up to 100 guests</span>
-        </div>
-
-        <ul class="pkg-list">
-          <li>Up to 100 guests</li>
-          <li>3 hours of professional barista service</li>
-          <li>Unlimited coffees during service</li>
-          <li>Premium milk &amp; syrup selection</li>
-          <li>Custom menu signage</li>
-          <li>Beautiful coffee cart presentation</li>
-          <li>Setup &amp; pack down included</li>
-        </ul>
-
-        <div class="pkg-ideal">
-          <span>Weddings</span>
-          <span>Corporate Events</span>
-          <span>Engagement Parties</span>
-        </div>
-
-        <a href="#book" class="btn btn-brass pkg-btn">
-          Get a Quote
-        </a>
-
-      </div>
-
-      <!-- ================= THE GRAND ================= -->
-      <div class="pkg-card">
-
-        <div class="pkg-name">The Grand</div>
-
-        <p class="pkg-tagline">
-          Our complete coffee experience for larger celebrations and premium events.
-        </p>
-
-        <div class="pkg-price">
-          <span class="from">From</span>$1,600
-          <span class="unit">/ up to 200+ guests</span>
-        </div>
-
-        <ul class="pkg-list">
-          <li>100–200+ guests</li>
-          <li>4 hours of professional barista service</li>
-          <li>Second barista for faster service</li>
-          <li>Iced &amp; seasonal specialty drinks</li>
-          <li>Custom styling to suit your event</li>
-          <li>Optional branded cups &amp; sleeves</li>
-          <li>Priority event support</li>
-        </ul>
-
-        <div class="pkg-ideal">
-          <span>Luxury Weddings</span>
-          <span>Brand Activations</span>
-          <span>Large Celebrations</span>
-        </div>
-
-        <a href="#book" class="btn btn-line pkg-btn">
-          Get a Quote
-        </a>
-
-      </div>
-
-    </div>
-
-    <!-- ================= CUSTOM PACKAGE ================= -->
-
-    <div class="pkg-custom reveal">
-
-      <div>
-
-        <h3>Need something completely bespoke?</h3>
-
-        <p>
-          Every event is unique. Whether you're planning a market, festival,
-          multi-day activation or something completely custom, we'll tailor a
-          coffee experience around your guest numbers, location and vision.
-        </p>
-
-      </div>
-
-      <a href="#book" class="btn btn-brass">
-        Request a Custom Quote
-      </a>
-
-    </div>
-
-    <!-- ================= PRICING ================= -->
-
-    <div class="pkg-breakdown reveal">
-
-      <div class="section-head">
-
-        <div class="eyebrow">
-          <span class="bulb-dot"></span>
-          Pricing
-        </div>
-
-        <h3 style="font-size:clamp(22px,3vw,28px);margin:0 0 12px;color:var(--ink);">
-          Simple, transparent pricing.
-        </h3>
-
-        <p>
-          Our package prices are a guide only. Every quote is personalised based
-          on your guest numbers, service duration, location and any optional
-          extras, ensuring you only pay for what your event needs.
-        </p>
-
-      </div>
-
-      <div class="breakdown-scroll">
-
-        <div class="breakdown-table">
-
-          <div class="breakdown-row breakdown-head">
-            <span>Package</span>
-            <span>Guests</span>
-            <span>Service</span>
-            <span>Baristas</span>
-            <span>From</span>
-          </div>
-
-          <div class="breakdown-row">
-            <span>The Social</span>
-            <span>Up to 50</span>
-            <span>2 hrs</span>
-            <span>1</span>
-            <span>$550+</span>
-          </div>
-
-          <div class="breakdown-row">
-            <span>The Signature</span>
-            <span>Up to 100</span>
-            <span>3 hrs</span>
-            <span>1–2</span>
-            <span>$950+</span>
-          </div>
-
-          <div class="breakdown-row">
-            <span>The Grand</span>
-            <span>100–200+</span>
-            <span>4+ hrs</span>
-            <span>2+</span>
-            <span>$1,600+</span>
-          </div>
-
-        </div>
-
-      </div>
-
-      <p class="breakdown-note">
-        Travel outside Greater Sydney may incur a small travel fee. Final pricing
-        is confirmed once we know your event date, guest numbers, location and
-        any optional extras.
-      </p>
-
-    </div>
-
-  </div>
-</section>
-
-
 <!-- ================= GALLERY & REVIEWS ================= -->
 <section class="section" id="stories">
   <div class="wrap">
@@ -3023,6 +2676,99 @@ function bannerIconLeave(el){
   </div>
 </section>
 
+<div class="section-divider timber"></div>
+
+
+<!-- ================= PACKAGES (INTERACTIVE MENU) ================= -->
+
+<section class="section section-tight section-dark prices-section" id="how" style="padding: 50px 0;">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="bulb-dot"></span> Packages</div>
+      <h2>Pick your pour.</h2>
+      <p>Every package includes two certified baristas.</p>
+    </div>
+
+    <div class="menu-picker reveal">
+
+      <div class="menu-tiers">
+        <button class="menu-tier active" data-tier="piccolo" type="button">
+          <span class="menu-tier-name">Piccolo</span>
+          <span class="menu-tier-range">50&ndash;100</span>
+        </button>
+        <button class="menu-tier" data-tier="signature" type="button">
+          <span class="menu-tier-name">Signature</span>
+          <span class="menu-tier-range">150&ndash;300</span>
+        </button>
+        <button class="menu-tier" data-tier="grande" type="button">
+          <span class="menu-tier-name">Grande</span>
+          <span class="menu-tier-range">350&ndash;500</span>
+        </button>
+      </div>
+
+      <div class="menu-display">
+        <div class="menu-count"><span id="menuCoffeeCount">50</span><small>coffees</small></div>
+        <div class="menu-price"><small>$</small><span id="menuPrice">500</span></div>
+      </div>
+
+      <input type="range" id="menuSlider" class="menu-slider" min="50" max="500" step="50" value="50" aria-label="Number of coffees">
+
+      <div class="menu-scale"><span>50</span><span>500</span></div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const priceTable = {
+    50: 500, 100: 620, 150: 750, 200: 880, 250: 980,
+    300: 1080, 350: 1180, 400: 1280, 450: 1380, 500: 1480
+  };
+
+  const tierRanges = {
+    piccolo:   { mid: 50  },
+    signature: { mid: 200 },
+    grande:    { mid: 450 }
+  };
+
+  const slider = document.getElementById('menuSlider');
+  const countEl = document.getElementById('menuCoffeeCount');
+  const priceEl = document.getElementById('menuPrice');
+  const tierBtns = document.querySelectorAll('.menu-tier');
+
+  function tierForCount(count){
+    if (count <= 100) return 'piccolo';
+    if (count <= 300) return 'signature';
+    return 'grande';
+  }
+
+  function update(count){
+    countEl.textContent = count;
+    priceEl.textContent = priceTable[count].toLocaleString('en-AU');
+
+    const tier = tierForCount(count);
+    tierBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tier === tier));
+
+    const pct = (count - slider.min) / (slider.max - slider.min) * 100;
+    slider.style.background = `linear-gradient(to right, var(--brass) 0%, var(--brass) ${pct}%, var(--walnut) ${pct}%, var(--line) 100%)`;
+  }
+
+  slider.addEventListener('input', () => update(parseInt(slider.value, 10)));
+
+  tierBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = tierRanges[btn.dataset.tier].mid;
+      slider.value = target;
+      update(target);
+    });
+  });
+
+  update(parseInt(slider.value, 10));
+});
+</script>
+
+<div class="section-divider timber"></div>
 
 
 <!-- ================= BOOKING ================= -->
@@ -3063,19 +2809,17 @@ function bannerIconLeave(el){
 
           <div class="selected-date-display" id="selectedDateDisplay" style="display:none;"></div>
 
-          <form id="bookingForm" action="https://formspree.io/f/xjgqownj" method="POST" novalidate>
+          <form id="bookingForm" action="https://formspree.io/f/xjgqownj" method="POST">
 
             <div class="form-group">
               <label for="fullName">Full name</label>
 		<input type="text" id="fullName" name="fullName" required placeholder="Jane Smith">
-		<span class="field-error" id="fullNameError">Please enter your full name.</span>
             </div>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" required placeholder="jane@email.com">
-                <span class="field-error" id="emailError">Please enter your email address.</span>
               </div>
               <div class="form-group">
                 <label for="phone">Phone</label>
@@ -3087,7 +2831,6 @@ function bannerIconLeave(el){
   placeholder="0400 000 000"
   inputmode="numeric"
   maxlength="12">
-<span class="field-error" id="phoneError">Please enter your phone number.</span>
               </div>
             </div>
 
@@ -3102,13 +2845,11 @@ function bannerIconLeave(el){
                   <option>Market</option>
                   <option>Other</option>
                 </select>
-                <span class="field-error" id="eventTypeError">Please select an event type.</span>
               </div>
 
               <div class="form-group">
                 <label for="guestCount">Guests</label>
-                <input type="number" id="guestCount" name="guestCount" min="1" required placeholder="e.g. 200">
-                <span class="field-error" id="guestCountError">Please enter the number of guests.</span>
+                <input type="number" id="guestCount" name="guestCount" min="1" placeholder="e.g. 200">
               </div>
             </div>
 
@@ -3117,13 +2858,11 @@ function bannerIconLeave(el){
   <div class="form-group">
     <label for="startTime">Service start time</label>
     <input type="time" id="startTime" name="startTime" required>
-    <span class="field-error" id="startTimeError">Please choose a start time.</span>
   </div>
 
   <div class="form-group">
     <label for="endTime">Service end time</label>
     <input type="time" id="endTime" name="endTime" required>
-    <span class="field-error" id="endTimeError">Please choose an end time.</span>
   </div>
 </div>
 
@@ -3139,7 +2878,7 @@ function bannerIconLeave(el){
 <label class="switch-row">
 
   <span class="switch">
-    <input type="checkbox" name="utilities" value="Electricity" checked>
+    <input type="checkbox" name="utilities" value="Electricity">
     <span class="switch-track">
       <span class="switch-knob"></span>
     </span>
@@ -3152,7 +2891,7 @@ function bannerIconLeave(el){
 <label class="switch-row">
 
   <span class="switch">
-    <input type="checkbox" name="utilities" value="Sinks" checked>
+    <input type="checkbox" name="utilities" value="Sinks">
     <span class="switch-track">
       <span class="switch-knob"></span>
     </span>
@@ -3196,7 +2935,6 @@ function bannerIconLeave(el){
         placeholder="Unit/No."
         autocomplete="off"
         inputmode="numeric"
-        required
       />
 
       <!-- RIGHT: Street/Suburb -->
@@ -3207,12 +2945,9 @@ function bannerIconLeave(el){
         placeholder="Street/Suburb"
         autocomplete="off"
         inputmode="text"
-        required
       />
 
     </div>
-
-    <span class="field-error" id="addressError">Please enter the address for the wagon.</span>
 
     <!-- hidden fields MUST stay inside wrapper -->
     <input type="hidden" name="street_address" id="street_address">
@@ -3438,7 +3173,6 @@ function getFullAddress() {
         <h4>Learn</h4>
         <ul>
           <li><a href="#how">How it works</a></li>
-          <li><a href="#packages">Packages</a></li>
           <li><a href="#stories">Gallery</a></li>
         </ul>
       </div>
@@ -3471,6 +3205,7 @@ function getFullAddress() {
 
 
 <script>
+
   // ----- Scroll reveal -----
   const revealEls = document.querySelectorAll('.reveal, .reveal-stagger, .steps-stagger');
   const io = new IntersectionObserver((entries) => {
@@ -3671,94 +3406,10 @@ const bookingFormWrap = document.getElementById('bookingFormWrap');
 const confirmBox = document.getElementById('confirmBox');
 const confirmText = document.getElementById('confirmText');
 
-// ----- Required field validation -----
-// Every field is required except "notes" (Anything else?).
-// The address row (houseNumber + location) shares a single error message.
-const requiredFieldIds = [
-  'fullName', 'email', 'phone', 'eventType',
-  'guestCount', 'startTime', 'endTime'
-];
-
-function setFieldState(el, errorEl, isValid){
-  if (isValid){
-    el.classList.remove('invalid');
-    if (errorEl) errorEl.classList.remove('show');
-  } else {
-    el.classList.add('invalid');
-    if (errorEl) errorEl.classList.add('show');
-  }
-}
-
-function validateRequiredFields(){
-  let firstInvalid = null;
-  let allValid = true;
-
-  requiredFieldIds.forEach(id => {
-    const el = document.getElementById(id);
-    const errorEl = document.getElementById(id + 'Error');
-    const isValid = !!el.value.trim();
-
-    setFieldState(el, errorEl, isValid);
-
-    if (!isValid){
-      allValid = false;
-      if (!firstInvalid) firstInvalid = el;
-    }
-  });
-
-  // Address row: house number + street/suburb, single shared message
-  const houseNumberEl = document.getElementById('houseNumber');
-  const locationEl = document.getElementById('location');
-  const addressErrorEl = document.getElementById('addressError');
-  const houseNumberValid = !!houseNumberEl.value.trim();
-  const locationValid = !!locationEl.value.trim();
-  const addressValid = houseNumberValid && locationValid;
-
-  setFieldState(houseNumberEl, null, houseNumberValid);
-  setFieldState(locationEl, null, locationValid);
-  if (addressErrorEl) addressErrorEl.classList.toggle('show', !addressValid);
-
-  if (!addressValid){
-    allValid = false;
-    if (!firstInvalid) firstInvalid = houseNumberValid ? locationEl : houseNumberEl;
-  }
-
-  if (firstInvalid){
-    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  return allValid;
-}
-
-// Clear an individual field's error as soon as it's filled in
-[...requiredFieldIds, 'houseNumber', 'location'].forEach(id => {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const clear = () => {
-    if (!el.value.trim()) return;
-    if (id === 'houseNumber' || id === 'location'){
-      const houseNumberEl = document.getElementById('houseNumber');
-      const locationEl = document.getElementById('location');
-      const addressErrorEl = document.getElementById('addressError');
-      if (houseNumberEl.value.trim() && locationEl.value.trim() && addressErrorEl){
-        addressErrorEl.classList.remove('show');
-      }
-      el.classList.remove('invalid');
-    } else {
-      const errorEl = document.getElementById(id + 'Error');
-      setFieldState(el, errorEl, true);
-    }
-  };
-  el.addEventListener('input', clear);
-  el.addEventListener('change', clear);
-});
-
 bookingForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const fieldsValid = validateRequiredFields();
-
-  if (!selectedDate || !fieldsValid) return;
+  if (!selectedDate) return;
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Sending...";
