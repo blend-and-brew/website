@@ -484,6 +484,13 @@ button{font-family:inherit;}
   margin:0;
 }
 .section-dark .section-head p{color:var(--cream-dim);}
+.section-head .note{
+  margin-top:10px;
+  font-size:13.5px;
+  line-height:1.5;
+  color:var(--ink-soft);
+}
+.section-dark .section-head .note{color:var(--cream-dim);}
 
 /* ============ THE PROCESS ============ */
 .steps-row{
@@ -582,16 +589,17 @@ button{font-family:inherit;}
   overflow:hidden;
 }
 
+/* Warmer, center-lit vignette (distinct from the process section's flat
+   side-to-side gradient) so the menu board reads as its own moment rather
+   than a re-skinned copy of the section above it. */
 .prices-section::before{
   content:'';
   position:absolute;
   inset:0;
-  background: linear-gradient(
-    160deg,
-    rgba(19,17,15,1) 0%,
-    rgba(19,17,15,0.6) 45%,
-    rgba(19,17,15,1) 100%
-  );
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 38%, rgba(224,168,95,0.16), transparent 65%),
+    radial-gradient(ellipse 120% 100% at 50% 100%, rgba(19,17,15,0.2), rgba(19,17,15,0.96) 70%),
+    linear-gradient(180deg, rgba(19,17,15,0.97) 0%, rgba(19,17,15,0.86) 40%, rgba(19,17,15,0.97) 100%);
   z-index:1;
 }
 
@@ -968,102 +976,193 @@ button{font-family:inherit;}
 .social-link svg{width:18px;height:18px;}
 .social-link:hover{color:var(--walnut-soft);transform:translateY(-2px);}
 
-/* ============ PACKAGES (INTERACTIVE MENU) ============ */
+/* ============ PACKAGES (PRICING CALCULATOR) ============ */
 
-.menu-picker{
-  max-width:620px;
+.calc-card{
+  max-width:600px;
   margin:0 auto;
   text-align:center;
 }
 
-.menu-tiers{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:40px;
+/* Coffees / Guests toggle */
+.calc-toggle{
+  position:relative;
+  display:inline-flex;
+  background:rgba(244,239,230,0.04);
+  border:1px solid var(--line-on-dark);
+  border-radius:30px;
+  padding:4px;
+  margin-bottom:46px;
 }
 
-.menu-tier{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  padding:14px 10px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:var(--cream-dim);
+.calc-toggle-thumb{
+  position:absolute;
+  top:4px;
+  left:4px;
+  width:calc(50% - 4px);
+  height:calc(100% - 8px);
+  background:var(--brass);
+  border-radius:26px;
+  transition:transform .35s cubic-bezier(.2,.7,.2,1);
+  z-index:0;
+}
+
+.calc-toggle.is-guests .calc-toggle-thumb{
+  transform:translateX(100%);
+}
+
+.calc-toggle-btn{
+  position:relative;
+  z-index:1;
+  border:none;
+  background:transparent;
+  padding:10px 30px;
+  font-family:inherit;
+  font-size:12.5px;
+  font-weight:600;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--cream-dim);
   cursor:pointer;
-  transition:border-color .2s ease, background .2s ease, transform .2s ease;
+  border-radius:26px;
+  transition:color .3s ease;
 }
 
-.menu-tier:hover{
-  transform:translateY(-2px);
-  border-color:var(--brass);
+.calc-toggle-btn.active{
+  color:var(--walnut);
 }
 
-.menu-tier.active{
-  background:var(--walnut);
-  border-color:var(--walnut);
-}
-
-.menu-tier-name{
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  font-size:15px;
-  color:var(--ink);
-  letter-spacing:-0.01em;
-}
-
-.menu-tier.active .menu-tier-name{color:var(--cream);}
-
-.menu-tier-range{
-  font-size:11.5px;
-  color:var(--ink-soft);
-  letter-spacing:0.02em;
-}
-
-.menu-tier.active .menu-tier-range{color:var(--brass-bright);}
-
-.menu-display{
+/* Big readout */
+.calc-primary{
   display:flex;
   align-items:baseline;
   justify-content:center;
-  gap:36px;
-  margin-bottom:26px;
-}
-
-.menu-count{
+  gap:12px;
   font-family:'Syne',sans-serif;
   font-weight:700;
-  font-size:clamp(38px,6vw,52px);
-  color:var(--ink);
+  font-size:clamp(46px,10vw,66px);
+  color:var(--cream);
   line-height:1;
+  transition:opacity .15s ease;
 }
 
-.menu-count small{
-  display:block;
-  margin-top:6px;
+.calc-primary small{
   font-family:'Inter',sans-serif;
   font-weight:600;
-  font-size:12px;
+  font-size:13px;
   text-transform:uppercase;
   letter-spacing:0.1em;
-  color:var(--ink-soft);
+  color:var(--cream-dim);
+  opacity:0.65;
 }
 
-.menu-price{
+.calc-secondary{
+  margin-top:12px;
+  font-size:13.5px;
+  color:var(--cream-dim);
+  opacity:0.7;
+  letter-spacing:0.02em;
+}
+
+.calc-price{
+  position:relative;
+  margin-top:26px;
   font-family:'Syne',sans-serif;
   font-weight:700;
-  font-size:clamp(38px,6vw,52px);
-  color:var(--brass);
+  font-size:clamp(30px,5.5vw,40px);
+  color:var(--brass-bright);
   line-height:1;
+  text-shadow:0 0 22px rgba(242,200,121,0.3);
 }
 
-.menu-price small{
-  font-size:0.55em;
-  vertical-align:top;
-  margin-right:2px;
-  color:var(--brass);
+.calc-price .tilde{
+  font-family:'Inter',sans-serif;
+  font-weight:700;
+  margin-right:1px;
+}
+
+.calc-price small{
+  display:block;
+  margin-top:8px;
+  font-family:'Inter',sans-serif;
+  font-size:11px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  color:var(--cream-dim);
+  opacity:0.6;
+  text-shadow:none;
+}
+
+.calc-slider-wrap{
+  max-width:460px;
+  margin:38px auto 0;
+}
+
+/* Quick-select packages — flat chips, not boxed cards */
+.calc-packages{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  margin-top:44px;
+}
+
+.calc-pkg{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  min-width:106px;
+  padding:14px 16px;
+  border:1px solid var(--line-on-dark);
+  border-radius:12px;
+  background:rgba(244,239,230,0.02);
+  cursor:pointer;
+  font-family:inherit;
+  transition:border-color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.calc-pkg:hover{
+  border-color:var(--brass);
+  background:rgba(224,168,95,0.06);
+  transform:translateY(-2px);
+}
+
+.calc-pkg.active{
+  border-color:var(--brass);
+  background:rgba(224,168,95,0.1);
+}
+
+.calc-pkg-icon{
+  font-size:17px;
+  line-height:1;
+  margin-bottom:2px;
+  opacity:0.9;
+}
+
+.calc-pkg-name{
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:13.5px;
+  color:var(--cream);
+  letter-spacing:-0.01em;
+}
+
+.calc-pkg.active .calc-pkg-name{color:var(--brass-bright);}
+
+.calc-pkg-meta{
+  font-size:10.5px;
+  color:var(--cream-dim);
+  opacity:0.6;
+}
+
+.calc-pkg-price{
+  margin-top:3px;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  color:var(--brass-bright);
 }
 
 .menu-slider{
@@ -1072,10 +1171,10 @@ button{font-family:inherit;}
   width:100%;
   height:6px;
   border-radius:999px;
-  background:var(--line);
+  background:rgba(244,239,230,0.12);
   outline:none;
   cursor:pointer;
-  margin:0 0 10px;
+  margin:0 0 12px;
 }
 
 .menu-slider::-webkit-slider-thumb{
@@ -1084,8 +1183,8 @@ button{font-family:inherit;}
   height:22px;
   border-radius:50%;
   background:var(--brass);
-  border:3px solid var(--cream);
-  box-shadow:0 0 0 1px var(--brass), 0 4px 10px rgba(20,18,16,0.25);
+  border:3px solid var(--walnut-soft);
+  box-shadow:0 0 0 1px var(--brass-bright), 0 4px 14px rgba(0,0,0,0.5);
   cursor:pointer;
 }
 
@@ -1094,8 +1193,8 @@ button{font-family:inherit;}
   height:22px;
   border-radius:50%;
   background:var(--brass);
-  border:3px solid var(--cream);
-  box-shadow:0 0 0 1px var(--brass), 0 4px 10px rgba(20,18,16,0.25);
+  border:3px solid var(--walnut-soft);
+  box-shadow:0 0 0 1px var(--brass-bright), 0 4px 14px rgba(0,0,0,0.5);
   cursor:pointer;
 }
 
@@ -1103,14 +1202,23 @@ button{font-family:inherit;}
   display:flex;
   justify-content:space-between;
   font-size:11.5px;
-  color:var(--ink-soft);
+  color:var(--cream-dim);
+  opacity:0.6;
   letter-spacing:0.04em;
 }
 
+.menu-note{
+  margin-top:30px;
+  font-size:12px;
+  color:var(--cream-dim);
+  opacity:0.55;
+  letter-spacing:0.03em;
+}
+
 @media (max-width:540px){
-  .menu-tiers{gap:8px;}
-  .menu-tier{padding:12px 4px;}
-  .menu-display{gap:22px;}
+  .calc-toggle-btn{padding:9px 22px;}
+  .calc-packages{gap:8px;}
+  .calc-pkg{min-width:0; flex:1 1 calc(50% - 8px); padding:12px 10px;}
 }
 
 /* ============ WAGON INTERACTIVE ============ */
@@ -2096,7 +2204,14 @@ footer p.tag{
   .hero-grid{text-align:center;margin-left:auto;margin-right:auto;}
   .hero p.lede{margin-left:auto;margin-right:auto;}
   .hero-actions{justify-content:center;}
-  .hero-scroll-cue{display:none;}
+  .hero-scroll-cue{display:flex;}
+  .hero h1{
+    font-size:clamp(32px,9vw,46px);
+    letter-spacing:.05em;
+    margin-bottom:44px;
+  }
+  .hero-divider{margin:26px auto;}
+  .hero p.lede{margin-top:clamp(20px, 6vh, 60px);}
   .steps-row{grid-template-columns:1fr;gap:30px;}
   .gear-grid{grid-template-columns:repeat(2,1fr);}
   .mosaic{grid-template-columns:repeat(2,1fr);grid-auto-rows:130px;}
@@ -2679,41 +2794,75 @@ function bannerIconLeave(el){
 <div class="section-divider timber"></div>
 
 
-<!-- ================= PACKAGES (INTERACTIVE MENU) ================= -->
+<!-- ================= PACKAGES (PRICING CALCULATOR) ================= -->
 
-<section class="section section-tight section-dark prices-section" id="how" style="padding: 50px 0;">
+<section class="section section-tight section-dark prices-section" id="packages" style="padding: 50px 0;">
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow"><span class="bulb-dot"></span> Packages</div>
       <h2>Pick your pour.</h2>
-      <p>Every package includes two certified baristas.</p>
+      <p class="note">Every package includes <b style="color:var(--brass-bright);">two</b> certified baristas.</p>
     </div>
 
-    <div class="menu-picker reveal">
+    <div class="calc-card reveal">
 
-      <div class="menu-tiers">
-        <button class="menu-tier active" data-tier="piccolo" type="button">
-          <span class="menu-tier-name">Piccolo</span>
-          <span class="menu-tier-range">50&ndash;100</span>
+      <div class="calc-toggle" id="calcToggle">
+        <span class="calc-toggle-thumb"></span>
+        <button type="button" class="calc-toggle-btn active" data-mode="coffees">Coffees</button>
+        <button type="button" class="calc-toggle-btn" data-mode="guests">Guests</button>
+      </div>
+
+      <div class="calc-primary">
+        <span id="calcPrimaryValue">50</span><small id="calcPrimaryLabel">coffees</small>
+      </div>
+      <div class="calc-secondary">
+        &asymp; <span id="calcSecondaryValue">31</span> <span id="calcSecondaryLabel">guests</span>
+      </div>
+
+      <div class="calc-price">
+        <span class="tilde">~</span><span id="calcPriceValue">$500</span>
+        <small>from</small>
+      </div>
+
+      <div class="calc-slider-wrap">
+        <input type="range" id="calcSlider" class="menu-slider" min="25" max="200" step="1" value="50" aria-label="Event size">
+        <div class="menu-scale"><span id="calcScaleMin">25</span><span id="calcScaleMax">200</span></div>
+      </div>
+
+      <div class="calc-packages">
+        <button class="calc-pkg" data-count="25" type="button">
+          <span class="calc-pkg-icon">&#9749;</span>
+          <span class="calc-pkg-name">Babycino</span>
+          <span class="calc-pkg-meta">25 coffees</span>
+          <span class="calc-pkg-price">$300</span>
         </button>
-        <button class="menu-tier" data-tier="signature" type="button">
-          <span class="menu-tier-name">Signature</span>
-          <span class="menu-tier-range">150&ndash;300</span>
+        <button class="calc-pkg" data-count="50" type="button">
+          <span class="calc-pkg-icon">&#9749;</span>
+          <span class="calc-pkg-name">Piccolo</span>
+          <span class="calc-pkg-meta">50 coffees</span>
+          <span class="calc-pkg-price">$500</span>
         </button>
-        <button class="menu-tier" data-tier="grande" type="button">
-          <span class="menu-tier-name">Grande</span>
-          <span class="menu-tier-range">350&ndash;500</span>
+        <button class="calc-pkg" data-count="100" type="button">
+          <span class="calc-pkg-icon">&#9749;</span>
+          <span class="calc-pkg-name">The Latte</span>
+          <span class="calc-pkg-meta">100 coffees</span>
+          <span class="calc-pkg-price">$950</span>
+        </button>
+        <button class="calc-pkg" data-count="150" type="button">
+          <span class="calc-pkg-icon">&#9749;</span>
+          <span class="calc-pkg-name">The Grande</span>
+          <span class="calc-pkg-meta">150 coffees</span>
+          <span class="calc-pkg-price">$1,450</span>
+        </button>
+        <button class="calc-pkg" data-count="200" type="button">
+          <span class="calc-pkg-icon">&#9749;</span>
+          <span class="calc-pkg-name">The Barista</span>
+          <span class="calc-pkg-meta">200 coffees</span>
+          <span class="calc-pkg-price">$1,900</span>
         </button>
       </div>
 
-      <div class="menu-display">
-        <div class="menu-count"><span id="menuCoffeeCount">50</span><small>coffees</small></div>
-        <div class="menu-price"><small>$</small><span id="menuPrice">500</span></div>
-      </div>
-
-      <input type="range" id="menuSlider" class="menu-slider" min="50" max="500" step="50" value="50" aria-label="Number of coffees">
-
-      <div class="menu-scale"><span>50</span><span>500</span></div>
+      <p class="menu-note">Drag to customise your event, or tap a package for a quick jump. Guest figures are an estimate — exact quantities are confirmed at booking.</p>
 
     </div>
   </div>
@@ -2721,50 +2870,132 @@ function bannerIconLeave(el){
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const priceTable = {
-    50: 500, 100: 620, 150: 750, 200: 880, 250: 980,
-    300: 1080, 350: 1180, 400: 1280, 450: 1380, 500: 1480
-  };
 
-  const tierRanges = {
-    piccolo:   { mid: 50  },
-    signature: { mid: 200 },
-    grande:    { mid: 450 }
-  };
+  // Anchor points used for linear interpolation between packages
+  const anchors = [
+    { c: 25,  p: 300  },
+    { c: 50,  p: 500  },
+    { c: 100, p: 950  },
+    { c: 150, p: 1450 },
+    { c: 200, p: 1900 },
+  ];
 
-  const slider = document.getElementById('menuSlider');
-  const countEl = document.getElementById('menuCoffeeCount');
-  const priceEl = document.getElementById('menuPrice');
-  const tierBtns = document.querySelectorAll('.menu-tier');
+  const COFFEE_MIN = anchors[0].c;
+  const COFFEE_MAX = anchors[anchors.length - 1].c;
+  const COFFEES_PER_GUEST = 1.6; // coffees = guests × 1.6
 
-  function tierForCount(count){
-    if (count <= 100) return 'piccolo';
-    if (count <= 300) return 'signature';
-    return 'grande';
+  function coffeesToGuests(c){ return Math.round(c / COFFEES_PER_GUEST); }
+  function guestsToCoffees(g){ return Math.round(g * COFFEES_PER_GUEST); }
+
+  const GUEST_MIN = coffeesToGuests(COFFEE_MIN);
+  const GUEST_MAX = coffeesToGuests(COFFEE_MAX);
+
+  function priceForCoffees(c){
+    c = Math.max(COFFEE_MIN, Math.min(COFFEE_MAX, c));
+    for (let i = 0; i < anchors.length - 1; i++){
+      const a = anchors[i], b = anchors[i + 1];
+      if (c >= a.c && c <= b.c){
+        const t = (c - a.c) / (b.c - a.c);
+        return a.p + t * (b.p - a.p);
+      }
+    }
+    return anchors[anchors.length - 1].p;
   }
 
-  function update(count){
-    countEl.textContent = count;
-    priceEl.textContent = priceTable[count].toLocaleString('en-AU');
+  const toggleWrap   = document.getElementById('calcToggle');
+  const toggleBtns   = toggleWrap.querySelectorAll('.calc-toggle-btn');
+  const slider       = document.getElementById('calcSlider');
+  const scaleMinEl   = document.getElementById('calcScaleMin');
+  const scaleMaxEl   = document.getElementById('calcScaleMax');
+  const primaryVal   = document.getElementById('calcPrimaryValue');
+  const primaryLabel = document.getElementById('calcPrimaryLabel');
+  const secondaryVal   = document.getElementById('calcSecondaryValue');
+  const secondaryLabel = document.getElementById('calcSecondaryLabel');
+  const priceVal     = document.getElementById('calcPriceValue');
+  const pkgBtns      = document.querySelectorAll('.calc-pkg');
 
-    const tier = tierForCount(count);
-    tierBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tier === tier));
+  let mode = 'coffees';
+  let currentCoffees = parseInt(slider.value, 10);
 
-    const pct = (count - slider.min) / (slider.max - slider.min) * 100;
-    slider.style.background = `linear-gradient(to right, var(--brass) 0%, var(--brass) ${pct}%, var(--walnut) ${pct}%, var(--line) 100%)`;
+  function updateSliderFill(){
+    const min = parseFloat(slider.min), max = parseFloat(slider.max), val = parseFloat(slider.value);
+    const pct = (val - min) / (max - min) * 100;
+    slider.style.background = `linear-gradient(to right, var(--brass) 0%, var(--brass) ${pct}%, rgba(244,239,230,0.12) ${pct}%, rgba(244,239,230,0.12) 100%)`;
   }
 
-  slider.addEventListener('input', () => update(parseInt(slider.value, 10)));
+  function syncPackageSelection(){
+    pkgBtns.forEach(b => {
+      b.classList.toggle('active', parseInt(b.dataset.count, 10) === currentCoffees);
+    });
+  }
 
-  tierBtns.forEach(btn => {
+  function render(){
+    const guests = coffeesToGuests(currentCoffees);
+    const price = Math.round(priceForCoffees(currentCoffees) / 5) * 5;
+
+    if (mode === 'coffees'){
+      primaryVal.textContent = currentCoffees;
+      primaryLabel.textContent = currentCoffees === 1 ? 'coffee' : 'coffees';
+      secondaryVal.textContent = guests;
+      secondaryLabel.textContent = guests === 1 ? 'guest' : 'guests';
+      slider.value = currentCoffees;
+    } else {
+      primaryVal.textContent = guests;
+      primaryLabel.textContent = guests === 1 ? 'guest' : 'guests';
+      secondaryVal.textContent = currentCoffees;
+      secondaryLabel.textContent = currentCoffees === 1 ? 'coffee' : 'coffees';
+      slider.value = guests;
+    }
+
+    priceVal.textContent = '$' + price.toLocaleString('en-AU');
+    updateSliderFill();
+    syncPackageSelection();
+  }
+
+  function setMode(newMode){
+    if (mode === newMode) return;
+    mode = newMode;
+
+    toggleBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    toggleWrap.classList.toggle('is-guests', mode === 'guests');
+
+    if (mode === 'coffees'){
+      slider.min = COFFEE_MIN;
+      slider.max = COFFEE_MAX;
+      scaleMinEl.textContent = COFFEE_MIN;
+      scaleMaxEl.textContent = COFFEE_MAX;
+    } else {
+      slider.min = GUEST_MIN;
+      slider.max = GUEST_MAX;
+      scaleMinEl.textContent = GUEST_MIN;
+      scaleMaxEl.textContent = GUEST_MAX;
+    }
+    render();
+  }
+
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => setMode(btn.dataset.mode));
+  });
+
+  slider.addEventListener('input', () => {
+    const val = parseFloat(slider.value);
+    currentCoffees = mode === 'coffees' ? val : guestsToCoffees(val);
+    render();
+  });
+
+  pkgBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      const target = tierRanges[btn.dataset.tier].mid;
-      slider.value = target;
-      update(target);
+      currentCoffees = parseInt(btn.dataset.count, 10);
+      render();
     });
   });
 
-  update(parseInt(slider.value, 10));
+  // initial paint
+  slider.min = COFFEE_MIN;
+  slider.max = COFFEE_MAX;
+  scaleMinEl.textContent = COFFEE_MIN;
+  scaleMaxEl.textContent = COFFEE_MAX;
+  render();
 });
 </script>
 
@@ -2777,7 +3008,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="section-head reveal">
       <div class="eyebrow"><span class="bulb-dot"></span> Book the wagon</div>
       <h2>Pick a date, tell us the plan.</h2>
-<p style="margin-top:10px; font-size:13.5px; color:var(--cream-dim); line-height:1.5;">
+<p class="note">
 ⚡We require access to <b style="color:var(--brass-bright);">two standard power outlets</b> on <b style="color:var(--brass-bright);">separate circuits</b> to ensure smooth service throughout your event.
 </p>
     </div>
