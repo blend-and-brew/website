@@ -14,30 +14,73 @@
 
     body {
       background: #080808;
-
       display: flex;
       justify-content: center;
       align-items: center;
-
       padding: 40px;
       box-sizing: border-box;
       overflow: hidden;
     }
 
-    img {
+    .shine {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      border: 8px solid white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .shine img {
       display: block;
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
+    }
 
-      border-radius: 12px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    /* Soft light reflection */
+    .shine::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -150%;
+      width: 60%;
+      height: 200%;
+      pointer-events: none;
+
+      background: linear-gradient(
+        115deg,
+        transparent 0%,
+        rgba(255,255,255,0.02) 30%,
+        rgba(255,255,255,0.10) 42%,
+        rgba(255,255,255,0.18) 50%,
+        rgba(255,255,255,0.10) 58%,
+        rgba(255,255,255,0.02) 70%,
+        transparent 100%
+      );
+
+      transform: rotate(10deg);
+      filter: blur(12px);
+
+      animation: shine 12s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      0%, 88%, 100% {
+        left: -150%;
+      }
+
+      94% {
+        left: 130%;
+      }
     }
   </style>
 </head>
 <body>
 
-  <img src="images/BB_ComingSoon.jpg" alt="Coming Soon" style="border: 8px solid white;">
+  <div class="shine">
+    <img src="images/BB_ComingSoon.jpg" alt="Coming Soon">
+  </div>
 
 </body>
 </html>
