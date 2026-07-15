@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Website</title>
+  <title>Coming Soon</title>
 
   <style>
     html, body {
@@ -13,26 +13,33 @@
     }
 
     body {
-      background: url("images/BannerTimber_Image.png") center center / cover no-repeat fixed;
+      /* Dark vignette background */
+      background: radial-gradient(circle at center, #1b1b1b 0%, #111111 55%, #080808 100%);
+
       display: flex;
       justify-content: center;
       align-items: center;
+
       padding: 40px;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
     img {
+      display: block;
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
-      display: block;
-      border-radius: 12px; /* Optional */
+
+      /* Optional rounded corners and shadow */
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     }
   </style>
 </head>
 <body>
 
-  <img src="images/BB_ComingSoon.jpg" alt="Main Image">
+  <img src="images/BB_ComingSoon.jpg" alt="Coming Soon">
 
 </body>
 </html>
