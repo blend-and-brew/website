@@ -1,103 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coming Soon</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coming Soon</title>
 
-  <style>
-    html,
-    body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-    }
+<style>
 
-    body {
-      background: #080808;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
 
-    .shine {
-      position: relative;
-      display: inline-block;
-      overflow: hidden;
+body {
+  background: #080808;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
 
-      /* Original thick border */
-      border: 8px solid #fff;
-      border-radius: 12px;
 
-      /* Padding around the image */
-      padding: 12px;
-      background: #080808;
+/* Image frame */
+.shine {
+  display: inline-block;
 
-      box-shadow:
-        0 0 30px rgba(255,255,255,0.08),
-        0 20px 60px rgba(0,0,0,0.5);
-    }
+  border: 8px solid #fff;
+  border-radius: 12px;
 
-    .shine img {
-      display: block;
-      max-width: calc(100vw - 120px);
-      max-height: calc(100vh - 120px);
-      width: auto;
-      height: auto;
-      object-fit: contain;
-    }
+  padding: 12px;
+  background: #080808;
 
-    /* Soft glowing reflection */
-    .shine::after {
-      content: "";
-      position: absolute;
+  box-shadow:
+    0 0 30px rgba(255,255,255,0.08),
+    0 20px 60px rgba(0,0,0,0.5);
+}
 
-      top: -70%;
-      left: -80%;
 
-      width: 80%;
-      height: 240%;
+.shine img {
+  display: block;
+  max-width: calc(100vw - 120px);
+  max-height: calc(100vh - 260px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
 
-      pointer-events: none;
 
-      background: linear-gradient(
-        115deg,
-        transparent 0%,
-        rgba(255,255,255,0.02) 20%,
-        rgba(255,255,255,0.10) 35%,
-        rgba(255,255,255,0.30) 50%,
-        rgba(255,255,255,0.10) 65%,
-        rgba(255,255,255,0.02) 80%,
-        transparent 100%
-      );
+/* Coffee Cup */
 
-      filter: blur(35px);
+.cup {
+  width: 120px;
+  margin-top: 35px;
+}
 
-      transform: translateX(-180%) rotate(10deg);
 
-      animation: glowSweep 6s linear infinite;
-    }
+/* Rising coffee animation */
 
-    @keyframes glowSweep {
-      from {
-        transform: translateX(-180%) rotate(10deg);
-      }
+.coffee {
+  animation: fillCup 4s ease forwards;
+}
 
-      to {
-        transform: translateX(350%) rotate(10deg);
-      }
-    }
-  </style>
+
+@keyframes fillCup {
+
+  from {
+    transform: translateY(130px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+
+}
+
+
+/* Steam */
+
+.steam {
+  opacity: 0;
+  animation: steamRise 3s ease infinite;
+}
+
+
+@keyframes steamRise {
+
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-25px);
+  }
+
+}
+
+
+</style>
 </head>
+
 
 <body>
 
-  <div class="shine">
-    <img src="images/BB_ComingSoon.jpg" alt="Coming Soon">
-  </div>
+
+<div class="shine">
+  <img src="images/BB_ComingSoon.jpg" alt="Coming Soon">
+</div>
+
+
+
+<!-- Coffee Cup SVG -->
+
+<svg class="cup" viewBox="0 0 220 260">
+
+<defs>
+  <clipPath id="cupClip">
+    <path d="
+      M45 70 
+      Q110 85 175 70
+      L160 200
+      Q110 230 60 200
+      Z"/>
+  </clipPath>
+</defs>
+
+
+<!-- Coffee -->
+<g clip-path="url(#cupClip)">
+
+  <rect
+    class="coffee"
+    x="0"
+    y="80"
+    width="220"
+    height="160"
+    fill="#6b3e26"/>
+
+  <ellipse
+    cx="110"
+    cy="80"
+    rx="70"
+    ry="15"
+    fill="#3f2115"/>
+
+</g>
+
+
+<!-- Cup -->
+<path
+d="
+M45 70 
+Q110 85 175 70
+L160 200
+Q110 230 60 200
+Z"
+fill="none"
+stroke="#ffffff"
+stroke-width="6"/>
+
+
+<!-- Handle -->
+<path
+d="
+M170 105
+Q215 100 200 160
+Q190 185 165 170"
+fill="none"
+stroke="#ffffff"
+stroke-width="6"/>
+
+
+<!-- Rim -->
+<ellipse
+cx="110"
+cy="70"
+rx="65"
+ry="15"
+fill="none"
+stroke="#ffffff"
+stroke-width="6"/>
+
+
+<!-- Steam -->
+
+<path class="steam"
+d="M90 45 Q80 25 95 10"
+stroke="#aaa"
+stroke-width="4"
+fill="none"/>
+
+<path class="steam"
+d="M125 45 Q115 25 130 10"
+stroke="#aaa"
+stroke-width="4"
+fill="none"/>
+
+
+</svg>
+
 
 </body>
 </html>
