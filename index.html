@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Coming Soon</title>
 
 <style>
+
 html,
 body {
     margin: 0;
@@ -23,166 +25,163 @@ body {
     overflow: hidden;
 }
 
+
+/* Image container */
 .shine {
     position: relative;
     display: inline-block;
     overflow: hidden;
 
-    /* Border */
-    border: 2px solid #fff;
-    border-radius: 12px;
+    border-radius: 18px;
 
-    /* Space around image */
-    padding: 12px;
-    background: #080808;
+    padding: 14px;
 
-    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.35),
+            rgba(255,255,255,0.05)
+        );
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.7),
+        0 0 40px rgba(255,255,255,.08);
+
 }
 
+
+/* Image */
 .shine img {
+
     display: block;
+
     max-width: calc(100vw - 120px);
     max-height: calc(100vh - 120px);
+
     width: auto;
     height: auto;
+
     object-fit: contain;
+
+    border-radius: 10px;
 }
 
-/* Animated shine */
+
+/* Moving light reflection */
 .shine::after {
+
     content: "";
+
     position: absolute;
 
-    top: -50%;
-    left: -50%;
+    top: -80%;
+    left: -60%;
 
-    width: 40%;
-    height: 200%;
+    width: 45%;
+    height: 260%;
 
-    pointer-events: none;
 
-    background: linear-gradient(
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coming Soon</title>
-
-  <style>
-    html,
-    body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    body {
-      background: #080808;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-
-    .shine {
-      position: relative;
-      display: inline-block;
-      overflow: hidden;
-
-      /* Original thick border */
-      border: 8px solid #fff;
-      border-radius: 12px;
-
-      /* Padding around the image */
-      padding: 12px;
-      background: #080808;
-
-      box-shadow:
-        0 0 30px rgba(255,255,255,0.08),
-        0 20px 60px rgba(0,0,0,0.5);
-    }
-
-    .shine img {
-      display: block;
-      max-width: calc(100vw - 120px);
-      max-height: calc(100vh - 120px);
-      width: auto;
-      height: auto;
-      object-fit: contain;
-    }
-
-    /* Soft glowing reflection */
-    .shine::after {
-      content: "";
-      position: absolute;
-
-      top: -70%;
-      left: -80%;
-
-      width: 80%;
-      height: 240%;
-
-      pointer-events: none;
-
-      background: linear-gradient(
-115deg,
-transparent 0%,
-        rgba(255,255,255,0.02) 30%,
-        rgba(255,255,255,0.12) 45%,
+    background:
+    linear-gradient(
+        115deg,
+        transparent 0%,
+        rgba(255,255,255,0.02) 35%,
         rgba(255,255,255,0.35) 50%,
-        rgba(255,255,255,0.12) 55%,
-        rgba(255,255,255,0.02) 70%,
-        rgba(255,255,255,0.02) 20%,
-        rgba(255,255,255,0.10) 35%,
-        rgba(255,255,255,0.30) 50%,
-        rgba(255,255,255,0.10) 65%,
-        rgba(255,255,255,0.02) 80%,
-transparent 100%
+        rgba(255,255,255,0.08) 60%,
+        transparent 100%
     );
 
-    filter: blur(10px);
-      );
 
-    transform: translateX(-220%) rotate(12deg);
-      filter: blur(35px);
+    filter: blur(18px);
 
-    animation: shineSweep 8s ease-in-out infinite;
+    transform:
+        translateX(-250%)
+        rotate(15deg);
+
+
+    animation:
+        shineSweep 9s ease-in-out infinite;
+
+    pointer-events:none;
+
 }
-      transform: translateX(-180%) rotate(10deg);
 
+
+/* Slow premium sweep */
 @keyframes shineSweep {
 
-    /* Wait */
-    0%,
-    70% {
-        transform: translateX(-220%) rotate(12deg);
-      animation: glowSweep 6s linear infinite;
-}
+    0% {
+        transform:
+        translateX(-250%)
+        rotate(15deg);
+    }
 
-    /* Sweep across */
+
+    35% {
+        transform:
+        translateX(450%)
+        rotate(15deg);
+    }
+
+
     100% {
-        transform: translateX(420%) rotate(12deg);
-    @keyframes glowSweep {
-      from {
-        transform: translateX(-180%) rotate(10deg);
-      }
 
-      to {
-        transform: translateX(350%) rotate(10deg);
-      }
+        transform:
+        translateX(450%)
+        rotate(15deg);
+
+    }
+
 }
+
+
+
+/* Gentle glow */
+.shine {
+
+    animation:
+    softGlow 6s ease-in-out infinite;
+
 }
+
+
+@keyframes softGlow {
+
+    0%,
+    100% {
+
+        box-shadow:
+        0 30px 80px rgba(0,0,0,.7),
+        0 0 30px rgba(255,255,255,.05);
+
+    }
+
+
+    50% {
+
+        box-shadow:
+        0 35px 90px rgba(0,0,0,.8),
+        0 0 50px rgba(255,255,255,.12);
+
+    }
+
+}
+
+
 </style>
-  </style>
+
 </head>
+
 
 <body>
 
+
 <div class="shine">
-  <div class="shine">
-<img src="images/BB_ComingSoon.jpg" alt="Coming Soon">
+
+    <img src="images/BB_ComingSoon.jpg" alt="Coming Soon">
+
 </div>
-  </div>
+
 
 </body>
 </html>
