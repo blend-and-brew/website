@@ -6,269 +6,183 @@
 <title>Coming Soon</title>
 
 <style>
-
 html,
 body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
+    margin: 0;
+    width: 100%;
+    height: 100%;
 }
 
 body {
-  background: #080808;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+    background: #080808;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-
-/* IMAGE FRAME */
 .shine {
-  display: inline-block;
-  border: 8px solid #fff;
-  border-radius: 12px;
-  padding: 12px;
-  background: #080808;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
 
-  box-shadow:
-    0 0 30px rgba(255,255,255,0.08),
-    0 20px 60px rgba(0,0,0,0.5);
+    /* Border */
+    border: 2px solid #fff;
+    border-radius: 12px;
+
+    /* Space around image */
+    padding: 12px;
+    background: #080808;
+
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
 }
-
 
 .shine img {
-  display:block;
-  max-width: calc(100vw - 120px);
-  max-height: calc(100vh - 260px);
+    display: block;
+    max-width: calc(100vw - 120px);
+    max-height: calc(100vh - 120px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
 }
 
+/* Animated shine */
+.shine::after {
+    content: "";
+    position: absolute;
 
-/* COFFEE CUP */
+    top: -50%;
+    left: -50%;
 
-.loader-wrap {
-  width: 120px;
-  height: 120px;
+    width: 40%;
+    height: 200%;
+
+    pointer-events: none;
+
+    background: linear-gradient(
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coming Soon</title>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      background: #080808;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .shine {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+
+      /* Original thick border */
+      border: 8px solid #fff;
+      border-radius: 12px;
+
+      /* Padding around the image */
+      padding: 12px;
+      background: #080808;
+
+      box-shadow:
+        0 0 30px rgba(255,255,255,0.08),
+        0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .shine img {
+      display: block;
+      max-width: calc(100vw - 120px);
+      max-height: calc(100vh - 120px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    /* Soft glowing reflection */
+    .shine::after {
+      content: "";
+      position: absolute;
+
+      top: -70%;
+      left: -80%;
+
+      width: 80%;
+      height: 240%;
+
+      pointer-events: none;
+
+      background: linear-gradient(
+115deg,
+transparent 0%,
+        rgba(255,255,255,0.02) 30%,
+        rgba(255,255,255,0.12) 45%,
+        rgba(255,255,255,0.35) 50%,
+        rgba(255,255,255,0.12) 55%,
+        rgba(255,255,255,0.02) 70%,
+        rgba(255,255,255,0.02) 20%,
+        rgba(255,255,255,0.10) 35%,
+        rgba(255,255,255,0.30) 50%,
+        rgba(255,255,255,0.10) 65%,
+        rgba(255,255,255,0.02) 80%,
+transparent 100%
+    );
+
+    filter: blur(10px);
+      );
+
+    transform: translateX(-220%) rotate(12deg);
+      filter: blur(35px);
+
+    animation: shineSweep 8s ease-in-out infinite;
+}
+      transform: translateX(-180%) rotate(10deg);
+
+@keyframes shineSweep {
+
+    /* Wait */
+    0%,
+    70% {
+        transform: translateX(-220%) rotate(12deg);
+      animation: glowSweep 6s linear infinite;
 }
 
+    /* Sweep across */
+    100% {
+        transform: translateX(420%) rotate(12deg);
+    @keyframes glowSweep {
+      from {
+        transform: translateX(-180%) rotate(10deg);
+      }
 
-svg {
-  width:100%;
-  height:100%;
-  overflow:visible;
+      to {
+        transform: translateX(350%) rotate(10deg);
+      }
 }
-
-
-/* White outline */
-.cup-line {
-  fill:none;
-  stroke:#fff;
-  stroke-width:3;
-  stroke-linecap:round;
-  stroke-linejoin:round;
 }
-
-
-/* Coffee body */
-.coffee-fill {
-  fill:#fff;
-  animation: fillCup 6s ease-in-out infinite;
-}
-
-
-/* White coffee surface */
-.coffee-top {
-  fill:#fff;
-}
-
-
-/* Steam */
-.steam {
-  fill:none;
-  stroke:#fff;
-  stroke-width:2.5;
-  stroke-linecap:round;
-  opacity:0;
-  animation: steamRise 6s ease-in-out infinite;
-}
-
-
-.steam.s2 {
-  animation-delay:0.8s;
-}
-
-.steam.s3 {
-  animation-delay:1.6s;
-}
-
-
-/* Slow fill */
-
-@keyframes fillCup {
-
-  0% {
-    transform:translateY(38px);
-  }
-
-  70% {
-    transform:translateY(38px);
-  }
-
-  88% {
-    transform:translateY(0);
-  }
-
-  100% {
-    transform:translateY(0);
-  }
-
-}
-
-
-/* Steam */
-
-@keyframes steamRise {
-
-  0% {
-    opacity:0;
-    transform:translateY(0);
-  }
-
-  75% {
-    opacity:0;
-  }
-
-  85% {
-    opacity:.9;
-    transform:translateY(-5px);
-  }
-
-  100% {
-    opacity:0;
-    transform:translateY(-16px);
-  }
-
-}
-
-
 </style>
+  </style>
 </head>
-
 
 <body>
 
-
-<div class="loader-wrap">
-
-<svg viewBox="0 0 100 100">
-
-
-<defs>
-
-<clipPath id="cupClip">
-
-<path d="
-M28 38
-L30 78
-Q30 84 36 84
-L60 84
-Q66 84 66 78
-L68 38
-Z"/>
-
-</clipPath>
-
-</defs>
-
-
-
-<!-- Steam -->
-
-<path class="steam s1"
-d="M40 26 Q36 20 40 15 Q44 10 40 4"/>
-
-<path class="steam s2"
-d="M50 26 Q46 20 50 15 Q54 10 50 4"/>
-
-<path class="steam s3"
-d="M60 26 Q56 20 60 15 Q64 10 60 4"/>
-
-
-
-<!-- Coffee fill -->
-
-<g clip-path="url(#cupClip)">
-
-<rect 
-class="coffee-fill"
-x="26"
-y="40"
-width="44"
-height="44"/>
-
-</g>
-
-
-<!-- White coffee surface ellipse -->
-
-<ellipse 
-class="coffee-top"
-cx="48"
-cy="38"
-rx="20"
-ry="5"/>
-
-
-
-<!-- Cup -->
-
-<path class="cup-line"
-d="
-M28 38
-L30 78
-Q30 84 36 84
-L60 84
-Q66 84 66 78
-L68 38
-Z"/>
-
-
-<!-- Rim -->
-
-<ellipse 
-class="cup-line"
-cx="48"
-cy="38"
-rx="20"
-ry="5"/>
-
-
-
-<!-- Handle -->
-
-<path class="cup-line"
-d="
-M68 46
-Q82 46 82 58
-Q82 70 68 70"/>
-
-
-
-<!-- Saucer -->
-
-<ellipse 
-class="cup-line"
-cx="48"
-cy="90"
-rx="30"
-ry="4"/>
-
-
-</svg>
-
+<div class="shine">
+  <div class="shine">
+<img src="images/BB_ComingSoon.jpg" alt="Coming Soon">
 </div>
-
+  </div>
 
 </body>
 </html>
