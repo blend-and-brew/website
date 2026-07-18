@@ -231,7 +231,7 @@ min-height:100vh;
   position:relative;
   display:inline-block;
   width:160px;
-  margin-top:20px;
+  margin-top:60px;
   margin-bottom:20px;
   border-radius:50%;
   overflow:hidden;
@@ -2544,28 +2544,28 @@ footer p.tag{
 /* ============ RESPONSIVE ============ */
 
 @media (max-width:880px){
-  .hero{min-height:auto;padding-bottom:24px;}
-  .hero-grid{text-align:center;margin-left:auto;margin-right:auto;}
-
-  .hero-logo-wrap{
-    width:300px;
-  }
-
-  .hero p.lede{
-    margin-left:auto;
-    margin-right:auto;
-    margin-top:clamp(80px, 14vh, 140px);
-    margin-bottom:20px;
-  }
-
-  .hero-actions{justify-content:center;}
-  .hero-scroll-cue{display:flex; bottom:14px;}
 
   .hero h1{
-    font-size:clamp(32px,9vw,46px);
-    letter-spacing:.05em;
-    margin-bottom:40px;
+    font-size: clamp(42px, 10vw, 50px);
+    line-height: 1.05;
+    margin-bottom: 18px;
   }
+
+  /* Text above divider */
+  .hero .eyebrow,
+  .hero .subtitle,
+  .hero .hero-tagline{
+    font-size: 15px;
+  }
+
+  /* Lede paragraph */
+  .hero p.lede{
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: clamp(80px, 14vh, 140px);
+    margin-bottom: 20px;
+  }
+}
 
   .hero-divider{margin:26px auto;}
   .steps-row{grid-template-columns:1fr;gap:30px;}
