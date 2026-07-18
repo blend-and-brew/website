@@ -28,7 +28,7 @@
   --radius:3px;
 }
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
 body{
   margin:0;
   background:var(--cream);
@@ -1762,6 +1762,7 @@ min-height:100vh;
 .form-group{
   position: relative;
   margin-bottom: 16px;
+  min-width: 0;
 }
 
 .form-group label{
@@ -1778,6 +1779,7 @@ min-height:100vh;
 .form-group select,
 .form-group textarea{
   width: 100%;
+  min-width: 0;
   padding: 12px 14px;
   border: 1px solid var(--line);
   background: #fff;
@@ -1866,6 +1868,7 @@ min-height:100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  min-width: 0;
 }
 
 /* ===============================
@@ -2000,14 +2003,17 @@ min-height:100vh;
 .address-row{
   display: flex;
   gap: 10px;
+  min-width: 0;
 }
 
 #houseNumber{
   flex: 0 0 90px;
+  min-width: 0;
 }
 
 #location{
   flex: 1;
+  min-width: 0;
 }
 
 /* Google Places dropdown fix */
@@ -2546,6 +2552,15 @@ footer p.tag{
 @media (max-width:880px){
   .hero{min-height:auto;padding-bottom:60px;}
   .hero-grid{text-align:center;margin-left:auto;margin-right:auto;}
+
+  .hero-content{
+    padding-top:clamp(64px, 14vh, 110px);
+  }
+
+  .hero-logo-wrap{
+    width:clamp(150px, 34vw, 220px);
+    margin-bottom:16px;
+  }
 
   .hero p.lede{
     margin-left:auto;
