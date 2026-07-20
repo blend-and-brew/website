@@ -29,6 +29,9 @@
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
+html, body{
+  touch-action: manipulation; /* disables double-tap-to-zoom so taps (e.g. calendar days) don't trigger the browser's viewport zoom */
+}
 body{
   margin:0;
   background:var(--cream);
@@ -48,6 +51,43 @@ img{max-width:100%;display:block;}
 button{font-family:inherit;}
 
 .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+
+/* ============ SECURITY ============ */
+
+body{
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+
+/* Allow normal interaction */
+input,
+textarea,
+select,
+button{
+  -webkit-user-select:text;
+  -moz-user-select:text;
+  -ms-user-select:text;
+  user-select:text;
+}
+img{
+  -webkit-user-drag:none;
+  user-select:none;
+}
+
+/* ============ HIDE SCROLL BAR ============ */
+
+/* Hide browser scrollbar but keep scrolling */
+html, body {
+  -ms-overflow-style: none;  /* IE & old Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}
 
 /* ============ WOOD-GRAIN TEXTURE OVERLAY ============ */
 .grain{
@@ -231,7 +271,7 @@ min-height:100vh;
 .hero-logo-wrap{
   position:relative;
   display:inline-block;
-  width:260px;
+  width:280px;
   margin-top:0px;
   margin-bottom:20px;
   border-radius:50%;
@@ -310,13 +350,17 @@ min-height:100vh;
   font-weight:600;
   color:rgba(255,255,255,.82);
 
-  margin-bottom:10px;
+  margin-bottom:0px;
+}
+
+.hero-eyebrow .eyebrow-sep{
+  margin:0 10px;
 }
 
 .hero h1{
   margin:0;
   margin-bottom:160px;
-  font-size:clamp(56px,8vw,62px);
+  font-size:clamp(46px,8vw,52px);
   line-height:1.02;
   letter-spacing:.08em;
   text-align:center;
@@ -335,7 +379,7 @@ min-height:100vh;
   width:620px;
   max-width:80%;
   height:1px;
-  margin:35px auto;
+  margin:25px auto;
   background:rgba(255,255,255,.35);
 }
 
@@ -352,6 +396,12 @@ min-height:100vh;
   margin-bottom:60px;
 
   opacity:.9;
+}
+
+@media (min-width:880px){
+  .hero p.lede{
+    margin-bottom:120px;
+  }
 }
 
 .hero-actions{
@@ -421,7 +471,7 @@ min-height:100vh;
 
 .hero-scroll-cue{
   position:absolute;
-  bottom:28px;
+  bottom:35px;
   left:50%;
   transform:translateX(-50%);
   display:flex;
@@ -1155,7 +1205,8 @@ min-height:100vh;
     top:50%;
     left:100%;
     transform:translateY(-50%);
-    margin:0 0 0 20px;
+    margin:0 0 0 10px;
+    width:190px;
     text-align:center;
   }
 }
@@ -1318,11 +1369,18 @@ min-height:100vh;
 
 .menu-note{
   margin-top:18px;
-  font-size:12px;
+  font-size:13px;
   color:var(--cream-dim);
-  opacity:0.55;
+  opacity:0.75;
   letter-spacing:0.03em;
   text-align:center;
+}
+
+.menu-note-sub{
+  display:inline-block;
+  margin-top:8px;
+  font-size:12px;
+  opacity:1;
 }
 
 .calc-pkg-note{
@@ -1330,12 +1388,12 @@ min-height:100vh;
   align-items:center;
   justify-content:center;
   text-align:center;
-  max-width:150px;
-  padding:8px 14px;
+  max-width:100px;
+  padding:8px 8px;
   font-size:11.5px;
   line-height:1.5;
   color:var(--brass-bright);
-  opacity:0.8;
+  opacity:.9;
   letter-spacing:0.01em;
 }
 
@@ -1586,6 +1644,7 @@ min-height:100vh;
 .booking-left{
   padding:44px;
   border-right:1px solid var(--line);
+  min-width:0;
 
   background: url("images/Booking_Texture_Image.png") center / cover no-repeat;
 
@@ -1612,6 +1671,7 @@ min-height:100vh;
 
 .booking-right{
   padding:44px;
+  min-width:0;
 }
 
 /* ============ CALENDAR ============ */
@@ -1775,7 +1835,7 @@ min-height:100vh;
   color: var(--ink-soft);
 }
 
-.form-group input:not([type="checkbox"]):not([type="radio"]),
+.form-group input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 .form-group select,
 .form-group textarea{
   width: 100%;
@@ -1855,9 +1915,163 @@ min-height:100vh;
   background-size: 12px;
 }
 
+/* Placeholder option ("Select one") greyed out like other placeholder
+   text, until a real value is chosen (select becomes :valid) */
+.form-group select:invalid{
+  color: rgba(90, 85, 80, 0.45);
+}
+.form-group select option[value=""]{
+  color: rgba(90, 85, 80, 0.7);
+}
+.form-group select option:not([value=""]){
+  color: var(--ink);
+}
+
 /* ===============================
-   TIME INPUT
+   TIME INPUT — interactive desktop picker,
+   native OS clock on mobile
 ================================= */
+
+.time-native{
+  display: none;
+}
+
+.time-select{
+  position: relative;
+}
+
+.time-select-trigger{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color .15s ease;
+}
+
+.time-select-trigger .time-select-placeholder{
+  color: rgba(90, 85, 80, 0.45);
+}
+
+.time-select-trigger:hover,
+.time-select.open .time-select-trigger{
+  border-color: var(--brass);
+}
+
+.time-select-trigger svg{
+  color: var(--ink-soft);
+  transition: transform .2s ease;
+  flex-shrink: 0;
+}
+
+.time-select.open .time-select-trigger svg{
+  transform: rotate(180deg);
+}
+
+.time-select-panel{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 18px 40px -18px rgba(42,31,24,0.3);
+  max-height: 224px;
+  overflow-y: auto;
+  padding: 6px;
+  z-index: 30;
+  display: none;
+}
+
+.time-select.open .time-select-panel{
+  display: block;
+}
+
+.time-select-option{
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+
+.time-select-option:hover{
+  background: rgba(198,138,69,0.1);
+}
+
+.time-select-option.active{
+  background: var(--brass);
+  color: var(--walnut);
+  font-weight: 600;
+}
+
+@media (max-width: 880px){
+  .time-select{ display: none; }
+  .time-native{
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    border-radius: 8px;
+  }
+}
+
+/* ===============================
+   SERVICE LENGTH SLIDER (1–4 hrs, 0.5 step)
+================================= */
+
+.hours-slider-wrap{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.hours-slider-value{
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  flex: 0 0 50px;
+  white-space: nowrap;
+}
+
+.hours-slider-wrap .menu-slider{
+  margin: 0;
+  flex: 1 1 auto;
+}
+
+.hours-slider-wrap .menu-slider::-webkit-slider-thumb{
+  border-color: var(--cream);
+}
+
+.hours-slider-wrap .menu-slider::-moz-range-thumb{
+  border-color: var(--cream);
+}
 
 /* ===============================
    ROW LAYOUTS
@@ -2099,6 +2313,7 @@ min-height:100vh;
   height: 24px;
   border-radius: 50%;
   border: 1px solid var(--line);
+background: var(--cream);
   color: var(--ink-soft);
   text-decoration: none;
   flex-shrink: 0;
@@ -2352,6 +2567,441 @@ min-height:100vh;
   line-height: 1.6;
 }
 
+/* ===============================
+   BOOKING WIZARD (3-page swipe/slide nav)
+================================= */
+
+.wizard{
+  margin-bottom: 20px;
+}
+
+.wizard-viewport{
+  overflow: hidden;
+  transition: height .3s ease;
+}
+
+.wizard-track{
+  display: flex;
+  width: 300%;
+  align-items: flex-start; /* pages sit at their own natural height; the shared viewport height (set to the tallest page) is applied by JS on .wizard-viewport */
+  transition: transform .45s cubic-bezier(.2,.7,.2,1);
+}
+
+.wizard-page{
+  flex: 0 0 calc(100% / 3);
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0 10px; /* buffer so fields from the adjacent step don't appear to touch this one while panning between steps */
+}
+
+/* Only the T&Cs page (the long one) gets a capped height + internal
+   scroll — Personal and Event pages are left to their natural height
+   with no scrollbar. */
+.wizard-page.wizard-page-scroll{
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--brass) transparent;
+}
+
+.wizard-page.wizard-page-scroll::-webkit-scrollbar{ width: 6px; }
+.wizard-page.wizard-page-scroll::-webkit-scrollbar-track{ background: transparent; }
+.wizard-page.wizard-page-scroll::-webkit-scrollbar-thumb{
+  background-color: var(--brass);
+  border-radius: 20px;
+}
+.wizard-page.wizard-page-scroll::-webkit-scrollbar-thumb:hover{
+  background-color: var(--brass-bright);
+}
+
+@media (max-width: 880px){
+  .wizard-page.wizard-page-scroll{ max-height: 420px; }
+}
+
+.wizard-page-eyebrow{
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brass-deep);
+  margin-bottom: 16px;
+}
+
+.tc-box{
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.tc-box p{ margin: 0 0 8px; }
+.tc-box p:last-child{ margin-bottom: 0; }
+.tc-box strong{ color: var(--ink); }
+.tc-box ul{ margin: 6px 0 8px; padding-left: 18px; }
+.tc-box li{ margin-bottom: 4px; }
+.tc-box-fine{ background: var(--cream); }
+
+.tc-box-link{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--brass-deep);
+  text-decoration: none;
+  border-bottom: 1px solid var(--brass);
+  padding-bottom: 1px;
+  transition: color .2s ease, border-color .2s ease;
+}
+.tc-box-link:hover{
+  color: var(--brass-bright);
+  border-color: var(--brass-bright);
+}
+
+.tc-subtext{
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.tc-checklist{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tc-check-row{
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+}
+
+/* The invisible native checkbox is confined to this small wrapper only
+   (not the whole row) so it can never sit on top of / hide behind the
+   label text — that was what made the box seem to disappear. */
+.tc-check-wrap{
+  position: relative;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+}
+
+.tc-check-row input{
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* .form-group input[type="checkbox"] elsewhere on the page forces a
+   fixed 16px box (for regular form checkboxes), which has higher
+   specificity than the rule above and was shrinking/misplacing this
+   invisible input inside its 20px wrap. Restore it explicitly so the
+   wrap's full clickable area — and the visible box drawn on top of it
+   — always renders at full, consistent size. */
+.tc-check-row .tc-check-wrap input[type="checkbox"]{
+  width: 100%;
+  height: 100%;
+  flex: none;
+}
+
+.tc-check-box{
+  position: absolute;
+  inset: 0;
+  border: 1.75px solid var(--ink-soft);
+  border-radius: 4px;
+  background: #fff;
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.tc-check-box::after{
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+
+.tc-check-row input:checked + .tc-check-box{
+  background: var(--brass);
+  border-color: var(--brass);
+}
+.tc-check-row input:checked + .tc-check-box::after{ opacity: 1; }
+.tc-check-row input:focus-visible + .tc-check-box{
+  outline: 2px solid var(--brass-deep);
+  outline-offset: 2px;
+}
+/* shown briefly if someone tries to submit without ticking the box */
+.tc-check-row.tc-error .tc-check-box{
+  border-color: var(--rust);
+  box-shadow: 0 0 0 3px rgba(189,90,52,0.15);
+}
+
+.tc-check-label{
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.wizard-nav{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.wizard-arrow{
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.wizard-arrow:hover{
+  border-color: var(--brass);
+  color: var(--walnut);
+  background: rgba(198,138,69,0.1);
+}
+
+.wizard-arrow.is-hidden{
+  visibility: hidden;
+}
+
+.wizard-status{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wizard-status-label{
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  min-width: 56px;
+  text-align: center;
+}
+
+.wizard-status-dots{
+  display: flex;
+  gap: 6px;
+}
+
+.wizard-status-dot{
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: background .25s ease, transform .25s ease;
+}
+
+.wizard-status-dot.active{
+  background: var(--brass);
+  transform: scale(1.35);
+}
+
+@media (max-width: 480px){
+  .wizard-status-label{ min-width: 0; }
+}
+
+/* ===============================
+   TERMS & CONDITIONS MODAL
+================================= */
+
+.tc-modal-overlay{
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(19,17,15,0.82);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.tc-modal-overlay.show{
+  display: flex;
+}
+
+.tc-modal{
+  position: relative;
+  width: 100%;
+  max-width: 780px;
+  max-height: 82vh;
+  overflow: hidden;
+  background: var(--walnut-soft);
+  color: var(--cream);
+  border: 1px solid var(--line-on-dark);
+  border-radius: 14px;
+  padding: 36px;
+  box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Title, subtitle, and close button live in this static header row —
+   they never scroll, and the close button sits in line with the
+   title/subtitle instead of floating over the content. */
+.tc-modal-header{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-shrink: 0;
+  margin-bottom: 20px;
+}
+
+.tc-modal-titles{
+  min-width: 0;
+}
+
+/* Only this inner wrapper scrolls, below the static header above.
+   min-height:0 lets this flex child actually shrink to fit the
+   modal's max-height so its own scrollbar (not the outer modal)
+   is what activates. The mask fades content in/out at the top and
+   bottom edges instead of cutting it off sharply mid-scroll. */
+.tc-modal-body{
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-right: -10px;
+
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 5px, black calc(100% - 10px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, black 5px, black calc(100% - 10px), transparent 100%);
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--brass) transparent;
+}
+
+.tc-modal-body::-webkit-scrollbar{
+  width: 8px;
+}
+.tc-modal-body::-webkit-scrollbar-button,
+.tc-modal-body::-webkit-scrollbar-button:single-button,
+.tc-modal-body::-webkit-scrollbar-button:start,
+.tc-modal-body::-webkit-scrollbar-button:end,
+.tc-modal-body::-webkit-scrollbar-button:vertical:start:decrement,
+.tc-modal-body::-webkit-scrollbar-button:vertical:end:increment{
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.tc-modal-body::-webkit-scrollbar-track{
+  background: rgba(244,239,230,0.1);
+  border-radius: 30px;
+  margin: 14px 0;
+}
+.tc-modal-body::-webkit-scrollbar-thumb{
+  background-color: var(--brass);
+  border-radius: 30px;
+  border: 2px solid var(--walnut-soft);
+}
+.tc-modal-body::-webkit-scrollbar-thumb:hover{
+  background-color: var(--brass-bright);
+}
+
+.tc-modal h3{
+  font-size: 22px;
+  margin: 0 0 6px;
+  color: var(--cream);
+}
+
+.tc-modal .tc-modal-sub{
+  font-size: 12.5px;
+  color: var(--cream-dim);
+  opacity: 0.7;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tc-modal h4{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  color: var(--brass-bright);
+  margin: 22px 0 8px;
+}
+
+.tc-modal h4:first-child{
+  margin-top: 0;
+}
+
+.tc-modal h4 svg{
+  flex-shrink: 0;
+  color: var(--brass-bright);
+}
+
+.tc-modal p,
+.tc-modal li{
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--cream-dim);
+}
+
+.tc-modal ul{
+  margin: 6px 0 12px;
+  padding-left: 18px;
+}
+
+.tc-modal-close{
+  position: relative;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line-on-dark);
+  background: transparent;
+  color: var(--cream);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .2s ease, background .2s ease, color .2s ease;
+}
+
+.tc-modal-close:hover{
+  border-color: var(--brass);
+  background: var(--brass);
+  color: var(--walnut);
+}
+
 /* ================= BOOK ANOTHER BUTTON ================= */
 
 .btn{
@@ -2542,6 +3192,128 @@ footer p.tag{
 }
 
 
+/* ============ SIDE SCROLL NAV (DESKTOP ONLY) ============ */
+
+.side-scrollnav{
+  display:none;
+}
+
+@media (min-width:1360px){
+  .side-scrollnav{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:10px;
+    position:fixed;
+    bottom:0%;
+    right:28px;
+    transform:translateY(-50%);
+    z-index:70;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .6s ease;
+  }
+  .side-scrollnav.visible{
+    opacity:1;
+    pointer-events:auto;
+  }
+}
+
+.side-scrollnav-item{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:5px;
+  text-decoration:none;
+  cursor:alias;
+  background:none;
+  border:none;
+  padding:1px 0;
+}
+
+.side-scrollnav-label{
+  font-family:'Syne',sans-serif;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--cream-dim);
+  white-space:nowrap;
+  opacity:0;
+  transform:translateX(6px);
+  transition:opacity .3s ease, transform .3s ease, color .3s ease;
+}
+
+.side-scrollnav-line{
+  width:7px;
+  height:2px;
+  border-radius:1px;
+  background:rgba(244,239,230,0.28);
+  box-shadow:0 0 0 rgba(224,168,95,0);
+  transition:background .35s ease, box-shadow .45s ease, width .35s ease;
+  flex-shrink:0;
+}
+
+.side-scrollnav-item:hover .side-scrollnav-label{
+  opacity:.85;
+  transform:translateX(0);
+}
+
+.side-scrollnav-item:hover .side-scrollnav-line{
+  background:var(--brass-bright);
+  width:11px;
+}
+
+.side-scrollnav-item.active .side-scrollnav-label{
+  opacity:1;
+  transform:translateX(0);
+  color:var(--brass-bright);
+}
+
+.side-scrollnav-item.active .side-scrollnav-line{
+  width:15px;
+  background:var(--brass-bright);
+  box-shadow:
+    0 0 8px 1px rgba(224,168,95,.7),
+    0 0 16px 3px rgba(224,168,95,.35);
+  animation:navGlowPulse 3.2s ease-in-out infinite;
+}
+
+/* Over lighter (cream) sections, cream-on-cream disappears — switch
+   inactive ticks and labels to a dark ink tone so they stay visible.
+   The brass active/hover state already reads fine on cream, so it's
+   left untouched. */
+.side-scrollnav.on-light .side-scrollnav-line{
+  background:rgba(24,22,20,0.3);
+}
+.side-scrollnav.on-light .side-scrollnav-label{
+  color:var(--ink-soft);
+}
+.side-scrollnav.on-light .side-scrollnav-item.active .side-scrollnav-line,
+.side-scrollnav.on-light .side-scrollnav-item:hover .side-scrollnav-line{
+  background:var(--brass-bright);
+}
+.side-scrollnav.on-light .side-scrollnav-item.active .side-scrollnav-label{
+  color:var(--brass-deep);
+}
+
+@keyframes navGlowPulse{
+  0%,100%{
+    box-shadow:
+      0 0 8px 1px rgba(224,168,95,.7),
+      0 0 16px 3px rgba(224,168,95,.35);
+  }
+  50%{
+    box-shadow:
+      0 0 10px 2px rgba(224,168,95,.9),
+      0 0 22px 5px rgba(224,168,95,.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .side-scrollnav-item.active .side-scrollnav-line{animation:none;}
+}
+
 /* ============ RESPONSIVE ============ */
 
 @media (max-width:880px){
@@ -2560,15 +3332,17 @@ footer p.tag{
     width:300px;
   }
 
-  .hero p.lede{
-    margin-left:auto;
-    margin-right:auto;
-    margin-top:clamp(120px, 22vh, 200px);
-    margin-bottom:4px;
-  }
+.hero p.lede{
+  position:absolute;
+  bottom:100px;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  margin:0;
+}
 
   .hero-actions{justify-content:center;}
-  .hero-scroll-cue{display:flex; bottom:14px;}
+  .hero-scroll-cue{display:flex; bottom:45px;}
 
   .hero h1{
     font-size:clamp(38px,11vw,52px);
@@ -2614,6 +3388,29 @@ footer p.tag{
 </head>
 <body>
 
+<!-- ================= SIDE SCROLL NAV (DESKTOP ONLY) ================= -->
+<nav class="side-scrollnav" id="sideScrollNav" aria-label="Jump to section">
+  <a href="#how" class="side-scrollnav-item" data-target="how">
+    <span class="side-scrollnav-label">Process</span>
+    <span class="side-scrollnav-line"></span>
+  </a>
+  <a href="#menu" class="side-scrollnav-item" data-target="menu">
+    <span class="side-scrollnav-label">Wagon</span>
+    <span class="side-scrollnav-line"></span>
+  </a>
+  <a href="#stories" class="side-scrollnav-item" data-target="stories">
+    <span class="side-scrollnav-label">Gallery</span>
+    <span class="side-scrollnav-line"></span>
+  </a>
+  <a href="#packages" class="side-scrollnav-item" data-target="packages">
+    <span class="side-scrollnav-label">Packages</span>
+    <span class="side-scrollnav-line"></span>
+  </a>
+  <a href="#book" class="side-scrollnav-item" data-target="book">
+    <span class="side-scrollnav-label">Book</span>
+    <span class="side-scrollnav-line"></span>
+  </a>
+</nav>
 
 <!-- ================= HERO ================= -->
 <section class="hero" id="top">
@@ -2632,8 +3429,8 @@ footer p.tag{
 <div class="hero-divider"></div>
 
 <h1>
-  <span class="line1">HERE FOR YOUR</span>
-  <span class="line2"><em>MOMENT.</em></span>
+  <span class="line1">CRAFTED FOR <em>YOUR</em></span>
+  <span class="line2">OCCASION.</span>
 </h1>
 
         <p class="lede">
@@ -2657,7 +3454,7 @@ footer p.tag{
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow"><span class="bulb-dot"></span>The process</div>
-      <h2>Three steps to coffee on site.</h2>
+      <h2>From book to brew in three steps.</h2>
     </div>
     <div class="steps-row steps-stagger">
       <div class="step">
@@ -2686,7 +3483,7 @@ footer p.tag{
 
 <div class="rule"></div></div>
         <h3>We confirm</h3>
-        <p>We're back to you within a day to lock in the details.</p>
+        <p>We're back to you as soon as possible to lock in the details.</p>
       </div>
       <div class="step">
         <div class="step-mark">
@@ -2700,8 +3497,8 @@ footer p.tag{
 </div>
 
 <div class="rule"></div></div>
-        <h3>We pour</h3>
-        <p>Wagon's set up and pouring before your first guest arrives.</p>
+        <h3>We blend and brew</h3>
+        <p>The wagon is set up and ready to serve your occasion.</p>
       </div>
     </div>
   </div>
@@ -2720,9 +3517,7 @@ footer p.tag{
     <div class="section-head reveal">
       <div class="eyebrow"><span class="bulb-dot"></span> On the wagon</div>
       <h2>Take a look inside the wagon.</h2>
-      <p>
-        Everything is commercial-grade and chosen for one reason — serving consistently great coffee, wherever we're parked.
-      </p>
+      <p>Explore the wagon to discover more.</p>
     </div>
 
     <!-- ===== WAGON VISUAL ===== -->
@@ -2798,44 +3593,44 @@ const wagonData = {
   machine: {
     title: "La Carimali Nimble 2",
     image: "images/CoffeeMachine3_Image.png",
-    desc: "Continuous dual-boiler performance keeps coffee and steam running without interruption, so service stays flowing and your guests spend less time waiting and more time in the moment.",
     points: [
       "Continuous output under peak demand",
       "Stable temperature for consistent quality",
-      "Fast service to reduce guest wait times",
+      "Built for professional coffee service"
     ]
   },
-    grinder: {
-      title: "La Carimali X010 Grinder",
-      image: "images/Grinder_Image.png",
-      desc: "Freshly grinds every shot on demand for maximum flavour and consistency.",
-      points: [
-"Dose-on-demand grinding", 
-"Consistent particle size", 
-"Low retention workflow"
-]
-    },
-    display: {
-      title: "Display shelf",
-      image: "images/Decorations_Image.png",
-      desc: "A dedicated shelf for your personal touches. We are happy for you to add flowers, signage, photos, candles, or themed decorations to match your moment.",
-      points: [
-"Perfect for florals and styling", 
-"Display welcome signs or branding", 
-"Make the wagon uniquely yours"
-]
-    },
-    baristas: {
-      title: "Two Certified Baristas",
-      image: "images/Aprons_Image.png",
-      desc: "Your event is staffed by two certified baristas from start to finish; to deliver fast, seamless service without compromising on quality, so your guests spend less time waiting and more time enjoying the occasion.",
-      points: [
-"Warm, professional customer service", 
-"Fast service workflow", 
-"Consistent café-quality coffee"
-]
-    }
-  };
+
+  grinder: {
+    title: "La Carimali X010 Grinder",
+    image: "images/Grinder_Image.png",
+    points: [
+      "Freshly ground coffee for every serve",
+      "Precision grinding for consistent pours",
+      "Fast, efficient workflow during service"
+    ]
+  },
+
+  display: {
+    title: "Display shelf",
+    image: "images/Decorations_Image.png",
+    points: [
+      "Make the wagon uniquely yours",
+      "Perfect for florals and styling",
+      "Display welcome signs or branding"
+    ]
+  },
+
+  baristas: {
+    title: "Two Certified Baristas",
+    image: "images/Aprons_Image.png",
+    points: [
+      "Experienced, warm, and professional customer service",
+      "Fast service workflow",
+      "Consistent café-quality coffee"
+    ]
+  }
+};
+
 
   const stage = document.getElementById('wagonStage');
   const cardLeft = document.getElementById('cardLeft');
@@ -3166,7 +3961,7 @@ function bannerIconLeave(el){
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow"><span class="bulb-dot"></span> Packages</div>
-      <h2>Pick your pour.</h2>
+      <h2>Pick your package.</h2>
       <p class="note">Every package includes <b style="color:var(--brass-bright);">two</b> certified baristas.</p>
     </div>
 
@@ -3179,7 +3974,7 @@ function bannerIconLeave(el){
       </div>
 
       <div class="calc-primary">
-        <span id="calcPrimaryTilde" style="display:none; font-size:0.5em;">&asymp;</span><span id="calcPrimaryValue">50</span><small id="calcPrimaryLabel">coffees</small>
+        <span id="calcPrimaryTilde" style="visibility:hidden; font-size:0.5em;">&asymp;</span><span id="calcPrimaryValue">50</span><small id="calcPrimaryLabel">coffees</small>
       </div>
       <div class="calc-secondary">
         <span id="calcSecondaryTilde">&asymp;</span> <span id="calcSecondaryValue">30</span> <span id="calcSecondaryLabel">guests</span>
@@ -3239,10 +4034,13 @@ function bannerIconLeave(el){
           <span class="calc-pkg-price">$1,700</span>
         </button>
       </div>
-      <div class="calc-pkg-note">Need higher volumes? We can accommodate — just add it to the booking form below.</div>
+      <div class="calc-pkg-note">Need higher volumes?<br> Send your request form below.</div>
     </div>
 
-    <p class="menu-note" style="max-width:600px;margin-left:auto;margin-right:auto;">Drag to customise your event, or tap a package for a quick jump. Guest figures are an estimate — exact quantities are confirmed at booking.</p>
+<div class="menu-note">
+  <span class="menu-note-main">Drag to customise your event or select a package above.</span><br>
+  <span class="menu-note-sub">Guest figures are an estimate. Exact quantities can be confirmed at booking.</span>
+</div>
 
   </div>
 </section>
@@ -3253,11 +4051,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Anchor points used for interpolation between packages.
   // g = approx. guest count for that package size.
   const anchors = [
-    { name: 'Babycino',    c: 25,  p: 300,  g: 15  },
-    { name: 'Piccolo',     c: 50,  p: 500,  g: 30  },
+    { name: 'Babycino',    c: 25,  p: 350,  g: 15  },
+    { name: 'Piccolo',     c: 50,  p: 550,  g: 30  },
     { name: 'The Latte',   c: 100, p: 950,  g: 60  },
-    { name: 'The Grande',  c: 150, p: 1400, g: 90  },
-    { name: 'The Barista', c: 200, p: 1700, g: 125 },
+    { name: 'The Grande',  c: 150, p: 1300, g: 90  },
+    { name: 'The Barista', c: 200, p: 1500, g: 125 },
   ];
 
   const COFFEE_MIN = anchors[0].c;
@@ -3362,21 +4160,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updatePkgStatus(coffees){
+    const guestCountInput = document.getElementById('guestCount');
+
     if (!userInteracted){
       if (pkgStatusText) pkgStatusText.textContent = 'Select a package';
       if (packageInput) packageInput.value = '';
       if (pkgStatusClear) pkgStatusClear.style.display = 'none';
+      if (guestCountInput) guestCountInput.placeholder = 'e.g. 200';
       return;
     }
     const match = packageForCoffees(coffees);
-    if (pkgStatusText) pkgStatusText.textContent = match ? match.name : 'custom booking';
+    if (pkgStatusText) pkgStatusText.textContent = match ? match.name : 'Custom';
     if (packageInput) packageInput.value = match ? match.name : 'Custom';
     if (pkgStatusClear) pkgStatusClear.style.display = 'inline-flex';
 
-    const guestCountInput = document.getElementById('guestCount');
-    if (guestCountInput && guestCountInput.dataset.userEdited !== 'true'){
-      guestCountInput.value = Math.round(guestsForCoffees(coffees));
-      guestCountInput.classList.add('guest-auto');
+    if (guestCountInput){
+      guestCountInput.placeholder = 'e.g. ' + Math.round(guestsForCoffees(coffees));
     }
   }
 
@@ -3395,15 +4194,15 @@ document.addEventListener("DOMContentLoaded", () => {
       primaryLabel.textContent = coffees === 1 ? 'coffee' : 'coffees';
       secondaryVal.textContent = guests;
       secondaryLabel.textContent = guests === 1 ? 'guest' : 'guests';
-      primaryTilde.style.display = 'none';
-      secondaryTilde.style.display = 'inline';
+      primaryTilde.style.visibility = 'hidden';
+      secondaryTilde.style.visibility = 'visible';
     } else {
       primaryVal.textContent = guests;
       primaryLabel.textContent = guests === 1 ? 'guest' : 'guests';
       secondaryVal.textContent = coffees;
       secondaryLabel.textContent = coffees === 1 ? 'coffee' : 'coffees';
-      primaryTilde.style.display = 'inline';
-      secondaryTilde.style.display = 'none';
+      primaryTilde.style.visibility = 'visible';
+      secondaryTilde.style.visibility = 'hidden';
     }
 
     priceVal.textContent = '$' + price.toLocaleString('en-AU');
@@ -3503,7 +4302,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="eyebrow"><span class="bulb-dot"></span> Book the wagon</div>
       <h2>Pick a date, tell us the plan.</h2>
 <p class="note">
-⚡We require access to <b style="color:var(--brass-bright);">two standard power outlets</b> on <b style="color:var(--brass-bright);">separate circuits</b> to ensure smooth service throughout your event.
+⚡We require access to <b style="color:var(--brass-bright);">two standard power outlets</b> to ensure smooth service throughout your event.
 </p>
     </div>
 
@@ -3578,173 +4377,240 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>
 
-          <div class="selected-date-display" id="selectedDateDisplay" style="display:none;"></div>
-
           <form id="bookingForm" action="https://formspree.io/f/xjgqownj" method="POST">
 
-            <div class="form-group">
-              <label for="fullName">Full name</label>
-		<input type="text" id="fullName" name="fullName" required placeholder="Jane Smith">
+            <!-- ===== WIZARD ===== -->
+            <div class="wizard" id="bookingWizard">
+              <div class="wizard-viewport">
+                <div class="wizard-track" id="wizardTrack">
+
+                  <!-- PAGE 1 — PERSONAL DETAILS -->
+                  <div class="wizard-page" data-page="0">
+                    <div class="wizard-page-eyebrow">Personal details</div>
+
+                    <div class="form-group">
+                      <label for="fullName">Full name</label>
+                      <input type="text" id="fullName" name="fullName" required placeholder="First Surname">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="organisation">Organisation <span style="text-transform:none;letter-spacing:0;font-weight:500;opacity:.65;">(optional)</span></label>
+                      <input type="text" id="organisation" name="organisation" placeholder="e.g. Acme Pty Ltd">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="email">Email</label>
+                      <input type="email" id="email" name="email" required placeholder="example@email.com">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="phone">Phone</label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        required
+                        placeholder="0400 000 000"
+                        inputmode="numeric"
+                        maxlength="12">
+                    </div>
+                  </div>
+
+                  <!-- PAGE 2 — EVENT -->
+                  <div class="wizard-page" data-page="1">
+                    <div class="wizard-page-eyebrow">Event details</div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="eventType">Event type</label>
+                        <select id="eventType" name="eventType" required>
+                          <option value="" disabled selected>Select one</option>
+                          <option>Wedding</option>
+                          <option>Corporate</option>
+                          <option>Party</option>
+                          <option>Market</option>
+                          <option>Other</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="guestCount">Guests</label>
+                        <input type="number" id="guestCount" name="guestCount" min="1" placeholder="e.g. 200" required>
+                      </div>
+                    </div>
+
+                    <!-- AUTOCOMPLETE LOCATION -->
+                    <div class="form-group">
+                      <div class="address-wrapper">
+                        <label>Where is the wagon heading?</label>
+
+                        <div class="address-row">
+                          <!-- LEFT: House number -->
+                          <input
+                            id="houseNumber"
+                            name="houseNumber"
+                            type="text"
+                            placeholder="Unit/No."
+                            autocomplete="off"
+                            inputmode="numeric"
+                            required
+                          />
+
+                          <!-- RIGHT: Street/Suburb -->
+                          <input
+                            id="location"
+                            name="location"
+                            type="text"
+                            placeholder="Street/Suburb"
+                            autocomplete="off"
+                            inputmode="text"
+                            required
+                          />
+                        </div>
+
+                        <!-- hidden fields MUST stay inside wrapper -->
+                        <input type="hidden" name="street_address" id="street_address">
+                        <input type="hidden" name="suburb" id="suburb">
+                        <input type="hidden" name="state" id="state">
+                        <input type="hidden" name="postcode" id="postcode">
+                      </div>
+                    </div>
+
+                    <!-- BOOKING TIMES -->
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="startTimeTrigger">Service start time</label>
+
+                        <!-- Desktop: interactive dropdown -->
+                        <div class="time-select" id="startTimeSelect">
+                          <button type="button" class="time-select-trigger" id="startTimeTrigger" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="startTimePanel">
+                            <span id="startTimeTriggerLabel" class="time-select-placeholder">Select time</span>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                          </button>
+                          <div class="time-select-panel" id="startTimePanel" role="listbox" aria-label="Service start time"></div>
+                        </div>
+
+                        <!-- Mobile: native OS time picker (iOS wheel / Android clock) -->
+                        <input type="time" class="time-native" id="startTimeNative" aria-label="Service start time">
+
+                        <input type="hidden" id="startTime" name="startTime" value="">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="serviceHoursSlider">Service length</label>
+                        <div class="hours-slider-wrap">
+                          <div class="hours-slider-value" id="serviceHoursValue">1 hr</div>
+                          <input type="range" id="serviceHoursSlider" class="menu-slider" min="1" max="4" step="0.5" value="1" aria-label="Service length in hours">
+                        </div>
+                        <input type="hidden" id="serviceHours" name="serviceHours" value="1 hr">
+                      </div>
+                    </div>
+
+                    <!-- UTILITIES -->
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label><strong>Does your venue provide?</strong></label>
+
+                        <div class="switch-list">
+                          <label class="switch-row">
+                            <span class="switch">
+                              <input type="checkbox" name="utilities" value="Electricity">
+                              <span class="switch-track">
+                                <span class="switch-knob"></span>
+                              </span>
+                            </span>
+                            <span class="switch-row-label">Electricity</span>
+                          </label>
+
+                          <label class="switch-row">
+                            <span class="switch">
+                              <input type="checkbox" name="utilities" value="Sinks">
+                              <span class="switch-track">
+                                <span class="switch-knob"></span>
+                              </span>
+                            </span>
+                            <span class="switch-row-label">Sinks</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label><strong>Will the wagon be under shelter?</strong></label>
+
+                        <div class="toggle-switch" id="shelteredToggle" role="radiogroup" aria-label="Will the wagon be under shelter?">
+                          <span class="toggle-slider"></span>
+                          <button type="button" class="toggle-option active" data-value="Yes" role="radio" aria-checked="true">Yes</button>
+                          <button type="button" class="toggle-option" data-value="No" role="radio" aria-checked="false">No</button>
+                        </div>
+
+                        <input type="hidden" name="sheltered" id="shelteredInput" value="Yes">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="notes">Anything else?</label>
+                      <textarea id="notes" name="notes" placeholder="Indoor/outdoor, power access, timing..."></textarea>
+                    </div>
+                  </div>
+
+                  <!-- PAGE 3 — TERMS & CONDITIONS -->
+                  <div class="wizard-page wizard-page-scroll" data-page="2">
+                    <div class="wizard-page-eyebrow">Terms &amp; conditions</div>
+
+                    <div class="tc-box">
+                      <p>Our full Terms &amp; Conditions cover service hours, package inclusions, venue requirements, travel, additional drinks, and cancellations.</p>
+                      <p><a href="#" class="tc-modal-open tc-box-link">Read the full Terms &amp; Conditions &rarr;</a></p>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="tc-checklist">
+                        <label class="tc-check-row" id="rowAgreementRequirements">
+                          <span class="tc-check-wrap">
+                            <input type="checkbox" name="agreementRequirements" id="agreementRequirements" required>
+                            <span class="tc-check-box"></span>
+                          </span>
+                          <span class="tc-check-label">I acknowledge that Blend &amp; Brew may be unable to provide the service as quoted if these venue requirements cannot be met. *</span>
+                        </label>
+                        <label class="tc-check-row" id="rowAgreementAuthorised">
+                          <span class="tc-check-wrap">
+                            <input type="checkbox" name="agreementAuthorised" id="agreementAuthorised" required>
+                            <span class="tc-check-box"></span>
+                          </span>
+                          <span class="tc-check-label">I confirm that I am authorised to accept this booking and any associated invoice on behalf of the organisation or event. *</span>
+                        </label>
+                      </div>
+                      <p class="tc-subtext">By proceeding with your booking, you confirm that you have read, understood, and agree to these Terms &amp; Conditions.</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- WIZARD NAV -->
+              <div class="wizard-nav">
+                <button type="button" class="wizard-arrow" id="wizardPrev" aria-label="Previous">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <div class="wizard-status" id="wizardStatus" aria-live="polite">
+                  <span class="wizard-status-label" id="wizardStatusLabel">Personal</span>
+                  <span class="wizard-status-dots" id="wizardDots">
+                    <span class="wizard-status-dot active" data-page="0"></span>
+                    <span class="wizard-status-dot" data-page="1"></span>
+                    <span class="wizard-status-dot" data-page="2"></span>
+                  </span>
+                </div>
+                <button type="button" class="wizard-arrow" id="wizardNext" aria-label="Next">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </div>
             </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required placeholder="jane@email.com">
-              </div>
-              <div class="form-group">
-                <label for="phone">Phone</label>
-<input
-  type="tel"
-  id="phone"
-  name="phone"
-  required
-  placeholder="0400 000 000"
-  inputmode="numeric"
-  maxlength="12">
-              </div>
-            </div>
+            <!-- ===== STATIC FOOTER: date + submit ===== -->
+            <div class="selected-date-display" id="selectedDateDisplay" style="display:none;"></div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="eventType">Event type</label>
-                <select id="eventType" name="eventType" required>
-                  <option value="" disabled selected>Select one</option>
-                  <option>Wedding</option>
-                  <option>Corporate</option>
-                  <option>Party</option>
-                  <option>Market</option>
-                  <option>Other</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="guestCount">Guests</label>
-                <input type="number" id="guestCount" name="guestCount" min="1" placeholder="e.g. 200" required>
-              </div>
-            </div>
-
-            <!-- BOOKING TIMES -->
-<div class="form-row">
-  <div class="form-group">
-    <label for="startTime">Service start time</label>
-    <select id="startTime" name="startTime" required>
-      <option value="" disabled selected>Select time</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label for="endTime">Service end time</label>
-    <select id="endTime" name="endTime" required>
-      <option value="" disabled selected>Select time</option>
-    </select>
-  </div>
-</div>
-
-
-
-	<!-- UTILITIES -->
-
-<div class="form-row">
-  <div class="form-group">
-    <label><strong>Does your venue provide?</strong></label>
-
-    <div class="switch-list">
-
-<label class="switch-row">
-
-  <span class="switch">
-    <input type="checkbox" name="utilities" value="Electricity">
-    <span class="switch-track">
-      <span class="switch-knob"></span>
-    </span>
-  </span>
-
-  <span class="switch-row-label">Electricity</span>
-
-</label>
-
-<label class="switch-row">
-
-  <span class="switch">
-    <input type="checkbox" name="utilities" value="Sinks">
-    <span class="switch-track">
-      <span class="switch-knob"></span>
-    </span>
-  </span>
-
-  <span class="switch-row-label">Sinks</span>
-
-</label>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label><strong>Will the wagon be under shelter?</strong></label>
-
-    <div class="toggle-switch" id="shelteredToggle" role="radiogroup" aria-label="Will the wagon be under shelter?">
-      <span class="toggle-slider"></span>
-      <button type="button" class="toggle-option active" data-value="Yes" role="radio" aria-checked="true">Yes</button>
-      <button type="button" class="toggle-option" data-value="No" role="radio" aria-checked="false">No</button>
-    </div>
-
-    <input type="hidden" name="sheltered" id="shelteredInput" value="Yes">
-  </div>
-</div>
-
-
-
-
-<!-- AUTOCOMPLETE LOCATION -->
-
-<div class="form-group">
-  <div class="address-wrapper">
-
-    <label>Where is the wagon heading?</label>
-
-    <div class="address-row">
-
-      <!-- LEFT: House number -->
-      <input 
-        id="houseNumber"
-        name="houseNumber"
-        type="text"
-        placeholder="Unit/No."
-        autocomplete="off"
-        inputmode="numeric"
-        required
-      />
-
-      <!-- RIGHT: Street/Suburb -->
-      <input 
-        id="location"
-        name="location"
-        type="text"
-        placeholder="Street/Suburb"
-        autocomplete="off"
-        inputmode="text"
-        required
-      />
-
-    </div>
-
-    <!-- hidden fields MUST stay inside wrapper -->
-    <input type="hidden" name="street_address" id="street_address">
-    <input type="hidden" name="suburb" id="suburb">
-    <input type="hidden" name="state" id="state">
-    <input type="hidden" name="postcode" id="postcode">
-
-  </div>
-</div>
-
-<div class="form-group">
-  <label for="notes">Anything else?</label>
-  <textarea id="notes" name="notes" placeholder="Indoor/outdoor, power access, timing..."></textarea>
-</div>
-
-<button type="submit" class="submit-btn" id="submitBtn">
-  Select a date to continue
-</button>
+            <button type="submit" class="submit-btn" id="submitBtn">
+              Select a date to continue
+            </button>
 
           </form>
         </div>
@@ -3756,7 +4622,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </svg>
           </div>
           <h3>Request sent</h3>
-          <p id="confirmText">Thanks! We'll confirm by email within a day.</p>
+          <p id="confirmText">Thanks! We'll confirm by email as soon as possible.</p>
           <button
   class="btn btn-outline"
   id="bookAnother"
@@ -3771,26 +4637,120 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 </section>
 
-<!-- SERVICE TIME OPTIONS (AM/PM) -->
+<!-- SERVICE START TIME: interactive desktop picker + native mobile clock -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  function buildTimeOptions(selectEl){
-    if (!selectEl) return;
-    for (let h = 0; h < 24; h++){
-      for (let m = 0; m < 60; m += 30){
-        const period = h < 12 ? 'AM' : 'PM';
-        let hour12 = h % 12;
-        if (hour12 === 0) hour12 = 12;
-        const label = hour12 + ':' + String(m).padStart(2, '0') + ' ' + period;
-        const opt = document.createElement('option');
-        opt.value = label;
-        opt.textContent = label;
-        selectEl.appendChild(opt);
-      }
+  const startHidden   = document.getElementById('startTime');
+  const select        = document.getElementById('startTimeSelect');
+  const trigger       = document.getElementById('startTimeTrigger');
+  const triggerLabel  = document.getElementById('startTimeTriggerLabel');
+  const panel         = document.getElementById('startTimePanel');
+  const nativeInput   = document.getElementById('startTimeNative');
+  if (!startHidden || !select) return;
+
+  // Build half-hour options, 12:00 AM through 11:30 PM
+  for (let h = 0; h < 24; h++){
+    for (let m = 0; m < 60; m += 30){
+      const period = h < 12 ? 'AM' : 'PM';
+      let hour12 = h % 12;
+      if (hour12 === 0) hour12 = 12;
+      const label = hour12 + ':' + String(m).padStart(2, '0') + ' ' + period;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'time-select-option';
+      btn.setAttribute('role', 'option');
+      btn.setAttribute('aria-selected', 'false');
+      btn.dataset.label = label;
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        setValue(label);
+        closePanel();
+      });
+      panel.appendChild(btn);
     }
   }
-  buildTimeOptions(document.getElementById('startTime'));
-  buildTimeOptions(document.getElementById('endTime'));
+
+  function setValue(label){
+    startHidden.value = label;
+    triggerLabel.textContent = label;
+    triggerLabel.classList.remove('time-select-placeholder');
+    panel.querySelectorAll('.time-select-option').forEach(o => {
+      const isActive = o.dataset.label === label;
+      o.classList.toggle('active', isActive);
+      o.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+  }
+
+  function openPanel(){
+    select.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+  function closePanel(){
+    select.classList.remove('open');
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    select.classList.contains('open') ? closePanel() : openPanel();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!select.contains(e.target)) closePanel();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePanel();
+  });
+
+  // Mobile native input (opens the device's own clock/wheel picker) —
+  // converts its 24hr value into the same "h:mm AM/PM" label on change.
+  if (nativeInput){
+    nativeInput.addEventListener('change', () => {
+      if (!nativeInput.value) return;
+      const [hh, mm] = nativeInput.value.split(':').map(Number);
+      const period = hh < 12 ? 'AM' : 'PM';
+      let hour12 = hh % 12;
+      if (hour12 === 0) hour12 = 12;
+      const label = hour12 + ':' + String(mm).padStart(2, '0') + ' ' + period;
+      startHidden.value = label;
+      triggerLabel.textContent = label;
+      triggerLabel.classList.remove('time-select-placeholder');
+    });
+  }
+});
+</script>
+
+<!-- SERVICE LENGTH SLIDER (1-4 hrs, 0.5 step) -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const hoursSlider = document.getElementById('serviceHoursSlider');
+  const hoursValue  = document.getElementById('serviceHoursValue');
+  const hoursHidden = document.getElementById('serviceHours');
+  if (!hoursSlider) return;
+
+  function formatHours(v){
+    v = parseFloat(v);
+    const label = (v % 1 === 0) ? v.toFixed(0) : v.toFixed(1);
+    return label + (v === 1 ? ' hr' : ' hrs');
+  }
+
+  function updateFill(){
+    const min = parseFloat(hoursSlider.min), max = parseFloat(hoursSlider.max), val = parseFloat(hoursSlider.value);
+    const pct = (val - min) / (max - min) * 100;
+    hoursSlider.style.background = `linear-gradient(to right, var(--brass) 0%, var(--brass) ${pct}%, rgba(90,85,80,0.15) ${pct}%, rgba(90,85,80,0.15) 100%)`;
+  }
+
+  function render(){
+    const label = formatHours(hoursSlider.value);
+    hoursValue.textContent = label;
+    hoursHidden.value = label;
+    updateFill();
+  }
+
+  hoursSlider.addEventListener('input', render);
+  render();
 });
 </script>
 
@@ -3815,6 +4775,142 @@ document.addEventListener("DOMContentLoaded", () => {
       shelteredToggle.classList.toggle('is-no', btn.dataset.value === 'No');
       shelteredInput.value = btn.dataset.value;
     });
+  });
+});
+</script>
+
+<!-- BOOKING WIZARD (3-page slide navigation) -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const track = document.getElementById('wizardTrack');
+  const viewport = document.querySelector('.wizard-viewport');
+  const pages = Array.from(document.querySelectorAll('.wizard-page'));
+  const dots = Array.from(document.querySelectorAll('.wizard-status-dot'));
+  const statusLabel = document.getElementById('wizardStatusLabel');
+  const prevBtn = document.getElementById('wizardPrev');
+  const nextBtn = document.getElementById('wizardNext');
+  if (!track || !pages.length) return;
+
+  const PAGE_LABELS = ['Personal', 'Event', 'T&Cs'];
+  const PAGE_COUNT = pages.length;
+  let current = 0;
+
+  // The wizard viewport height is fixed to the tallest of the three
+  // pages (Personal / Event / T&Cs) so the booking card doesn't resize
+  // as you navigate between steps. Each page is still capped by its
+  // own max-height (e.g. wizard-page-scroll) if that individual page's
+  // natural content is taller than that cap.
+  function updateViewportHeight(){
+    const tallest = pages.reduce((max, page) => {
+      const natural = page.scrollHeight;
+      const capped = page.classList.contains('wizard-page-scroll')
+        ? Math.min(natural, parseFloat(getComputedStyle(page).maxHeight) || natural)
+        : natural;
+      return Math.max(max, capped);
+    }, 0);
+    track.parentElement.style.height = tallest + 'px';
+  }
+
+  function goTo(index){
+    current = Math.max(0, Math.min(PAGE_COUNT - 1, index));
+    track.style.transform = `translateX(-${current * (100 / PAGE_COUNT)}%)`;
+    dots.forEach(d => d.classList.toggle('active', parseInt(d.dataset.page, 10) === current));
+    if (statusLabel) statusLabel.textContent = PAGE_LABELS[current] || '';
+    if (prevBtn) prevBtn.classList.toggle('is-hidden', current === 0);
+    if (nextBtn) nextBtn.classList.toggle('is-hidden', current === PAGE_COUNT - 1);
+    requestAnimationFrame(updateViewportHeight);
+  }
+
+  window.addEventListener('resize', updateViewportHeight);
+
+  if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
+  if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  // Touch / swipe support
+  let touchStartX = null;
+  if (viewport){
+    viewport.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    viewport.addEventListener('touchend', (e) => {
+      if (touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40){
+        goTo(dx < 0 ? current + 1 : current - 1);
+      }
+      touchStartX = null;
+    });
+  }
+
+  goTo(0);
+
+  // If a required field fails validation on submit, jump to the page
+  // that contains it so the person can actually see and fix it.
+  const bookingFormEl = document.getElementById('bookingForm');
+  if (bookingFormEl){
+    bookingFormEl.addEventListener('submit', (e) => {
+      const invalidField = pages.reduce((found, page, idx) => {
+        if (found) return found;
+        const bad = Array.from(page.querySelectorAll('input, select, textarea'))
+          .find(el => typeof el.checkValidity === 'function' && !el.checkValidity());
+        return bad ? { el: bad, idx } : null;
+      }, null);
+      if (invalidField){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        goTo(invalidField.idx);
+        setTimeout(() => {
+          invalidField.el.reportValidity();
+          invalidField.el.focus();
+        }, 260);
+      }
+    }, true); // capture phase so this runs before the existing submit handler
+  }
+});
+</script>
+
+<!-- T&C CHECKBOX REQUIRED-STATE HIGHLIGHT -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const requiredChecks = [
+    { input: document.getElementById('agreementRequirements'), row: document.getElementById('rowAgreementRequirements') },
+    { input: document.getElementById('agreementAuthorised'), row: document.getElementById('rowAgreementAuthorised') },
+  ];
+  requiredChecks.forEach(({ input, row }) => {
+    if (!input || !row) return;
+    input.addEventListener('invalid', () => row.classList.add('tc-error'));
+    input.addEventListener('change', () => {
+      if (input.checked) row.classList.remove('tc-error');
+    });
+  });
+});
+</script>
+
+<!-- TERMS & CONDITIONS MODAL -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const openLinks = document.querySelectorAll('.tc-modal-open');
+  const overlay = document.getElementById('tcModalOverlay');
+  const closeBtn = document.getElementById('tcModalClose');
+  if (!overlay) return;
+
+  function openModal(e){
+    if (e) e.preventDefault();
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    overlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  openLinks.forEach(link => link.addEventListener('click', openModal));
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
   });
 });
 </script>
@@ -3970,9 +5066,10 @@ function getFullAddress() {
         </p>
       </div>
 
-      <!-- LEARN -->
+
+      <!-- EXPLORE -->
       <div class="footer-col">
-        <h4>Learn</h4>
+        <h4>Explore</h4>
         <ul>
           <li><a href="#how">How it works</a></li>
           <li><a href="#stories">Gallery</a></li>
@@ -3984,6 +5081,7 @@ function getFullAddress() {
         <h4>Book</h4>
         <ul>
           <li><a href="#book">Check availability & enquire</a></li>
+          <li><a href="#" class="tc-modal-open">Terms & Conditions</a></li>
         </ul>
       </div>
 
@@ -4005,8 +5103,114 @@ function getFullAddress() {
   </div>
 </footer>
 
+<!-- ================= TERMS & CONDITIONS MODAL ================= -->
+<div class="tc-modal-overlay" id="tcModalOverlay">
+  <div class="tc-modal" role="dialog" aria-modal="true" aria-labelledby="tcModalTitle">
+    <div class="tc-modal-header">
+      <div class="tc-modal-titles">
+        <h3 id="tcModalTitle">Terms &amp; Conditions</h3>
+        <p class="tc-modal-sub">Blend &amp; Brew &middot; Mobile Coffee Wagon</p>
+      </div>
+      <button class="tc-modal-close" id="tcModalClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="tc-modal-body">
+    <h4><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Service Hours</h4>
+    <p>Your package includes a specified number of service hours. Your finish time will depend on the package selected and your preferred service start time.</p>
+    <p>Setup and pack-down are provided at no additional cost and are completed outside of your booked service hours.</p>
+
+    <h4><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Package Inclusions</h4>
+    <p>Each package includes the number of drinks outlined in your booking confirmation.</p>
+    <p>If demand exceeds the included quantity during your event, Blend &amp; Brew can continue service with additional drinks available at an additional charge.</p>
+    <p>If additional drinks are served beyond your package allowance, they will be charged according to the arrangement selected during your booking process.</p>
+    <p>Additional service time, if requested and available, may also incur additional charges.</p>
+
+    <h4><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.686-6-10a6 6 0 1 1 12 0c0 4.314-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>Venue Requirements</h4>
+    <p>To ensure we can deliver a smooth and efficient service, the following must be available at your venue:</p>
+    <ul>
+      <li>A minimum of two (2) standard 10A power outlets located within reach of the coffee cart.</li>
+      <li>Access to a loading zone or temporary parking space at, or immediately adjacent to, the venue for approximately 30 minutes before and after the event to allow for setup and pack-down.</li>
+      <li>Ramp or lift access where stairs are present.</li>
+    </ul>
+    <p>If you're unsure whether your venue can accommodate these requirements, please contact us before confirming your booking — we're happy to help. Blend &amp; Brew may be unable to provide the service as quoted if these venue requirements cannot be met.</p>
+
+    <h4><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>Travel</h4>
+    <p>Blend &amp; Brew proudly services Western Sydney and surrounding suburbs.</p>
+    <p>Events outside our standard service area may incur a travel fee. Any applicable travel charges will always be discussed and confirmed before your booking is finalised.</p>
+
+    <h4><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8z"/><path d="M16 10h2a2 2 0 0 1 0 4h-2"/></svg>Additional Drinks</h4>
+    <p>Your package includes the agreed number of drinks outlined in your booking confirmation. If the number of drinks served exceeds your package allowance, Blend &amp; Brew may continue service with additional drinks charged accordingly. Additional drinks can either be charged directly to guests during the event or recorded and invoiced to the event host following the event.</p>
+
+    <h4><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="14.5" y1="9.5" x2="9.5" y2="14.5"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/></svg>Cancellations</h4>
+    <p>Bookings may be cancelled up to seven (7) days prior to the event without penalty.</p>
+    <p>Cancellations received within seven (7) days of the scheduled event may void any request for refund to cover staffing, preparation, administrative costs, and the loss of potential bookings.</p>
+
+    <h4><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.08V12a9 9 0 1 1-5.34-8.23"/><polyline points="21 4 12 13.01 9 10.01"/></svg>Booking Confirmation</h4>
+    <p>By proceeding with your booking, you confirm that you have read, understood, and agree to these Terms &amp; Conditions, and that you are authorised to accept this booking and any associated invoice on behalf of the organisation or event.</p>
+    </div>
+  </div>
+</div>
+
 
 <script>
+
+  // ----- Side scroll nav -----
+  (function(){
+    const nav = document.getElementById('sideScrollNav');
+    if (!nav) return;
+
+    const navItems = Array.from(nav.querySelectorAll('.side-scrollnav-item'));
+    const sectionMap = new Map();
+    // Sections whose ticks should render in the darker "on-light" style
+    // (cream/pale backgrounds, plus Process by request) so they don't
+    // disappear or clash against those backdrops.
+    const lightSectionIds = new Set(['how', 'menu', 'stories']);
+
+    navItems.forEach(item => {
+      const target = document.getElementById(item.dataset.target);
+      if (!target) return;
+      sectionMap.set(target, item);
+
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Fade the rail in once we've scrolled a little way past the hero
+    const heroEl = document.getElementById('top');
+    if (heroEl){
+      const visibilityObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          nav.classList.toggle('visible', !entry.isIntersecting);
+        });
+      }, { threshold: 0.35 });
+      visibilityObserver.observe(heroEl);
+    } else {
+      nav.classList.add('visible');
+    }
+
+    // Track whichever section currently occupies the most viewport space
+    // and light up its corresponding tick.
+    const ratios = new Map();
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { ratios.set(entry.target, entry.intersectionRatio); });
+
+      let bestSection = null;
+      let bestRatio = 0;
+      ratios.forEach((ratio, section) => {
+        if (ratio > bestRatio){ bestRatio = ratio; bestSection = section; }
+      });
+
+      if (bestSection){
+        navItems.forEach(i => i.classList.remove('active'));
+        const activeItem = sectionMap.get(bestSection);
+        if (activeItem) activeItem.classList.add('active');
+        nav.classList.toggle('on-light', lightSectionIds.has(bestSection.id));
+      }
+    }, { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] });
+
+    sectionMap.forEach((item, section) => sectionObserver.observe(section));
+  })();
 
   // ----- Scroll reveal -----
   const revealEls = document.querySelectorAll('.reveal, .reveal-stagger, .steps-stagger');
@@ -4022,7 +5226,7 @@ function getFullAddress() {
 
 // ----- Calendar -----
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbzgbuIYtb155ZNb30V4liAgdsSPBBC8YCoLzFcslVRbHJkIrfyQHIo860USqvExcDNFBw/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyL_mN-obUkzSU6lticKpSc6wBvW_7l6CAaIwE5iG_ONwpC7RYVEeS_bx9dw_hh6j462g/exec";
 
 const calGrid = document.getElementById('calGrid');
 const calMonthLabel = document.getElementById('calMonthLabel');
@@ -4213,6 +5417,22 @@ bookingForm.addEventListener('submit', async (e) => {
 
   if (!selectedDate) return;
 
+  const startTimeCheckEl = document.getElementById('startTime');
+  if (!startTimeCheckEl || !startTimeCheckEl.value) {
+    const startTrigger = document.getElementById('startTimeTrigger');
+    const startNative = document.getElementById('startTimeNative');
+    if (startTrigger) {
+      startTrigger.style.borderColor = 'var(--rust)';
+      startTrigger.focus();
+      setTimeout(() => { startTrigger.style.borderColor = ''; }, 2500);
+    } else if (startNative) {
+      startNative.style.borderColor = 'var(--rust)';
+      startNative.focus();
+      setTimeout(() => { startNative.style.borderColor = ''; }, 2500);
+    }
+    return;
+  }
+
   submitBtn.disabled = true;
   submitBtn.textContent = "Sending...";
 
@@ -4266,12 +5486,13 @@ phoneInput.value = phoneInput.value.replace(/\D/g, '');
     const sheetPayload = new FormData();
 
     sheetPayload.append("fullName", document.getElementById('fullName').value);
+    sheetPayload.append("organisation", document.getElementById('organisation').value);
     sheetPayload.append("email", document.getElementById('email').value);
     sheetPayload.append("phone", document.getElementById('phone').value);
     sheetPayload.append("eventType", document.getElementById('eventType').value);
     sheetPayload.append("guestCount", document.getElementById('guestCount').value);
     sheetPayload.append("startTime", document.getElementById('startTime').value);
-    sheetPayload.append("endTime", document.getElementById('endTime').value);
+    sheetPayload.append("serviceHours", document.getElementById('serviceHours').value);
     sheetPayload.append("location", document.getElementById('location').value);
     sheetPayload.append("package", document.getElementById('packageInput').value || "");
 	sheetPayload.append("houseNumber", document.getElementById("houseNumber").value);
@@ -4295,6 +5516,16 @@ sheetPayload.append("suburb", document.getElementById("suburb").value);
 sheetPayload.append("state", document.getElementById("state").value);
 sheetPayload.append("postcode", document.getElementById("postcode").value);
 
+    // additional drinks handling (checkboxes)
+    const additionalDrinksHandling = Array.from(
+      document.querySelectorAll('input[name="additionalDrinksHandling"]:checked')
+    ).map(el => el.value).join(", ");
+    sheetPayload.append("additionalDrinksHandling", additionalDrinksHandling);
+
+    // T&Cs agreement checkboxes
+    sheetPayload.append("agreementRequirements", document.getElementById('agreementRequirements').checked ? "Yes" : "No");
+    sheetPayload.append("agreementAuthorised", document.getElementById('agreementAuthorised').checked ? "Yes" : "No");
+
     // =========================
     // SEND TO GOOGLE SHEETS
     // =========================
@@ -4307,7 +5538,7 @@ sheetPayload.append("postcode", document.getElementById("postcode").value);
     // SUCCESS UI
     // =========================
     confirmText.textContent =
-      `Thanks, ${name.split(' ')[0] || 'there'}! ${dateStr} is held. We'll confirm by email as soon we can.`;
+      `Thanks, ${name.split(' ')[0] || 'there'}! ${dateStr} is held. We'll confirm by email as soon as possible.`;
 
     bookingFormWrap.style.display = 'none';
     confirmBox.classList.add('show');
