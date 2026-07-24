@@ -119,10 +119,17 @@ body::-webkit-scrollbar {
 .section-divider.timber {
   height: 10px;
   background: url("images/TimberSlat_Image.png") center/cover no-repeat;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.45), 0 20px 50px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.6), 0 28px 70px rgba(0,0,0,0.45);
   position: relative;
   z-index: 5;
   overflow: hidden;
+}
+
+/* Deeper shadow variant — used only above the Wagon/Explore section and
+   above the Booking section, to give those two transitions more depth
+   than the standard divider elsewhere on the page. */
+.section-divider.timber.divider-deep {
+  box-shadow: 0 10px 20px rgba(0,0,0,1), 0 56px 140px rgba(0,0,0,0.45);
 }
 
 /* VIGNETTE OVERLAY */
@@ -1024,6 +1031,7 @@ min-height:100vh;
    ========================= */
 
 .social-banner{
+  position:relative;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -1034,9 +1042,25 @@ min-height:100vh;
   border:1px solid var(--line);
   border-radius:14px;
   background:var(--cream-dim);
-  transition: background .25s ease, border-color .25s ease;
+  overflow:hidden;
+  /* border-color is changed instantly by JS — no transition here */
+}
+/* Two stacked image layers so moving between icons crossfades the old
+   image out while the new one fades in over it, instead of one layer
+   snapping to a different image mid-fade. Each layer only ever
+   animates opacity. */
+.social-banner-fill{
+  position:absolute;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 1s ease;
 }
 .social-link{
+  position:relative;
+  z-index:1;
   width:42px;height:42px;
   border-radius:50%;
   background:var(--walnut-soft);
@@ -1044,10 +1068,10 @@ min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  transition:background .2s ease, transform .2s ease;
+  border:1px solid transparent;
+  transition:background .6s ease;
 }
 .social-link svg{width:18px;height:18px;}
-.social-link:hover{color:var(--walnut-soft);transform:translateY(-2px);}
 
 /* ============ PACKAGES (PRICING CALCULATOR) ============ */
 
@@ -1283,9 +1307,17 @@ min-height:100vh;
   opacity:1;
 }
 
-/* Star fills solid only when actively selected (not just on hover-preview) */
-.calc-pkg.featured.active .calc-pkg-icon svg path{
+/* Star fill fades in smoothly when actively selected (not just on
+   hover-preview). Always set to currentColor with fill-opacity:0 by
+   default, since a "none" -> colour fill swap can't be transitioned
+   smoothly — only fill-opacity is reliably animatable. */
+.calc-pkg-icon svg path{
   fill:currentColor;
+  fill-opacity:0;
+  transition:fill-opacity .5s ease;
+}
+.calc-pkg.featured.active .calc-pkg-icon svg path{
+  fill-opacity:1;
 }
 
 .calc-pkg.featured:hover .calc-pkg-name,
@@ -1780,6 +1812,30 @@ min-height:100vh;
   .footer-gallery-link{
     display:none;
   }
+
+  /* Relocated here (under the View Menu button) as plain icons only —
+     no card frame, no background image fill, sized down to sit closer
+     to the width of the button above. */
+  .mobile-menu-btn + .social-banner{
+    margin-top:32px;
+    margin-bottom:0;
+    padding:0;
+    gap:10px;
+    border:none;
+    background:none;
+  }
+  .mobile-menu-btn + .social-banner .social-banner-fill{
+    display:none;
+  }
+  .mobile-menu-btn + .social-banner .social-link{
+    width:34px;
+    height:34px;
+    border:none;
+  }
+  .mobile-menu-btn + .social-banner .social-link svg{
+    width:15px;
+    height:15px;
+  }
 }
 
 /* ============ DRINKS MENU ============ */
@@ -2049,7 +2105,8 @@ min-height:100vh;
   border-color:var(--walnut);
 }
 
-.cal-day.selected{
+.cal-day.selected,
+.cal-day.available.selected:hover{
   background:var(--brass);
   border-color:var(--brass);
   color:var(--walnut);
@@ -2986,6 +3043,43 @@ background: var(--cream);
   outline: 2px solid var(--brass-deep);
   outline-offset: 2px;
 }
+/* ===============================
+   FIELD ERROR TOOLTIP
+   Replaces the browser's native validation bubble, which mis-positions
+   itself (renders at the page's top-left) when the invalid field sits
+   inside .wizard-track, an element animated with a CSS transform.
+   Positioned in JS via getBoundingClientRect so it always anchors to
+   the field's real on-screen location.
+================================= */
+
+.field-error-tip{
+  position: fixed;
+  z-index: 500;
+  max-width: 260px;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid #BD5A34;
+  box-shadow: 0 0 0 3px rgba(189,90,52,0.15), 0 14px 30px -14px rgba(20,18,16,0.35);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+.field-error-tip::before{
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 16px;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-left: 1px solid #BD5A34;
+  border-top: 1px solid #BD5A34;
+  transform: rotate(45deg);
+}
+
 /* shown briefly if someone tries to submit without ticking the box */
 .tc-check-row.tc-error .tc-check-box{
   border-color: var(--rust);
@@ -3777,7 +3871,7 @@ footer p.tag{
   </div>
 </section>
 
-<div class="section-divider timber"></div>
+<div class="section-divider timber divider-deep"></div>
 
 
 
@@ -3869,7 +3963,6 @@ footer p.tag{
             </div>
 
             <div class="social-banner reveal" id="socialBanner">
-
               <!-- FACEBOOK -->
               <a href="https://www.facebook.com/profile.php?id=61588292214287"
                  class="social-link"
@@ -3877,7 +3970,7 @@ footer p.tag{
                  rel="noopener"
                  aria-label="Facebook"
                  style="display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;background:#222;transition:background 0.25s ease;"
-                 onmouseover="bannerIconHover(this,'#1877F2')"
+                 onmouseover="bannerIconHover(this,'#1877F2','images/Facebook_Background.jpg')"
                  onmouseout="bannerIconLeave(this)">
 
                 <svg viewBox="0 0 24 24" width="20" height="20">
@@ -3893,7 +3986,7 @@ footer p.tag{
                  rel="noopener"
                  aria-label="Instagram"
                  style="display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;background:#222;"
-                 onmouseover="bannerIconHover(this,'#E1306C')"
+                 onmouseover="bannerIconHover(this,'#E1306C','images/Instagram_Background.jpg')"
                  onmouseout="bannerIconLeave(this)">
 
                 <svg viewBox="0 0 24 24" width="20" height="20">
@@ -3909,7 +4002,7 @@ footer p.tag{
                  target="_self"
                  aria-label="Email"
                  style="display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;background:#222;"
-                 onmouseover="bannerIconHover(this,'#4B5563')"
+                 onmouseover="bannerIconHover(this,'#8C5B28','images/Email_Background.jpg')"
                  onmouseout="bannerIconLeave(this)">
 
                <svg viewBox="0 0 24 24" width="20" height="20">
@@ -3926,24 +4019,123 @@ footer p.tag{
               const r = (v >> 16) & 255, g = (v >> 8) & 255, b = v & 255;
               return `rgba(${r},${g},${b},${alpha})`;
             }
-            function bannerIconHover(el, color){
+            let fillLayers = [];    // stack of currently-present fill <div> elements (oldest first)
+            let hoverCount = 0;     // how many icons the pointer is currently over
+
+            // Every hover creates its own brand-new layer rather than
+            // reusing one of a fixed pair — so no matter how fast you move
+            // between icons, each fade-in and fade-out plays out fully and
+            // independently instead of a layer being interrupted mid-fade
+            // and jump-cutting to a new image.
+            function addFillLayer(banner, bgImage){
+              const layer = document.createElement('div');
+              layer.className = 'social-banner-fill';
+              layer.style.backgroundImage =
+                `linear-gradient(rgba(230,222,207,0.75), rgba(230,222,207,0.75)), url('${bgImage}')`;
+              banner.appendChild(layer);
+
+              // force a reflow so the transition from the CSS default
+              // (opacity:0) to '1' below actually plays as a fade-in
+              void layer.offsetWidth;
+              layer.style.opacity = '1';
+
+              fillLayers.push(layer);
+
+              // every older layer now fades out beneath this one, at the
+              // same time as this one fades in
+              fillLayers.slice(0, -1).forEach(fadeOutAndRemove);
+            }
+
+            function fadeOutAndRemove(layer){
+              if (layer.dataset.fadingOut === 'true') return;
+              layer.dataset.fadingOut = 'true';
+              layer.style.opacity = '0';
+
+              const cleanup = () => {
+                layer.removeEventListener('transitionend', cleanup);
+                layer.remove();
+                fillLayers = fillLayers.filter(l => l !== layer);
+              };
+              layer.addEventListener('transitionend', cleanup);
+              setTimeout(cleanup, 1100); // fallback in case transitionend doesn't fire
+            }
+
+            function bannerIconHover(el, color, bgImage){
+              hoverCount++;
+
               el.style.background = color;
+
+              if (window.innerWidth <= 900) return; // frame + image fill are desktop-only; colour still applies
+
+              el.style.borderColor = color; // icon outline matches the frame outline colour below
+
               const banner = document.getElementById('socialBanner');
-              if (banner){
-                banner.style.background = hexToRgba(color, 0.16);
-                banner.style.borderColor = color;
-              }
+
+              // border-color has no CSS transition, so this switches instantly
+              if (banner) banner.style.borderColor = color;
+
+              if (banner && bgImage) addFillLayer(banner, bgImage);
             }
             function bannerIconLeave(el){
+              hoverCount = Math.max(0, hoverCount - 1);
+
               el.style.background = '#222';
-              const banner = document.getElementById('socialBanner');
-              if (banner){
-                banner.style.background = '';
-                banner.style.borderColor = '';
-              }
+
+              if (window.innerWidth <= 900) return; // frame + image fill are desktop-only
+
+              el.style.borderColor = 'transparent';
+
+              // Deferred so that if the pointer is moving straight onto the
+              // next icon, that icon's mouseover (which fires right after
+              // this) has already re-incremented hoverCount by the time we
+              // check it — meaning we only fade fully off once the pointer
+              // has actually left every icon, not just this one.
+              setTimeout(() => {
+                if (hoverCount === 0){
+                  const banner = document.getElementById('socialBanner');
+                  if (banner) banner.style.borderColor = '';
+                  fillLayers.forEach(fadeOutAndRemove);
+                }
+              }, 0);
             }
             </script>
          </div>
+
+
+          <!-- On mobile, the Gallery page is unreachable (see wagon carousel
+               script), so its social banner is relocated to sit directly
+               under the "View Menu" button on the Wagon page instead. On
+               desktop it's moved back to its original spot in the Gallery
+               section above. -->
+          <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const banner = document.getElementById('socialBanner');
+            const mobileTrigger = document.getElementById('mobileMenuTrigger');
+            if (!banner || !mobileTrigger) return;
+
+            const originalParent = banner.parentNode;
+            const originalNextSibling = banner.nextSibling;
+            const mq = window.matchMedia('(max-width:900px)');
+
+            function placeBanner(){
+              if (mq.matches){
+                if (mobileTrigger.nextElementSibling !== banner){
+                  mobileTrigger.insertAdjacentElement('afterend', banner);
+                }
+              } else if (banner.parentNode !== originalParent || banner.nextSibling !== originalNextSibling){
+                if (originalNextSibling){
+                  originalParent.insertBefore(banner, originalNextSibling);
+                } else {
+                  originalParent.appendChild(banner);
+                }
+              }
+            }
+
+            placeBanner();
+            if (mq.addEventListener) mq.addEventListener('change', placeBanner);
+            else mq.addListener(placeBanner); // Safari <14 fallback
+          });
+          </script>
           </div>
 
           <!-- PAGE 1 — WAGON INTERACTIVE (default view) -->
@@ -5034,7 +5226,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<div class="section-divider timber"></div>
+<div class="section-divider timber divider-deep"></div>
 
 
 <!-- ================= BOOKING ================= -->
@@ -5121,7 +5313,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>
 
-          <form id="bookingForm" action="https://formspree.io/f/xjgqownj" method="POST">
+          <form id="bookingForm" action="https://formspree.io/f/xjgqownj" method="POST" novalidate>
 
             <!-- ===== WIZARD ===== -->
             <div class="wizard" id="bookingWizard">
@@ -5341,7 +5533,7 @@ document.addEventListener("DOMContentLoaded", () => {
                               <svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path d="M3 8.5L6.5 12 13 4.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
                           </span>
-                          <span class="tc-check-label">I acknowledge that Blend &amp; Brew may be unable to provide the service as quoted if these venue requirements cannot be met.</span>
+                          <span class="tc-check-label">I acknowledge that Blend &amp; Brew may be unable to provide the service as quoted if venue requirements are not met.</span>
                         </label>
                         <label class="tc-check-row" id="rowAgreementAuthorised">
                           <span class="tc-check-wrap">
@@ -5662,6 +5854,52 @@ document.addEventListener("DOMContentLoaded", () => {
   goTo(0);
   window.goToWizardPage = goTo;
 
+  // Custom field-error tooltip — replaces the browser's native validation
+  // bubble, which renders detached at the page's top-left when the target
+  // field sits inside .wizard-track (a transformed element; browsers don't
+  // anchor the native bubble correctly inside a transformed ancestor).
+  // Positioned here via getBoundingClientRect so it always sits right
+  // under the actual field, however the wizard has slid.
+  let fieldErrorTip = null;
+
+  function hideFieldError(){
+    if (fieldErrorTip){
+      fieldErrorTip.remove();
+      fieldErrorTip = null;
+    }
+  }
+
+  function showFieldError(el){
+    hideFieldError();
+
+    const message = el.validationMessage || 'Please fill out this field.';
+    const tip = document.createElement('div');
+    tip.className = 'field-error-tip';
+    tip.textContent = message;
+    document.body.appendChild(tip);
+
+    const rect = el.getBoundingClientRect();
+    tip.style.left = rect.left + 'px';
+    tip.style.top = (rect.bottom + 8) + 'px';
+    tip.style.width = Math.max(rect.width, 160) + 'px';
+
+    fieldErrorTip = tip;
+
+    // Dismissed only on actual interaction with the field (typing,
+    // choosing a value, or leaving it) — not on scroll/resize, since
+    // focusing the field itself triggers the browser's scroll-into-view
+    // and was previously hiding the tip within milliseconds of it appearing.
+    const clear = () => {
+      hideFieldError();
+      el.removeEventListener('input', clear);
+      el.removeEventListener('change', clear);
+      el.removeEventListener('blur', clear);
+    };
+    el.addEventListener('input', clear);
+    el.addEventListener('change', clear);
+    el.addEventListener('blur', clear);
+  }
+
   // If a required field fails validation on submit, jump to the page
   // that contains it so the person can actually see and fix it.
   const bookingFormEl = document.getElementById('bookingForm');
@@ -5678,8 +5916,8 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopImmediatePropagation();
         goTo(invalidField.idx);
         setTimeout(() => {
-          invalidField.el.reportValidity();
           invalidField.el.focus();
+          showFieldError(invalidField.el);
         }, 260);
       }
     }, true); // capture phase so this runs before the existing submit handler
@@ -6084,7 +6322,7 @@ function getFullAddress() {
 
 // ----- Calendar -----
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbyL_mN-obUkzSU6lticKpSc6wBvW_7l6CAaIwE5iG_ONwpC7RYVEeS_bx9dw_hh6j462g/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwwu79rrWqWFIQeuGiBMmkQ5ihzoC06gRUFcC2FmNf08eSEU8eQRSZoW6tYacLdGaHWew/exec";
 
 const calGrid = document.getElementById('calGrid');
 const calMonthLabel = document.getElementById('calMonthLabel');
@@ -6429,18 +6667,30 @@ sheetPayload.append("postcode", document.getElementById("postcode").value);
     sheetPayload.append("agreementAuthorised", document.getElementById('agreementAuthorised').checked ? "Yes" : "No");
 
     // =========================
-    // SEND TO GOOGLE SHEETS
+    // SEND TO GOOGLE SHEETS (retried once if it fails, since a missed
+    // write means the date won't get blocked on the calendar later)
     // =========================
-    fetch(SHEET_URL, {
-      method: "POST",
-      body: sheetPayload
-    }).catch(err => console.error("Sheet sync failed:", err));
+    async function sendToSheet(payload, attempt) {
+      try {
+        const sheetRes = await fetch(SHEET_URL, { method: "POST", body: payload });
+        const sheetData = await sheetRes.json().catch(() => ({}));
+        if (sheetData && sheetData.status === "success") return true;
+        throw new Error("Sheet did not confirm success");
+      } catch (err) {
+        console.error(`Sheet sync failed (attempt ${attempt}):`, err);
+        if (attempt < 2) return sendToSheet(payload, attempt + 1);
+        return false;
+      }
+    }
+
+    const sheetSynced = await sendToSheet(sheetPayload, 1);
 
     // =========================
     // SUCCESS UI
     // =========================
-    confirmText.textContent =
-      `Thanks, ${name.split(' ')[0] || 'there'}! ${dateStr} is held. We'll confirm by email as soon as possible.`;
+    confirmText.textContent = sheetSynced
+      ? `Thanks, ${name.split(' ')[0] || 'there'}! ${dateStr} is held. We'll confirm by email as soon as possible.`
+      : `Thanks, ${name.split(' ')[0] || 'there'}! Your request for ${dateStr} has been sent. If you don't hear from us within 48 hours, please email us directly at blendandbrew@hotmail.com.au to confirm your date.`;
 
     bookingFormWrap.style.display = 'none';
     confirmBox.classList.add('show');
