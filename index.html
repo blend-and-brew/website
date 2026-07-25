@@ -119,17 +119,30 @@ body::-webkit-scrollbar {
 .section-divider.timber {
   height: 10px;
   background: url("images/TimberSlat_Image.png") center/cover no-repeat;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.6), 0 28px 70px rgba(0,0,0,0.45);
   position: relative;
   z-index: 5;
-  overflow: hidden;
 }
 
-/* Deeper shadow variant — used only above the Wagon/Explore section and
-   above the Booking section, to give those two transitions more depth
-   than the standard divider elsewhere on the page. */
-.section-divider.timber.divider-deep {
-  box-shadow: 0 10px 20px rgba(0,0,0,1), 0 56px 140px rgba(0,0,0,0.45);
+/* The shadow lives on a pseudo-element that's wider than the divider
+   itself (extends off past the left/right edges). box-shadow always
+   tapers off as it nears the corners of the box casting it — on a
+   full-bleed element that taper was landing right at the visible
+   screen edges, making the shadow look lighter there. Pushing the
+   shadow-casting box out past the edges moves that taper off-screen,
+   so what's visible is only the flat, uniform middle of the shadow. */
+.section-divider.timber::before{
+  content:'';
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:-200px;
+  right:-200px;
+  box-shadow: 0 5px 10px 2px rgba(0,0,0,0.6), 0 28px 70px rgba(0,0,0,0.45);
+  pointer-events:none;
+}
+
+.section-divider.timber.divider-deep::before {
+  box-shadow: 0 5px 20px 3px rgba(0,0,0,1), 0 56px 140px rgba(0,0,0,0.65);
 }
 
 /* VIGNETTE OVERLAY */
@@ -2405,27 +2418,31 @@ min-height:100vh;
 
 .utility-checklist{
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px 20px;
   margin-top: 10px;
 }
 
 .utility-check-row{
-  gap: 12px;
+  gap: 10px;
+  flex: 0 0 auto;
+  align-items: center;
 }
 
 .utility-check-row .tc-check-wrap{
   flex: 0 0 20px;
   width: 20px;
   height: 20px;
+  margin-top: 0;
 }
 
 .utility-check-label.utility-check-label{
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--ink-soft);
   padding-top: 0;
 }
 
@@ -3014,7 +3031,7 @@ background: var(--cream);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.75px solid var(--ink-soft);
+  border: 1.75px solid rgba(90, 85, 80, 0.35);
   border-radius: 50%;
   background: #fff;
   pointer-events: none;
@@ -5330,7 +5347,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
 
                     <div class="form-group">
-                      <label for="organisation">Organisation <span style="text-transform:none;letter-spacing:0;font-weight:500;opacity:.65;">(optional)</span></label>
+                      <label for="organisation">Organisation <span style="text-transform:uppercase;letter-spacing:0.04em;font-weight:700;opacity:0.4;">(Optional)</span></label>
                       <input type="text" id="organisation" name="organisation" placeholder="e.g. Coffee Pty Ltd">
                     </div>
 
@@ -5468,7 +5485,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <!-- UTILITIES -->
                     <div class="form-group utilities-single">
-                      <label><strong>Does your venue provide?</strong></label>
+                      <label><strong>Does your venue provide?</strong> <span style="text-transform:uppercase; letter-spacing:0.04em; font-weight:700; opacity:0.4;">(Please Tick)</span></label>
 
                       <div class="utility-checklist">
                         <label class="tc-check-row utility-check-row" id="rowElectricity">
@@ -5500,7 +5517,7 @@ document.addEventListener("DOMContentLoaded", () => {
                               <svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path d="M3 8.5L6.5 12 13 4.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </span>
                           </span>
-                          <span class="tc-check-label utility-check-label">Sheltered</span>
+                          <span class="tc-check-label utility-check-label">Shelter</span>
                         </label>
                         <input type="hidden" name="sheltered" id="shelteredInput" value="Yes">
                       </div>
@@ -5914,11 +5931,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (invalidField){
         e.preventDefault();
         e.stopImmediatePropagation();
+        const pageChanged = invalidField.idx !== current;
         goTo(invalidField.idx);
+        // Only need to wait out the slide transition (450ms) if we're
+        // actually moving to a different page — otherwise position
+        // immediately so there's no needless delay.
         setTimeout(() => {
           invalidField.el.focus();
           showFieldError(invalidField.el);
-        }, 260);
+        }, pageChanged ? 480 : 0);
       }
     }, true); // capture phase so this runs before the existing submit handler
   }
@@ -6322,7 +6343,7 @@ function getFullAddress() {
 
 // ----- Calendar -----
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbwwu79rrWqWFIQeuGiBMmkQ5ihzoC06gRUFcC2FmNf08eSEU8eQRSZoW6tYacLdGaHWew/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwzV57szg3_DwwQ6BLCm_y31xlwLwy_nvaFRW7UpEnxAC5tzuKAt4pprkf0BlvstVvgeA/exec";
 
 const calGrid = document.getElementById('calGrid');
 const calMonthLabel = document.getElementById('calMonthLabel');
