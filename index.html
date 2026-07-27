@@ -26,6 +26,17 @@
   --line:rgba(20,18,16,0.12);
   --line-on-dark:rgba(244,239,230,0.14);
   --radius:3px;
+
+  /* ============ CUSTOM CURSORS ============
+     Light cream body with a crisp black outline (plus a small colour-coded
+     status badge for wait/blocked states), matching the reference cursor
+     pack so they stay legible over both the dark walnut and cream sections. */
+  --cursor-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M6 3.9 Q4 3 4.9 5 L10.9 18.6 Q12 21 12.9 18.5 L14.2 14.8 Q14.6 13.6 15.8 13.2 L20.1 11.7 Q22 11.1 20.2 10.3 Z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, default;
+  --cursor-pointer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M9 22c-.3 0-.6-.1-.8-.3l-4-4.2c-.6-.6-.6-1.6 0-2.2.6-.6 1.5-.6 2.1 0l1.7 1.8V8.5c0-.9.7-1.6 1.6-1.6s1.6.7 1.6 1.6v3.8c.3-.1.6-.2 1-.2.7 0 1.3.4 1.5 1 .3-.2.6-.3 1-.3.8 0 1.5.6 1.6 1.4.3-.1.6-.2.9-.2.9 0 1.6.7 1.6 1.6v3c0 3-2.5 5.4-5.5 5.4H9z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E") 9 6, pointer;
+  --cursor-not-allowed: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M6 3.9 Q4 3 4.9 5 L10.9 18.6 Q12 21 12.9 18.5 L14.2 14.8 Q14.6 13.6 15.8 13.2 L20.1 11.7 Q22 11.1 20.2 10.3 Z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.4' stroke-linejoin='round'/%3E%3Ccircle cx='21' cy='21' r='5.5' fill='%23D9453D' stroke='%23F4EFE6' stroke-width='2.2'/%3E%3Cpath d='M19 19l4 4M23 19l-4 4' fill='none' stroke='%23F4EFE6' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") 4 3, not-allowed;
+  --cursor-wait: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M6 3.9 Q4 3 4.9 5 L10.9 18.6 Q12 21 12.9 18.5 L14.2 14.8 Q14.6 13.6 15.8 13.2 L20.1 11.7 Q22 11.1 20.2 10.3 Z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.4' stroke-linejoin='round'/%3E%3Ccircle cx='21' cy='21' r='5.5' fill='%233B6FD6' stroke='%23F4EFE6' stroke-width='2.2'/%3E%3Cpath d='M21 18.2v3l2.2 1.8' fill='none' stroke='%23F4EFE6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, wait;
+  --cursor-alias: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M6 3.9 Q4 3 4.9 5 L10.9 18.6 Q12 21 12.9 18.5 L14.2 14.8 Q14.6 13.6 15.8 13.2 L20.1 11.7 Q22 11.1 20.2 10.3 Z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M3 27c0-5 3-8 8-8' fill='none' stroke='%23F4EFE6' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M3 27c0-5 3-8 8-8' fill='none' stroke='%23181614' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M7 16l4 3-4 3' fill='none' stroke='%23F4EFE6' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 16l4 3-4 3' fill='none' stroke='%23181614' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, alias;
+  --cursor-text: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23F4EFE6' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23181614' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") 12 12, text;
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -1486,6 +1497,10 @@ min-height:100vh;
   width:100%;
   overflow:hidden;
   transition:height .3s ease;
+  min-height:340px; /* safety floor — the JS-computed exact height always
+    takes over once layout settles, but this stops the section from ever
+    visually collapsing to nothing if that calculation runs before web
+    fonts/images have finished settling into their final size. */
 }
 
 .wagon-carousel-track{
@@ -1903,6 +1918,26 @@ min-height:100vh;
 .drinks-col-title svg{
   flex-shrink:0;
   color:var(--brass-deep);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  transform:scale(1) rotate(0deg);
+  transform-origin:center;
+  backface-visibility:hidden;
+  shape-rendering:geometricPrecision;
+}
+
+.drinks-col-title:hover svg{
+  animation:menuIconWiggle .45s ease-out;
+}
+
+@keyframes menuIconWiggle{
+  0%{transform:scale(1) rotate(0deg);}
+  50%{transform:scale(1.08) rotate(-3deg);}
+  100%{transform:scale(1.05) rotate(0deg);}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .drinks-col-title svg{transition:none;}
+  .drinks-col-title:hover svg{animation:none;}
 }
 
 .drinks-list{
@@ -1970,7 +2005,7 @@ min-height:100vh;
   position: absolute;
   inset: 0;
 
-  background: url("images/CoffeeStain1_Image.png") right center no-repeat;
+  background: url("images/CoffeeStain1_Image.png") right 60px no-repeat;
   background-size: 950px;
 
   opacity: 0.3;
@@ -2255,6 +2290,7 @@ min-height:100vh;
   -webkit-appearance: none;
   -moz-appearance: none;
 
+  height: 45px;
   padding: 12px 42px 12px 14px;
   color: var(--ink);
 
@@ -2281,6 +2317,64 @@ min-height:100vh;
    above never applies — toggled via a JS class instead. */
 .form-group select.select-placeholder{
   color: rgba(90, 85, 80, 0.45);
+}
+
+/* ===============================
+   EVENT TYPE "OTHER" — IN-PLACE TYPABLE SWAP
+   Sits in the same form-group as the select, occupying its spot once
+   "Other" is chosen so it reads as the same field becoming typable
+   rather than a new field appearing.
+================================= */
+
+.event-type-other-wrap{
+  position: relative;
+}
+
+.event-type-other-wrap input{
+  width: 100%;
+  height: 45px;
+  padding: 12px 38px 12px 14px;
+  border: 1px solid var(--brass);
+  background: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  border-radius: 8px;
+  transition: border-color .15s ease;
+}
+
+.event-type-other-wrap input::placeholder{
+  color: rgba(90, 85, 80, 0.45);
+}
+
+.event-type-other-wrap input:focus{
+  outline: none;
+  border-color: var(--brass);
+}
+
+.event-type-other-back{
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+
+.event-type-other-back:hover{
+  background: rgba(189,90,52,0.14);
+  color: var(--rust);
 }
 
 /* ===============================
@@ -2375,6 +2469,12 @@ min-height:100vh;
   background: var(--brass);
   color: var(--walnut);
   font-weight: 600;
+}
+
+.time-select-option.disabled{
+  opacity: 0.32;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 @media (max-width: 880px){
@@ -2815,6 +2915,10 @@ background: var(--cream);
   font-weight: 600;
   font-size: 14.5px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   transition: background .2s ease, transform .2s ease;
 }
 
@@ -2831,6 +2935,40 @@ background: var(--cream);
   transform: none;
 }
 
+/* Loading state — keeps the brand walnut/brass look (rather than the
+   pale "disabled" grey used while no date is selected yet) so it still
+   reads as "working", not "unavailable". Higher-specificity selector
+   so it wins over the plain :disabled rule above. */
+.submit-btn.is-loading,
+.submit-btn.is-loading:disabled{
+  background: var(--walnut);
+  color: var(--cream);
+  cursor: wait;
+}
+
+.btn-spinner{
+  display: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(244,239,230,0.3);
+  border-top-color: var(--brass-bright);
+  flex-shrink: 0;
+  animation: btnSpin 0.7s linear infinite;
+}
+
+.submit-btn.is-loading .btn-spinner{
+  display: inline-block;
+}
+
+@keyframes btnSpin{
+  to{ transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .btn-spinner{ animation: none; }
+}
+
 /* ===============================
    CONFIRM BOX
 ================================= */
@@ -2838,7 +2976,7 @@ background: var(--cream);
 .confirm-box{
   display: none;
   text-align: center;
-  padding: 36px 10px;
+  padding: 36px 10px 56px;
 }
 
 .confirm-box.show{
@@ -2889,6 +3027,18 @@ background: var(--cream);
   color: var(--ink-soft);
   font-size: 14px;
   line-height: 1.6;
+}
+
+.confirm-logo{
+  margin-top: 90px; /* preserves the logo's original on-screen position now that the button sits below it instead of above */
+  display: flex;
+  justify-content: center;
+}
+
+.confirm-logo img{
+  width: 96px;
+  height: auto;
+  opacity: 0.8;
 }
 
 /* ===============================
@@ -3772,6 +3922,40 @@ footer p.tag{
   .booking-right{padding:24px;}
 }
 
+/* ============ CUSTOM CURSOR APPLICATION ============ */
+
+html, body{
+  cursor: var(--cursor-arrow);
+}
+
+a, button, [role="button"], label.tc-check-row, .toggle-option,
+.cal-day.available, .cal-day.selected, .gear-card,
+.calc-toggle-btn, .calc-pkg, .wcar-toggle-btn, .wcar-arrow, .hotspot,
+.booking-pkg-option, .booking-pkg-header, .booking-pkg-clear,
+.time-select-trigger, .time-select-option:not(.disabled),
+.wizard-toggle-btn, .mobile-menu-btn, .tc-modal-close, .tc-modal-open,
+.event-type-other-back, .pkg-status-clear, .pkg-status-link,
+.social-link, .footer-social-link, .cal-nav button, select{
+  cursor: var(--cursor-pointer);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]),
+textarea{
+  cursor: var(--cursor-text);
+}
+
+.cal-day.past, .time-select-option.disabled, .submit-btn:disabled{
+  cursor: var(--cursor-not-allowed);
+}
+
+.submit-btn.is-loading, .submit-btn.is-loading:disabled{
+  cursor: var(--cursor-wait);
+}
+
+.side-scrollnav-item{
+  cursor: var(--cursor-alias);
+}
+
 </style>
 </head>
 <body>
@@ -4048,7 +4232,7 @@ footer p.tag{
               const layer = document.createElement('div');
               layer.className = 'social-banner-fill';
               layer.style.backgroundImage =
-                `linear-gradient(rgba(230,222,207,0.75), rgba(230,222,207,0.75)), url('${bgImage}')`;
+                `linear-gradient(rgba(255,255,255,0.70), rgba(255,255,255,0.70)), url('${bgImage}')`;
               banner.appendChild(layer);
 
               // force a reflow so the transition from the CSS default
@@ -4730,9 +4914,31 @@ document.addEventListener("DOMContentLoaded", () => {
     realPages.forEach(p => ro.observe(p));
   }
 
+  // Google Fonts load asynchronously and can swap in after the height
+  // above was first measured, reflowing text (taller/shorter line
+  // heights) without the page's own box otherwise resizing in a way
+  // the ResizeObserver would reliably catch mid-swap. Recomputing once
+  // fonts are actually ready stops the section from getting stuck at a
+  // pre-font-swap height — which is what made it look like the section
+  // had "lost" its height and the gap above the divider had vanished.
+  if (document.fonts && document.fonts.ready){
+    document.fonts.ready.then(() => updateViewportHeight());
+  }
+
   updateViewportHeight();
   setTrackPosition(trackIndex, true);
   updateToggle(realIndexForTrack(trackIndex));
+
+  // Any in-page anchor jump — including footer links like "How it works"
+  // that sit above this section — can scroll straight past it before the
+  // browser's smooth-scroll settles. Recomputing shortly after covers
+  // that case even for anchors that aren't one of this carousel's own
+  // pages.
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', () => {
+      setTimeout(updateViewportHeight, 600);
+    });
+  });
 
   // Exposed so other controls (side nav, footer links) can jump straight
   // to a specific page of the carousel.
@@ -4925,18 +5131,18 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
 
       <div class="calc-primary">
-        <span id="calcPrimaryTilde" style="visibility:hidden; font-size:0.5em;">&asymp;</span><span id="calcPrimaryValue">50</span><small id="calcPrimaryLabel">coffees</small>
+        <span id="calcPrimaryTilde" style="visibility:hidden; font-size:0.5em;">&asymp;</span><span id="calcPrimaryValue">100</span><small id="calcPrimaryLabel">coffees</small>
       </div>
       <div class="calc-secondary">
-        <span id="calcSecondaryTilde">&asymp;</span> <span id="calcSecondaryValue">30</span> <span id="calcSecondaryLabel">guests</span>
+        <span id="calcSecondaryTilde">&asymp;</span> <span id="calcSecondaryValue">60</span> <span id="calcSecondaryLabel">guests</span>
       </div>
 
       <div class="calc-price">
-        <span id="calcPriceValue">$500</span>
+        <span id="calcPriceValue">$950</span>
       </div>
 
       <div class="calc-slider-wrap">
-        <input type="range" id="calcSlider" class="menu-slider" min="0" max="42" step="1" value="25" aria-label="Event size">
+        <input type="range" id="calcSlider" class="menu-slider" min="0" max="42" step="1" value="15" aria-label="Event size">
         <div class="menu-scale"><span id="calcScaleMin">25</span><span id="calcScaleMax">200</span></div>
       </div>
 
@@ -5079,15 +5285,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const pkgStatusClear = document.getElementById('pkgStatusClear');
   const pkgStatusText  = document.getElementById('pkgStatusText');
   const packageInput   = document.getElementById('packageInput');
+  const servingsInput  = document.getElementById('servingsInput');
   const pkgSection      = document.getElementById('bookingPkgSection');
   const pkgHeaderToggle = document.getElementById('pkgHeaderToggle');
 
   let mode = 'coffees';
-  let userInteracted = false;
+  // Start as if the customer already picked a package: this makes "The Latte"
+  // (the slider's default position) an actual selection from page load —
+  // shown in the status pill, highlighted in the dropdown, and included in
+  // the form/sheet submission — rather than an empty "Select a package"
+  // state that only becomes real once they touch the slider or a chip.
+  let userInteracted = true;
 
   slider.min = 0;
   slider.max = coffeeSteps.length - 1;
   slider.step = 1;
+
+  // Default to "The Latte" package (100 coffees) on page load
+  const defaultCoffees = 100;
+  const defaultCoffeeIndex = coffeeSteps.indexOf(defaultCoffees);
+  if (defaultCoffeeIndex !== -1) slider.value = defaultCoffeeIndex;
 
   function currentCoffees(){
     const idx = Math.max(0, Math.min(coffeeSteps.length - 1, parseInt(slider.value, 10) || 0));
@@ -5116,6 +5333,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!userInteracted){
       if (pkgStatusText) pkgStatusText.textContent = 'Select a package';
       if (packageInput) packageInput.value = '';
+      if (servingsInput) servingsInput.value = '';
       if (pkgStatusClear) pkgStatusClear.style.display = 'none';
       if (guestCountInput) guestCountInput.placeholder = 'e.g. 200';
       return;
@@ -5123,6 +5341,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const match = packageForCoffees(coffees);
     if (pkgStatusText) pkgStatusText.textContent = match ? match.name : 'Custom';
     if (packageInput) packageInput.value = match ? match.name : 'Custom';
+    if (servingsInput) servingsInput.value = coffees;
     if (pkgStatusClear) pkgStatusClear.style.display = 'inline-flex';
 
     if (guestCountInput){
@@ -5301,6 +5520,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </span>
             </div>
             <input type="hidden" name="package" id="packageInput" value="">
+            <input type="hidden" name="servings" id="servingsInput" value="">
             <div class="booking-pkg-list" id="bookingPkgList">
               <button type="button" class="booking-pkg-option" data-count="25">
                 <span class="booking-pkg-name">Babycino</span>
@@ -5343,11 +5563,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <div class="form-group">
                       <label for="fullName">Full Name</label>
-                      <input type="text" id="fullName" name="fullName" required placeholder="e.g. Jane Smith">
+                      <input type="text" id="fullName" name="fullName" required placeholder="First and Last name">
                     </div>
 
                     <div class="form-group">
-                      <label for="organisation">Organisation <span style="text-transform:uppercase;letter-spacing:0.04em;font-weight:700;opacity:0.4;">(Optional)</span></label>
+                      <label for="organisation">Organisation <span style="text-transform:uppercase;letter-spacing:0.04em;font-weight:400;opacity:0.4;">(Optional)</span></label>
                       <input type="text" id="organisation" name="organisation" placeholder="e.g. Coffee Pty Ltd">
                     </div>
 
@@ -5377,8 +5597,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         <option>Google</option>
                         <option>Word of mouth</option>
                         <option>Market or event</option>
-                        <option>Other</option>
+                        <option value="Other">Other</option>
                       </select>
+                      <div class="event-type-other-wrap" id="hearAboutUsOtherWrap" style="display:none;">
+                        <input type="text" id="hearAboutUsOther" name="hearAboutUs" placeholder="Tell us how?" autocomplete="off" disabled>
+                        <button type="button" class="event-type-other-back" id="hearAboutUsOtherBack" aria-label="Choose from list instead">&times;</button>
+                      </div>
                     </div>
                   </div>
 
@@ -5391,12 +5615,20 @@ document.addEventListener("DOMContentLoaded", () => {
                         <label for="eventType">Event type</label>
                         <select id="eventType" name="eventType" required>
                           <option value="" disabled selected>Select one</option>
-                          <option>Wedding</option>
-                          <option>Corporate</option>
-                          <option>Party</option>
-                          <option>Market</option>
-                          <option>Other</option>
+                          <option>Weddings</option>
+                          <option>Corporate Events</option>
+                          <option>Private Parties</option>
+                          <option>Markets &amp; Festivals</option>
+                          <option>Community Events</option>
+                          <option>Sporting Events</option>
+                          <option>Schools &amp; Education</option>
+                          <option>Brand Activations</option>
+                          <option value="Other">Other</option>
                         </select>
+                        <div class="event-type-other-wrap" id="eventTypeOtherWrap" style="display:none;">
+                          <input type="text" id="eventTypeOther" name="eventType" placeholder="Tell us here" autocomplete="off" disabled>
+                          <button type="button" class="event-type-other-back" id="eventTypeOtherBack" aria-label="Choose from list instead">&times;</button>
+                        </div>
                       </div>
 
                       <div class="form-group">
@@ -5485,7 +5717,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <!-- UTILITIES -->
                     <div class="form-group utilities-single">
-                      <label><strong>Does your venue provide?</strong> <span style="text-transform:uppercase; letter-spacing:0.04em; font-weight:700; opacity:0.4;">(Please Tick)</span></label>
+                      <label><strong>Does your venue provide?</strong> <span style="text-transform:uppercase; letter-spacing:0.04em; font-weight:400; opacity:0.4;">(Please Tick)</span></label>
 
                       <div class="utility-checklist">
                         <label class="tc-check-row utility-check-row" id="rowElectricity">
@@ -5583,7 +5815,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="selected-date-display" id="selectedDateDisplay" style="display:none;"></div>
 
             <button type="submit" class="submit-btn" id="submitBtn">
-              Select a date to continue
+              <span class="btn-spinner" aria-hidden="true"></span>
+              <span id="submitBtnLabel">Select a date to continue</span>
             </button>
 
           </form>
@@ -5597,11 +5830,15 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <h3>Request sent</h3>
           <p id="confirmText">Thanks! We'll confirm by email as soon as possible.</p>
+          <div class="confirm-logo">
+            <img src="images/BBLogo_Condensed.png" alt="Blend & Brew">
+          </div>
+
           <button
   class="btn btn-outline"
   id="bookAnother"
   onclick="location.reload();"
-  style="margin-top:16px;border-color:var(--line);color:var(--ink);">
+  style="margin-top:20px;margin-bottom:12px;border-color:var(--line);color:var(--ink);">
   Book another date
 </button>
         </div>
@@ -5655,9 +5892,23 @@ document.addEventListener("DOMContentLoaded", () => {
     return hour12 + ':' + String(mm).padStart(2, '0') + ' ' + period;
   }
 
+  // Briefly flashes a field's border red to flag an invalid/blocked pick —
+  // same visual treatment used elsewhere for validation errors on this form.
+  function flashInvalid(el){
+    if (!el) return;
+    el.style.borderColor = 'var(--rust)';
+    setTimeout(() => { el.style.borderColor = ''; }, 1400);
+  }
+
   // Sets up one time field (desktop dropdown + mobile native picker,
-  // kept in sync with each other and with the shared hidden input)
-  function initTimePicker(ids, onChange){
+  // kept in sync with each other and with the shared hidden input).
+  // opts.validate (optional): given a candidate "h:mm AM/PM" label, return
+  // false to block that pick (used so the end time can't land at/before
+  // the start time). opts.onOpen (optional): called whenever this field's
+  // dropdown panel opens, so the end field can refresh which options are
+  // disabled right before it's shown.
+  function initTimePicker(ids, onChange, opts){
+    opts = opts || {};
     const hidden       = document.getElementById(ids.hidden);
     const select       = document.getElementById(ids.select);
     const trigger      = document.getElementById(ids.trigger);
@@ -5686,11 +5937,36 @@ document.addEventListener("DOMContentLoaded", () => {
       if (onChange) onChange();
     }
 
-    buildTimeOptions(panel, (label) => { setValue(label); closePanel(); });
+    // Reverts the native input back to whatever the hidden value currently
+    // is (or clears it) — used when a manually-entered native time turns
+    // out to be invalid.
+    function resetNativeInput(){
+      if (!nativeInput) return;
+      const minutes = labelToMinutes(hidden.value);
+      if (minutes !== null){
+        const hh = String(Math.floor(minutes / 60)).padStart(2, '0');
+        const mm = String(minutes % 60).padStart(2, '0');
+        nativeInput.value = hh + ':' + mm;
+      } else {
+        nativeInput.value = '';
+      }
+    }
+
+    function tryValidate(label){
+      return opts.validate ? opts.validate(label) : true;
+    }
+
+    buildTimeOptions(panel, (label) => {
+      if (!tryValidate(label)) return; // disabled options already block clicks via CSS; this also covers keyboard/Enter activation
+      setValue(label);
+      closePanel();
+    });
 
     function openPanel(){
       select.classList.add('open');
       trigger.setAttribute('aria-expanded', 'true');
+
+      if (opts.onOpen) opts.onOpen();
 
       // If nothing has been chosen yet, scroll the list to start at
       // 12:00 PM rather than the very top (12:00 AM). Deferred a frame
@@ -5698,7 +5974,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!hidden.value){
         requestAnimationFrame(() => {
           const noonOption = panel.querySelector('.time-select-option[data-label="12:00 PM"]');
-          if (noonOption) noonOption.scrollIntoView({ block: 'start' });
+          // Scroll only the dropdown's own internal list (via scrollTop) rather
+          // than noonOption.scrollIntoView(), which walks up every scrollable
+          // ancestor — including the page itself — and was shifting the whole
+          // page down whenever the panel opened for the first time.
+          if (noonOption){
+            panel.scrollTop = noonOption.offsetTop - (panel.clientHeight / 2) + (noonOption.offsetHeight / 2);
+          }
         });
       }
     }
@@ -5725,7 +6007,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (nativeInput){
       nativeInput.addEventListener('change', () => {
         if (!nativeInput.value) return;
-        setValue(nativeToLabel(nativeInput.value));
+        const label = nativeToLabel(nativeInput.value);
+        if (!tryValidate(label)){
+          resetNativeInput();
+          flashInvalid(nativeInput);
+          return;
+        }
+        setValue(label);
       });
     }
   }
@@ -5756,15 +6044,64 @@ document.addEventListener("DOMContentLoaded", () => {
     out.value = label;
   }
 
+  const startHiddenEl      = document.getElementById('startTime');
+  const endHiddenEl        = document.getElementById('endTime');
+  const endPanelEl         = document.getElementById('endTimePanel');
+  const endNativeEl        = document.getElementById('endTimeNative');
+  const startNativeEl      = document.getElementById('startTimeNative');
+  const endTriggerLabelEl  = document.getElementById('endTimeTriggerLabel');
+
+  // End time must fall strictly after start time (same-day service only —
+  // this wagon doesn't book overnight-spanning slots).
+  function endTimeIsValid(endLabel){
+    const startMin = labelToMinutes(startHiddenEl.value);
+    const endMin = labelToMinutes(endLabel);
+    if (startMin === null || endMin === null) return true;
+    return endMin > startMin;
+  }
+
+  // Greys out (and blocks) every end-time option at or before the current
+  // start time, keeps the native mobile picker's min in sync, and clears
+  // an already-chosen end time if a later start time has made it invalid.
+  function refreshEndAvailability(){
+    if (!endPanelEl) return;
+    const startMin = labelToMinutes(startHiddenEl.value);
+
+    endPanelEl.querySelectorAll('.time-select-option').forEach(opt => {
+      const optMin = labelToMinutes(opt.dataset.label);
+      const disabled = startMin !== null && optMin !== null && optMin <= startMin;
+      opt.classList.toggle('disabled', disabled);
+      opt.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+    });
+
+    if (endNativeEl){
+      endNativeEl.min = (startNativeEl && startNativeEl.value) ? startNativeEl.value : '';
+    }
+
+    if (startMin !== null && endHiddenEl.value && !endTimeIsValid(endHiddenEl.value)){
+      endHiddenEl.value = '';
+      if (endNativeEl) endNativeEl.value = '';
+      if (endTriggerLabelEl){
+        endTriggerLabelEl.textContent = 'Select time';
+        endTriggerLabelEl.classList.add('time-select-placeholder');
+      }
+      endPanelEl.querySelectorAll('.time-select-option').forEach(o => {
+        o.classList.remove('active');
+        o.setAttribute('aria-selected', 'false');
+      });
+      updateServiceHours();
+    }
+  }
+
   initTimePicker({
     hidden: 'startTime', select: 'startTimeSelect', trigger: 'startTimeTrigger',
     triggerLabel: 'startTimeTriggerLabel', panel: 'startTimePanel', native: 'startTimeNative'
-  }, updateServiceHours);
+  }, () => { updateServiceHours(); refreshEndAvailability(); });
 
   initTimePicker({
     hidden: 'endTime', select: 'endTimeSelect', trigger: 'endTimeTrigger',
     triggerLabel: 'endTimeTriggerLabel', panel: 'endTimePanel', native: 'endTimeNative'
-  }, updateServiceHours);
+  }, updateServiceHours, { validate: endTimeIsValid, onOpen: refreshEndAvailability });
 });
 </script>
 
@@ -5800,6 +6137,116 @@ document.addEventListener("DOMContentLoaded", () => {
   hearSelect.addEventListener('change', () => {
     hearSelect.classList.toggle('select-placeholder', hearSelect.value === '');
   });
+});
+</script>
+
+<!-- "HOW DID YOU HEAR ABOUT US" — "OTHER" SWAPS THE SAME FIELD INTO A TYPABLE INPUT -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById('hearAboutUs');
+  const wrap = document.getElementById('hearAboutUsOtherWrap');
+  const input = document.getElementById('hearAboutUsOther');
+  const backBtn = document.getElementById('hearAboutUsOtherBack');
+  if (!select || !wrap || !input) return;
+
+  // Both the select and the text input share name="hearAboutUs" — only
+  // one is ever enabled at a time, so only that one gets submitted
+  // (disabled form fields are excluded from FormData automatically).
+  function showOtherInput(){
+    select.style.display = 'none';
+    select.disabled = true;
+    wrap.style.display = 'block';
+    input.disabled = false;
+    input.required = false;
+    input.value = '';
+    input.focus();
+
+    // The wizard's viewport height is locked to each page's measured
+    // height, taken before this swap happened — recalculating it directly
+    // (rather than via a global resize event, which every other resize
+    // listener on the page also picks up, including the wagon carousel
+    // higher up — causing it to subtly reflow and shift everything below
+    // it, including this booking section) makes the recalculation happen
+    // again in case the field's own height differs from the select's.
+    requestAnimationFrame(() => {
+      if (typeof window.updateWizardViewportHeight === 'function') window.updateWizardViewportHeight();
+    });
+  }
+
+  function showSelect(){
+    wrap.style.display = 'none';
+    input.disabled = true;
+    input.value = '';
+    select.disabled = false;
+    select.style.display = '';
+    select.value = '';
+    select.classList.add('select-placeholder');
+    select.focus();
+    requestAnimationFrame(() => {
+      if (typeof window.updateWizardViewportHeight === 'function') window.updateWizardViewportHeight();
+    });
+  }
+
+  select.addEventListener('change', () => {
+    if (select.value === 'Other') showOtherInput();
+  });
+
+  if (backBtn) backBtn.addEventListener('click', showSelect);
+});
+</script>
+
+<!-- EVENT TYPE "OTHER" — SWAPS THE SAME FIELD INTO A TYPABLE INPUT -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById('eventType');
+  const wrap = document.getElementById('eventTypeOtherWrap');
+  const input = document.getElementById('eventTypeOther');
+  const backBtn = document.getElementById('eventTypeOtherBack');
+  if (!select || !wrap || !input) return;
+
+  // Both the select and the text input share name="eventType" — only
+  // one is ever enabled at a time, so only that one gets submitted
+  // (disabled form fields are excluded from FormData automatically).
+  function showOtherInput(){
+    select.style.display = 'none';
+    select.disabled = true;
+    wrap.style.display = 'block';
+    input.disabled = false;
+    input.required = true;
+    input.value = '';
+    input.focus();
+
+    // The wizard's viewport height is locked to each page's measured
+    // height, taken before this swap happened — recalculating it directly
+    // (rather than via a global resize event, which every other resize
+    // listener on the page also picks up, including the wagon carousel
+    // higher up — causing it to subtly reflow and shift everything below
+    // it, including this booking section) makes the recalculation happen
+    // again in case the field's own height differs from the select's.
+    requestAnimationFrame(() => {
+      if (typeof window.updateWizardViewportHeight === 'function') window.updateWizardViewportHeight();
+    });
+  }
+
+  function showSelect(){
+    wrap.style.display = 'none';
+    input.disabled = true;
+    input.required = false;
+    input.value = '';
+    select.disabled = false;
+    select.style.display = '';
+    select.value = '';
+    select.focus();
+    requestAnimationFrame(() => {
+      if (typeof window.updateWizardViewportHeight === 'function') window.updateWizardViewportHeight();
+    });
+  }
+
+  select.addEventListener('change', () => {
+    if (select.value === 'Other') showOtherInput();
+  });
+
+  if (backBtn) backBtn.addEventListener('click', showSelect);
 });
 </script>
 
@@ -5870,6 +6317,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   goTo(0);
   window.goToWizardPage = goTo;
+  window.updateWizardViewportHeight = updateViewportHeight;
 
   // Custom field-error tooltip — replaces the browser's native validation
   // bubble, which renders detached at the page's top-left when the target
@@ -5886,13 +6334,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function showFieldError(el){
+  function showFieldError(el, message){
     hideFieldError();
 
-    const message = el.validationMessage || 'Please fill out this field.';
+    const tipMessage = message || el.validationMessage || 'Please fill out this field.';
     const tip = document.createElement('div');
     tip.className = 'field-error-tip';
-    tip.textContent = message;
+    tip.textContent = tipMessage;
     document.body.appendChild(tip);
 
     const rect = el.getBoundingClientRect();
@@ -5911,10 +6359,30 @@ document.addEventListener("DOMContentLoaded", () => {
       el.removeEventListener('input', clear);
       el.removeEventListener('change', clear);
       el.removeEventListener('blur', clear);
+      el.removeEventListener('click', clear);
     };
     el.addEventListener('input', clear);
     el.addEventListener('change', clear);
     el.addEventListener('blur', clear);
+    el.addEventListener('click', clear);
+  }
+
+  // The service start/end times are stored in hidden inputs (so they can
+  // carry the "required" constraint that keeps them validated ahead of
+  // fields further down the page, like the address), but a hidden element
+  // has no visible position to anchor a tooltip to and can't be focused —
+  // so when one of those is the invalid field, redirect the focus/tooltip
+  // to whichever picker is actually on screen (the dropdown trigger on
+  // desktop, the native time input on mobile).
+  function visibleTargetFor(el){
+    if (el.id === 'startTime' || el.id === 'endTime'){
+      const isCompactTime = window.matchMedia('(max-width:880px)').matches;
+      const nativeId = el.id === 'startTime' ? 'startTimeNative' : 'endTimeNative';
+      const triggerId = el.id === 'startTime' ? 'startTimeTrigger' : 'endTimeTrigger';
+      const visible = document.getElementById(isCompactTime ? nativeId : triggerId);
+      return visible || el;
+    }
+    return el;
   }
 
   // If a required field fails validation on submit, jump to the page
@@ -5922,10 +6390,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const bookingFormEl = document.getElementById('bookingForm');
   if (bookingFormEl){
     bookingFormEl.addEventListener('submit', (e) => {
+      // input[type=hidden] elements (startTime/endTime) are always barred
+      // from native constraint validation by the browser, even with
+      // "required" set — checkValidity() on them is always true. So they
+      // need an explicit empty-value check here instead, or the address
+      // fields further down the page (which ARE natively validated) keep
+      // getting flagged first.
+      function isFieldInvalid(el){
+        if (el.id === 'startTime' || el.id === 'endTime'){
+          return !el.value;
+        }
+        return typeof el.checkValidity === 'function' && !el.checkValidity();
+      }
+
       const invalidField = pages.reduce((found, page, idx) => {
         if (found) return found;
         const bad = Array.from(page.querySelectorAll('input, select, textarea'))
-          .find(el => typeof el.checkValidity === 'function' && !el.checkValidity());
+          .find(el => isFieldInvalid(el));
         return bad ? { el: bad, idx } : null;
       }, null);
       if (invalidField){
@@ -5936,9 +6417,13 @@ document.addEventListener("DOMContentLoaded", () => {
         // Only need to wait out the slide transition (450ms) if we're
         // actually moving to a different page — otherwise position
         // immediately so there's no needless delay.
+        const displayEl = visibleTargetFor(invalidField.el);
+        const displayMessage = (invalidField.el.id === 'startTime' || invalidField.el.id === 'endTime')
+          ? 'Please select a time.'
+          : invalidField.el.validationMessage;
         setTimeout(() => {
-          invalidField.el.focus();
-          showFieldError(invalidField.el);
+          if (typeof displayEl.focus === 'function') displayEl.focus();
+          showFieldError(displayEl, displayMessage);
         }, pageChanged ? 480 : 0);
       }
     }, true); // capture phase so this runs before the existing submit handler
@@ -6006,6 +6491,7 @@ suggestionsBox.style.position = "absolute";
 suggestionsBox.style.top = "100%";
 suggestionsBox.style.left = "0";
 suggestionsBox.style.background = "#fff";
+suggestionsBox.style.color = "var(--ink)";
 suggestionsBox.style.zIndex = "9999";
 suggestionsBox.style.maxHeight = "200px";
 suggestionsBox.style.overflowY = "auto";
@@ -6094,6 +6580,7 @@ locationInput.addEventListener("input", function () {
         div.style.padding = "10px";
         div.style.cursor = "pointer";
         div.style.borderBottom = "1px solid #eee";
+        div.style.color = "var(--ink)";
         div.textContent = formatted;
 
         div.onclick = () => {
@@ -6343,12 +6830,20 @@ function getFullAddress() {
 
 // ----- Calendar -----
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbwzV57szg3_DwwQ6BLCm_y31xlwLwy_nvaFRW7UpEnxAC5tzuKAt4pprkf0BlvstVvgeA/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbzanUit-gvqPEDcmRA-_vnCSue_aeefAN5Rmsqqj9RmYN3zzs4GQIrQHcVTiq6AlJzlGA/exec";
 
 const calGrid = document.getElementById('calGrid');
 const calMonthLabel = document.getElementById('calMonthLabel');
 const selectedDateDisplay = document.getElementById('selectedDateDisplay');
 const submitBtn = document.getElementById('submitBtn');
+
+// Updates just the label span (leaving the spinner span intact) and
+// toggles the loading spinner on/off.
+function setSubmitState(text, isLoading){
+  const label = document.getElementById('submitBtnLabel');
+  if (label) label.textContent = text;
+  submitBtn.classList.toggle('is-loading', !!isLoading);
+}
 
 let viewDate = new Date();
 viewDate.setDate(1);
@@ -6358,7 +6853,7 @@ let blockedDates = new Set();
 
 // FIX: disable submit until date is chosen
 submitBtn.disabled = true;
-submitBtn.textContent = "Select a date to continue";
+setSubmitState("Select a date to continue", false);
 
 
 async function loadBlockedDates() {
@@ -6424,6 +6919,16 @@ const weekdayNames = [
 function formatDateFull(date) {
   const weekday = weekdayNames[date.getDay()];
   const day = ordinalSuffix(date.getDate());
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+  return `${weekday}, ${day} ${month} ${year}`;
+}
+
+// Plain-day readable format e.g. "Monday, 23 April 2026" (no ordinal
+// suffix) — used in the on-screen booking confirmation message.
+function formatDateDisplay(date) {
+  const weekday = weekdayNames[date.getDay()];
+  const day = String(date.getDate()).padStart(2, '0');
   const month = monthNames[date.getMonth()];
   const year = date.getFullYear();
   return `${weekday}, ${day} ${month} ${year}`;
@@ -6505,7 +7010,7 @@ function selectDate(date) {
   selectedDateDisplay.style.display = 'block';
 
   submitBtn.disabled = false;
-  submitBtn.textContent = 'Send booking request';
+  setSubmitState('Send booking request', false);
 }
 
 document.getElementById('prevMonth').addEventListener('click', () => {
@@ -6583,7 +7088,7 @@ bookingForm.addEventListener('submit', async (e) => {
   }
 
   submitBtn.disabled = true;
-  submitBtn.textContent = "Sending...";
+  setSubmitState("Sending...", true);
 
   const name = document.getElementById('fullName').value;
 
@@ -6603,34 +7108,12 @@ phoneInput.value = phoneInput.value.replace(/\D/g, '');
   const formData = new FormData(bookingForm);
   formData.append("selectedDate", dateStr);
   formData.append("package", (document.getElementById('packageInput') || {}).value || "");
+  formData.append("servings", (document.getElementById('servingsInput') || {}).value || "");
 
   try {
     // =========================
-    // SEND TO FORMSPREE
-    // =========================
-    const res = await fetch(bookingForm.action, {
-      method: "POST",
-      body: formData,
-      headers: {
-        "Accept": "application/json"
-      }
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok) {
-      console.error("Formspree error:", data);
-      let detail = "";
-      if (data && Array.isArray(data.errors) && data.errors.length) {
-        detail = data.errors.map(er => er.message).filter(Boolean).join(" ");
-      } else if (data && data.error) {
-        detail = data.error;
-      }
-      throw new Error(detail || `Server responded with status ${res.status}.`);
-    }
-
-    // =========================
     // 2. CLEAN PAYLOAD (for Google Sheets)
+    // — built up front, independent of whether Formspree succeeds —
     // =========================
     const sheetPayload = new FormData();
 
@@ -6638,39 +7121,46 @@ phoneInput.value = phoneInput.value.replace(/\D/g, '');
     sheetPayload.append("organisation", document.getElementById('organisation').value);
     sheetPayload.append("email", document.getElementById('email').value);
     sheetPayload.append("phone", document.getElementById('phone').value);
-    sheetPayload.append("eventType", document.getElementById('eventType').value);
+    const eventTypeSelectEl = document.getElementById('eventType');
+    const eventTypeOtherEl = document.getElementById('eventTypeOther');
+    const eventTypeValue = (eventTypeOtherEl && !eventTypeOtherEl.disabled)
+      ? eventTypeOtherEl.value
+      : eventTypeSelectEl.value;
+    sheetPayload.append("eventType", eventTypeValue);
     sheetPayload.append("guestCount", document.getElementById('guestCount').value);
     sheetPayload.append("startTime", document.getElementById('startTime').value);
     sheetPayload.append("endTime", document.getElementById('endTime').value);
     sheetPayload.append("serviceHours", document.getElementById('serviceHours').value);
     sheetPayload.append("location", document.getElementById('location').value);
     sheetPayload.append("package", document.getElementById('packageInput').value || "");
+    sheetPayload.append("servings", document.getElementById('servingsInput').value || "");
 	sheetPayload.append("houseNumber", document.getElementById("houseNumber").value);
     sheetPayload.append("notes", document.getElementById('notes').value);
-    const hearAboutUsValue = document.getElementById('hearAboutUs').value;
+    const hearAboutUsSelectEl = document.getElementById('hearAboutUs');
+    const hearAboutUsOtherEl = document.getElementById('hearAboutUsOther');
+    const hearAboutUsValue = (hearAboutUsOtherEl && !hearAboutUsOtherEl.disabled)
+      ? hearAboutUsOtherEl.value
+      : hearAboutUsSelectEl.value;
     if (hearAboutUsValue) {
       sheetPayload.append("hearAboutUs", hearAboutUsValue);
     }
     // Full readable format e.g. "Monday, 23rd April 2026" for the sheet
     sheetPayload.append("selectedDate", formatDateFull(selectedDate));
 
-    // utilities — Electricity & Sinks are now Yes/No toggles (own hidden
-    // inputs); combine them into the same comma-separated "utilities"
-    // column the sheet already expects, and also log each individually.
+    // utilities — Electricity, Sinks & Sheltered are Yes/No toggles (own
+    // hidden inputs); combined into the sheet's single merged "Utilities"
+    // column as emoji so it reads at a glance: ⚡ electricity · 💧 sinks ·
+    // 🏠 sheltered. Sheltered no longer gets its own sheet column.
     const electricityValue = document.getElementById('electricityInput').value;
     const sinksValue = document.getElementById('sinksInput').value;
+    const shelteredValue = document.getElementById('shelteredInput').value;
     const utilities = [
-      electricityValue === 'Yes' ? 'Electricity' : null,
-      sinksValue === 'Yes' ? 'Sinks' : null,
-    ].filter(Boolean).join(", ");
+      electricityValue === 'Yes' ? '⚡' : null,
+      sinksValue === 'Yes' ? '💧' : null,
+      shelteredValue === 'Yes' ? '🏠' : null,
+    ].filter(Boolean).join(" ");
 
     sheetPayload.append("utilities", utilities);
-    sheetPayload.append("electricity", electricityValue || "");
-    sheetPayload.append("sinks", sinksValue || "");
-
-    // sheltered (Yes/No) — from the toggle switch's hidden input, own column in the sheet
-    const shelteredValue = document.getElementById('shelteredInput').value;
-    sheetPayload.append("sheltered", shelteredValue || "");
 
 sheetPayload.append("street_address", document.getElementById("street_address").value);
 sheetPayload.append("suburb", document.getElementById("suburb").value);
@@ -6688,6 +7178,38 @@ sheetPayload.append("postcode", document.getElementById("postcode").value);
     sheetPayload.append("agreementAuthorised", document.getElementById('agreementAuthorised').checked ? "Yes" : "No");
 
     // =========================
+    // SEND TO FORMSPREE
+    // — wrapped so a failure here is captured, not thrown, and doesn't
+    // stop the Google Sheets attempt below from happening —
+    // =========================
+    async function sendToFormspree(){
+      try {
+        const res = await fetch(bookingForm.action, {
+          method: "POST",
+          body: formData,
+          headers: { "Accept": "application/json" }
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          let detail = "";
+          if (data && Array.isArray(data.errors) && data.errors.length) {
+            detail = data.errors.map(er => er.message).filter(Boolean).join(" ");
+          } else if (data && data.error) {
+            detail = data.error;
+          }
+          console.error("Formspree submission failed:", res.status, detail || data);
+          return { ok: false, error: detail || `Formspree responded with status ${res.status}.` };
+        }
+        console.log("Formspree submission succeeded.");
+        return { ok: true };
+      } catch (err) {
+        // Network-level failure (offline, CORS, ad-blocker, etc.)
+        console.error("Formspree submission threw an error:", err);
+        return { ok: false, error: err.message || "Could not reach Formspree." };
+      }
+    }
+
+    // =========================
     // SEND TO GOOGLE SHEETS (retried once if it fails, since a missed
     // write means the date won't get blocked on the calendar later)
     // =========================
@@ -6695,7 +7217,11 @@ sheetPayload.append("postcode", document.getElementById("postcode").value);
       try {
         const sheetRes = await fetch(SHEET_URL, { method: "POST", body: payload });
         const sheetData = await sheetRes.json().catch(() => ({}));
-        if (sheetData && sheetData.status === "success") return true;
+        if (sheetData && sheetData.status === "success") {
+          console.log("Google Sheets sync succeeded.");
+          return true;
+        }
+        console.error("Google Sheets sync did not confirm success:", sheetData);
         throw new Error("Sheet did not confirm success");
       } catch (err) {
         console.error(`Sheet sync failed (attempt ${attempt}):`, err);
@@ -6704,14 +7230,49 @@ sheetPayload.append("postcode", document.getElementById("postcode").value);
       }
     }
 
-    const sheetSynced = await sendToSheet(sheetPayload, 1);
+    // Both channels are attempted in parallel and independently — one
+    // failing does not prevent, delay, or cancel the other.
+    const [formspreeResult, sheetSynced] = await Promise.all([
+      sendToFormspree(),
+      sendToSheet(sheetPayload, 1)
+    ]);
+
+    if (!formspreeResult.ok && !sheetSynced) {
+      // Neither channel recorded the booking — this is the only case
+      // that should alarm the person submitting the form.
+      throw new Error(formspreeResult.error || "We couldn't reach our booking service.");
+    }
 
     // =========================
     // SUCCESS UI
     // =========================
-    confirmText.textContent = sheetSynced
-      ? `Thanks, ${name.split(' ')[0] || 'there'}! ${dateStr} is held. We'll confirm by email as soon as possible.`
-      : `Thanks, ${name.split(' ')[0] || 'there'}! Your request for ${dateStr} has been sent. If you don't hear from us within 48 hours, please email us directly at blendandbrew@hotmail.com.au to confirm your date.`;
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, ch => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[ch]));
+    }
+    const firstNameSafe = escapeHtml(name.split(' ')[0] || 'there');
+
+    const prettyDate = formatDateDisplay(selectedDate);
+
+    confirmText.innerHTML =
+      `Thanks, <strong>${firstNameSafe}!</strong> Your request for <strong>${prettyDate}</strong> has been sent.` +
+      `<br><br>We'll confirm by email as soon as possible!` +
+      `<br>If you don't hear from us soon, please email us directly at blendandbrew@hotmail.com.au to confirm your date.`;
+
+    // Lock the right column to its current (form-visible) height before
+    // swapping to the confirmation message — otherwise the much shorter
+    // confirm box lets the whole booking card collapse down to whatever
+    // height the calendar needs, which reads as a jarring shrink.
+    const bookingRightEl = document.querySelector('.booking-right');
+    if (bookingRightEl){
+      bookingRightEl.style.minHeight = bookingRightEl.offsetHeight + 'px';
+      // Once the confirmation replaces the form, centre it vertically
+      // within the column instead of letting it sit at the top.
+      bookingRightEl.style.display = 'flex';
+      bookingRightEl.style.flexDirection = 'column';
+      bookingRightEl.style.justifyContent = 'center';
+    }
 
     bookingFormWrap.style.display = 'none';
     confirmBox.classList.add('show');
@@ -6723,7 +7284,7 @@ sheetPayload.append("postcode", document.getElementById("postcode").value);
     alert(`We couldn't send your booking: ${reason}\n\nPlease try again, or email us directly at blendandbrew@hotmail.com.au.`);
 
     submitBtn.disabled = false;
-    submitBtn.textContent = "Send booking request";
+    setSubmitState("Send booking request", false);
   }
 });
 
