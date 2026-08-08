@@ -108,7 +108,7 @@
        midpoint of that floor-to-card-bottom gap. */
     .social-links {
         position: absolute;
-        bottom: 25%;
+        bottom: 27%;
         left: var(--logo-x);
         transform: translateX(-50%);
         z-index: 2;
@@ -119,8 +119,8 @@
 
     .social-links a {
         display: inline-flex;
-        width: 38px;
-        height: 38px;
+        width: 28px;
+        height: 28px;
         opacity: 0.92;
         transition: opacity 200ms ease, transform 200ms ease;
     }
@@ -403,7 +403,7 @@
 
     // ---- Mobile device tilt (gyroscope) ----
     let gyroActive = false;
-    const gyroMaxAngle = 22; // degrees of physical tilt mapped to full maxTilt
+    const gyroMaxAngle = 14; // degrees of physical tilt mapped to full maxTilt
 
     function handleOrientation(event) {
         if (event.beta === null || event.gamma === null) return;
