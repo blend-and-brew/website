@@ -12,6 +12,10 @@
         --rotate-x: 0deg;
         --rotate-y: 0deg;
         --glow-opacity: 0;
+        /* Horizontal anchor for the logo-text, as a % across the rendered
+           background image (0% = left edge, 100% = right edge). Nudge this
+           one value to line it up between the cart and the right edge. */
+        --logo-x: 71.5%;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,88 +28,112 @@
         justify-content: center;
         align-items: center;
         overflow: hidden;
-        padding: 30px;
-        background: #030303;
+        padding: 10mm;
+        background: #0c0b0a;
         font-family: Arial, Helvetica, sans-serif;
     }
 
-    .card-wrapper {
+    /* Stage is sized to exactly wrap the rendered background image (not a
+       fixed box), so percentage positioning below lines up with the actual
+       artwork instead of empty letterbox space around it. */
+    .stage {
         position: relative;
-        width: min(90vw, 650px);
-        perspective: 1100px;
-        touch-action: none;
+        height: clamp(300px, 74vh, 680px);
+        width: fit-content;
+        max-width: calc(100vw - 20mm);
     }
 
-    .glow {
-        position: absolute;
-        inset: -40px;
+    .bg-layer {
+        position: relative;
+        display: block;
         z-index: 0;
+        height: 100%;
+        width: auto;
+        max-width: 100%;
         pointer-events: none;
-        background: radial-gradient(circle at var(--pointer-x) var(--pointer-y),
-            rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.10) 18%, transparent 55%);
-        filter: blur(34px);
-        opacity: var(--glow-opacity);
-        transition: opacity 320ms ease;
+        user-select: none;
+        -webkit-user-drag: none;
+        border: 1.5px solid #b08d57;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Positioned as a % across the rendered background image via --logo-x,
+       sized to 50% of the background's height and nudged up 20% of its own
+       height off the vertical center. */
+    .card-wrapper {
+        position: absolute;
+        top: 50%;
+        left: var(--logo-x);
+        transform: translate(-50%, calc(-50% - 20%));
+        z-index: 2;
+        height: 50%;
+        width: auto;
+        perspective: 1100px;
+        touch-action: none;
     }
 
     .frame {
         position: relative;
         z-index: 1;
-        width: 100%;
-        padding: 18px;
-        border: 4px solid #ffffff;
-        border-radius: 5px;
-        background: #050505;
-        overflow: hidden;
+        display: block;
+        height: 100%;
+        width: auto;
         transform-style: preserve-3d;
         transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
-        transition: box-shadow 220ms ease;
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72);
         will-change: transform;
-    }
-
-    .card-wrapper.active .frame {
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
-    }
-
-    .frame::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        z-index: 2;
-        pointer-events: none;
-        background: radial-gradient(circle at var(--pointer-x) var(--pointer-y),
-            rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 20%, transparent 52%);
-        mix-blend-mode: screen;
-        opacity: var(--glow-opacity);
-        transition: opacity 320ms ease;
-    }
-
-    .frame::after {
-        content: "";
-        position: absolute;
-        inset: -45%;
-        z-index: 3;
-        pointer-events: none;
-        background: linear-gradient(115deg,
-            transparent 38%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.22) 50%,
-            rgba(255,255,255,0.05) 55%, transparent 62%);
-        transform: translateX(-55%) rotate(8deg);
-        opacity: 0;
-    }
-
-    .card-wrapper.active .frame::after {
-        animation: sweep 1.4s ease forwards;
     }
 
     .frame img {
         position: relative;
         z-index: 1;
         display: block;
-        width: 100%;
-        height: auto;
+        height: 100%;
+        width: auto;
+        max-width: none;
         transform: translateZ(18px) scale(1.012);
         filter: saturate(0.95) contrast(1.04);
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+
+    /* Social icon row: centered on the same horizontal anchor as the
+       foreground logo (--logo-x), sitting on the stage independently of
+       the tilting card. The card-wrapper's untransformed box bottom sits
+       flush with the stage floor (bottom: 100%), then the transform lifts
+       it 35% of its own height (50% + 20%), leaving the card's bottom edge
+       35% up from the floor. Bottom: 25% sits it a bit higher than the
+       midpoint of that floor-to-card-bottom gap. */
+    .social-links {
+        position: absolute;
+        bottom: 25%;
+        left: var(--logo-x);
+        transform: translateX(-50%);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 26px;
+    }
+
+    .social-links a {
+        display: inline-flex;
+        width: 38px;
+        height: 38px;
+        opacity: 0.92;
+        transition: opacity 200ms ease, transform 200ms ease;
+    }
+
+    .social-links a:hover,
+    .social-links a:focus-visible {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+
+    .social-links img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        pointer-events: none;
         user-select: none;
         -webkit-user-drag: none;
     }
@@ -133,20 +161,16 @@
     .tilt-enable:active { background: rgba(255, 255, 255, 0.14); }
     .tilt-enable.visible { display: inline-block; }
 
-    @keyframes sweep {
-        0% { transform: translateX(-60%) rotate(8deg); opacity: 0; }
-        18% { opacity: 0.75; }
-        100% { transform: translateX(60%) rotate(8deg); opacity: 0; }
-    }
-
     @media (max-width: 600px) {
-        body { padding: 18px; }
-        .frame { padding: 10px; border-width: 3px; }
+        body { padding: 10mm; }
+        .frame { padding: 10px; }
         .glow { inset: -24px; filter: blur(26px); }
+        .social-links { gap: 20px; }
+        .social-links a { width: 30px; height: 30px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .frame, .glow, .frame::before, .frame::after {
+        .frame, .glow, .frame::before {
             transition: none;
             animation: none !important;
         }
@@ -158,15 +182,61 @@
 
 <canvas id="splashCursorCanvas" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:50; pointer-events:none; display:block;"></canvas>
 
-<div class="card-wrapper" id="card">
-    <div class="glow"></div>
+<div class="stage">
+    <img class="bg-layer" src="images/BlendandBrew_ComingSoon_BG(Ext).png" alt="Blend & Brew background">
 
-    <div class="frame">
-        <img src="images/BB_ComingSoon.webp" alt="Blend & Brew Coming Soon">
+    <div class="card-wrapper" id="card">
+        <div class="glow"></div>
+
+        <div class="frame">
+            <img src="images/BlendandBrew_ComingSoon_LogoText.png" alt="Blend & Brew Coming Soon">
+        </div>
+
+        <button class="tilt-enable" id="tiltEnableBtn" type="button">Tap to enable tilt</button>
     </div>
 
-    <button class="tilt-enable" id="tiltEnableBtn" type="button">Tap to enable tilt</button>
+    <div class="social-links">
+        <a href="https://www.facebook.com/profile.php?id=61588292214287" target="_blank" rel="noopener noreferrer" aria-label="Blend & Brew on Facebook">
+            <img src="images/Facebook(W).png" alt="Facebook">
+        </a>
+        <a href="https://www.instagram.com/blendandbrew_au/" target="_blank" rel="noopener noreferrer" aria-label="Blend & Brew on Instagram">
+            <img src="images/Instagram(W).png" alt="Instagram">
+        </a>
+    </div>
 </div>
+
+<script>
+    // Size the stage so the background image fills as much of the viewport
+    // as possible while keeping an exact 10mm gap on all four edges,
+    // regardless of the image's aspect ratio.
+    (function sizeStageToBuffer() {
+        const stage = document.querySelector('.stage');
+        const bg = document.querySelector('.bg-layer');
+        if (!stage || !bg) return;
+
+        const MM_TO_PX = 96 / 25.4;
+        const BUFFER_PX = 10 * MM_TO_PX; // per edge
+
+        function applySize() {
+            if (!bg.naturalWidth || !bg.naturalHeight) return;
+            const aspect = bg.naturalWidth / bg.naturalHeight;
+            const availW = window.innerWidth - BUFFER_PX * 2;
+            const availH = window.innerHeight - BUFFER_PX * 2;
+            const heightFromWidth = availW / aspect;
+            const finalHeight = Math.max(0, Math.min(availH, heightFromWidth));
+            stage.style.height = `${finalHeight}px`;
+        }
+
+        if (bg.complete) applySize();
+        else bg.addEventListener('load', applySize);
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(applySize, 100);
+        });
+    })();
+</script>
 
 <script>
     const card = document.getElementById('card');
@@ -298,12 +368,12 @@
         SIM_RESOLUTION: 128,
         DYE_RESOLUTION: 1440,
         CAPTURE_RESOLUTION: 512,
-        DENSITY_DISSIPATION: 3,
+        DENSITY_DISSIPATION: 4.2,
         VELOCITY_DISSIPATION: 2,
         PRESSURE: 0.15,
         PRESSURE_ITERATIONS: 20,
         CURL: 3,
-        SPLAT_RADIUS: 0.2,
+        SPLAT_RADIUS: 0.15,
         SPLAT_FORCE: 6000,
         SHADING: true,
         COLOR_UPDATE_SPEED: 7,
@@ -1152,7 +1222,7 @@
         const r = parseInt(val.slice(0, 2), 16) / 255;
         const g = parseInt(val.slice(2, 4), 16) / 255;
         const b = parseInt(val.slice(4, 6), 16) / 255;
-        return { r: r * 0.15, g: g * 0.15, b: b * 0.15 };
+        return { r: r * 0.07, g: g * 0.07, b: b * 0.07 };
     }
 
     function generateColor() {
