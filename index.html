@@ -16,6 +16,9 @@
            background image (0% = left edge, 100% = right edge). Nudge this
            one value to line it up between the cart and the right edge. */
         --logo-x: 71.5%;
+        /* Edge gap used on mobile so the logo and socials never touch the
+           screen border, regardless of device width/height. */
+        --mobile-edge-buffer: clamp(16px, 6vw, 32px);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -162,10 +165,62 @@
     .tilt-enable.visible { display: inline-block; }
 
     @media (max-width: 600px) {
-        body { padding: 10mm; }
+        /* No buffer on mobile: background fills the entire screen. */
+        body { padding: 0; }
         .frame { padding: 10px; }
         .glow { inset: -24px; filter: blur(26px); }
-        .social-links { gap: 20px; }
+
+        .stage {
+            height: 100vh;
+            height: 100dvh;
+            width: 100vw;
+            max-width: 100vw;
+        }
+
+        .bg-layer {
+            height: 100%;
+            width: 100%;
+            max-width: none;
+            object-fit: cover;
+            border: none;
+            box-shadow: none;
+        }
+
+        /* Vertical mobile background: foreground sits centered
+           horizontally on the stage, logo pinned near the top with a real
+           buffer, socials pinned to the bottom with the same buffer,
+           instead of the desktop's cart-relative --logo-x offset. */
+        .card-wrapper {
+            top: var(--mobile-edge-buffer);
+            left: 50%;
+            transform: translate(-50%, 0);
+            /* Width-constrained (not height-constrained) so the image's
+               on-screen width is always the viewport minus the buffer on
+               both sides, no matter its aspect ratio. */
+            width: calc(100% - (var(--mobile-edge-buffer) * 2));
+            height: auto;
+            max-height: 40%;
+        }
+
+        .frame {
+            width: 100%;
+            height: auto;
+        }
+
+        .frame img {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .social-links {
+            top: auto;
+            bottom: var(--mobile-edge-buffer);
+            left: 50%;
+            transform: translateX(-50%);
+            gap: 20px;
+        }
         .social-links a { width: 30px; height: 30px; }
     }
 
@@ -183,7 +238,10 @@
 <canvas id="splashCursorCanvas" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:50; pointer-events:none; display:block;"></canvas>
 
 <div class="stage">
-    <img class="bg-layer" src="images/BlendandBrew_ComingSoon_BG(Ext).png" alt="Blend & Brew background">
+    <picture>
+        <source media="(max-width: 600px)" srcset="images/DropPage_Cart(V).webp">
+        <img class="bg-layer" src="images/BlendandBrew_ComingSoon_BG(Ext).webp" alt="Blend & Brew background">
+    </picture>
 
     <div class="card-wrapper" id="card">
         <div class="glow"></div>
@@ -218,6 +276,13 @@
         const BUFFER_PX = 10 * MM_TO_PX; // per edge
 
         function applySize() {
+            const isMobile = window.matchMedia('(max-width: 600px)').matches;
+            if (isMobile) {
+                // Full-bleed on mobile: clear any inline sizing so the
+                // stylesheet's 100vw/100dvh rules take over.
+                stage.style.height = '';
+                return;
+            }
             if (!bg.naturalWidth || !bg.naturalHeight) return;
             const aspect = bg.naturalWidth / bg.naturalHeight;
             const availW = window.innerWidth - BUFFER_PX * 2;
