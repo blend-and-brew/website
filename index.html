@@ -166,13 +166,15 @@
 
     @media (max-width: 600px) {
         /* No buffer on mobile: background fills the entire screen. */
+        html, body { height: 100%; overflow: hidden; }
         body { padding: 0; }
         .frame { padding: 10px; }
         .glow { inset: -24px; filter: blur(26px); }
 
         .stage {
-            height: 100vh;
-            height: 100dvh;
+            position: fixed;
+            inset: 0;
+            height: var(--vvh, 100dvh);
             width: 100vw;
             max-width: 100vw;
         }
@@ -216,7 +218,7 @@
 
         .social-links {
             top: auto;
-            bottom: var(--mobile-edge-buffer);
+            bottom: calc(var(--mobile-edge-buffer) + env(safe-area-inset-bottom, 0px));
             left: 50%;
             transform: translateX(-50%);
             gap: 20px;
@@ -300,6 +302,26 @@
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(applySize, 100);
         });
+    })();
+</script>
+
+<script>
+    // Keeps a live viewport-height CSS variable in sync with the browser's
+    // actual visible area, so mobile browser toolbars (e.g. Samsung
+    // Internet's bottom bar) that dvh doesn't always track correctly can't
+    // cover fixed-position content like the social icons.
+    (function trackVisualViewport() {
+        function updateVVH() {
+            const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            document.documentElement.style.setProperty('--vvh', `${h}px`);
+        }
+        updateVVH();
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', updateVVH);
+            window.visualViewport.addEventListener('scroll', updateVVH);
+        }
+        window.addEventListener('resize', updateVVH);
+        window.addEventListener('orientationchange', updateVVH);
     })();
 </script>
 
