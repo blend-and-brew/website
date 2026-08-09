@@ -33,9 +33,18 @@
 <meta name="twitter:description" content="Sydney's mobile coffee wagon for weddings, corporate events, private parties, markets and festivals.">
 <meta name="twitter:image" content="https://www.blendandbrew.com.au/images/CartPanorama(Office).webp">
 
-<link rel="icon" type="image/x-icon" href="images/favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- ============ FAVICON ============
+     Google requires more than an .ico reference to reliably pick up a
+     custom search-result icon: it wants a crawlable, reasonably large
+     (Google recommends a multiple of 48px, ideally 96x96+) square icon
+     available at a stable URL. The .ico alone is what most browser tabs
+     use; the PNG sizes + apple-touch-icon below are what search engines
+     and mobile home-screen bookmarks actually prefer. Swap the PNG paths
+     below for real exported files once available (see chat for details). -->
+<link rel="icon" href="images/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
 
 <style>
     :root {
