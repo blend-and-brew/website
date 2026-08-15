@@ -10,5 +10,11 @@
   "assets": {
     "directory": ".",
     "not_found_handling": "single-page-application"
-  }
+  },
+  "routes": [
+    {
+      "pattern": "www.blendandbrew.com.au",
+      "custom_domain": true
+    }
+  ]
 }
