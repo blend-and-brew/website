@@ -60,17 +60,19 @@ async function handleSubscribe(request, env) {
 
     const result = await response.json();
 
-    if (!response.ok) {
-      console.error("MailerLite API error:", result);
+if (!response.ok) {
+  console.error("MailerLite API error:", response.status, result);
 
-      return jsonResponse(
-        {
-          success: false,
-          error: "We couldn't add you right now. Please try again."
-        },
-        500
-      );
-    }
+  return jsonResponse(
+    {
+      success: false,
+      error: "MailerLite API request failed.",
+      status: response.status,
+      details: result
+    },
+    500
+  );
+}
 
     return jsonResponse({
       success: true,
