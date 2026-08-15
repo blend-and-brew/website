@@ -9,10 +9,6 @@
   },
   "assets": {
     "directory": ".",
-    "not_found_handling": "single-page-application",
-    "exclude": [
-      ".git",
-      ".wrangler"
-    ]
+    "not_found_handling": "single-page-application"
   }
 }
