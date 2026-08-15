@@ -3,22 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- ============ PRIMARY SEO ============
-     Domain is set to www.blendandbrew.com.au. No phone number is
-     published in structured data, by request. -->
 <title>Mobile Coffee Cart &amp; Coffee Wagon Hire Sydney | Blend &amp; Brew</title>
 <meta name="description" content="Blend & Brew is Sydney's mobile coffee wagon for weddings, corporate events, private parties, markets and festivals. Two certified baristas, café-quality coffee, fully self-contained cart. Check availability & book online.">
 <meta name="keywords" content="mobile coffee cart Sydney, coffee wagon hire Sydney, coffee cart hire, wedding coffee cart, corporate coffee catering, mobile barista hire, coffee cart hire Western Sydney, coffee van hire">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Blend & Brew">
 <link rel="canonical" href="https://www.blendandbrew.com.au/">
-
-<!-- Local/geo signals -->
 <meta name="geo.region" content="AU-NSW">
 <meta name="geo.placename" content="Sydney">
-
-<!-- Open Graph (Facebook/Instagram link previews) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Blend & Brew">
 <meta property="og:title" content="Mobile Coffee Cart & Coffee Wagon Hire Sydney | Blend & Brew">
@@ -26,26 +18,14 @@
 <meta property="og:image" content="https://www.blendandbrew.com.au/images/CartPanorama(Office).webp">
 <meta property="og:url" content="https://www.blendandbrew.com.au/">
 <meta property="og:locale" content="en_AU">
-
-<!-- Twitter / X card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Mobile Coffee Cart & Coffee Wagon Hire Sydney | Blend & Brew">
 <meta name="twitter:description" content="Sydney's mobile coffee wagon for weddings, corporate events, private parties, markets and festivals.">
 <meta name="twitter:image" content="https://www.blendandbrew.com.au/images/CartPanorama(Office).webp">
-
-<!-- ============ FAVICON ============
-     Google requires more than an .ico reference to reliably pick up a
-     custom search-result icon: it wants a crawlable, reasonably large
-     (Google recommends a multiple of 48px, ideally 96x96+) square icon
-     available at a stable URL. The .ico alone is what most browser tabs
-     use; the PNG sizes + apple-touch-icon below are what search engines
-     and mobile home-screen bookmarks actually prefer. Swap the PNG paths
-     below for real exported files once available (see chat for details). -->
 <link rel="icon" href="images/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-
 <style>
     :root {
         --pointer-x: 50%;
@@ -53,19 +33,32 @@
         --rotate-x: 0deg;
         --rotate-y: 0deg;
         --glow-opacity: 0;
-        /* Horizontal anchor for the logo-text, as a % across the rendered
-           background image (0% = left edge, 100% = right edge). Nudge this
-           one value to line it up between the cart and the right edge. */
         --logo-x: 71.5%;
-        /* Edge gap used on mobile so the logo and socials never touch the
-           screen border, regardless of device width/height. */
         --mobile-edge-buffer: clamp(16px, 6vw, 32px);
+        /* Early access colours */
+        --bb-cream: #f1ede6;
+        --bb-muted: #b8aea1;
+        --bb-gold: #b08d57;
+        --bb-dark: #171412;
+
+        /* ============ CUSTOM CURSORS ============
+           Light cream body with a crisp black outline, matching the main
+           site's cursor pack. */
+        --cursor-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M6 3.9 Q4 3 4.9 5 L10.9 18.6 Q12 21 12.9 18.5 L14.2 14.8 Q14.6 13.6 15.8 13.2 L20.1 11.7 Q22 11.1 20.2 10.3 Z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, default;
+        --cursor-pointer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M9 22c-.3 0-.6-.1-.8-.3l-4-4.2c-.6-.6-.6-1.6 0-2.2.6-.6 1.5-.6 2.1 0l1.7 1.8V8.5c0-.9.7-1.6 1.6-1.6s1.6.7 1.6 1.6v3.8c.3-.1.6-.2 1-.2.7 0 1.3.4 1.5 1 .3-.2.6-.3 1-.3.8 0 1.5.6 1.6 1.4.3-.1.6-.2.9-.2.9 0 1.6.7 1.6 1.6v3c0 3-2.5 5.4-5.5 5.4H9z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E") 9 6, pointer;
+        --cursor-text: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23F4EFE6' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23181614' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") 12 12, text;
+        --cursor-wait: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M6 3.9 Q4 3 4.9 5 L10.9 18.6 Q12 21 12.9 18.5 L14.2 14.8 Q14.6 13.6 15.8 13.2 L20.1 11.7 Q22 11.1 20.2 10.3 Z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.4' stroke-linejoin='round'/%3E%3Ccircle cx='21' cy='21' r='5.5' fill='%233B6FD6' stroke='%23F4EFE6' stroke-width='2.2'/%3E%3Cpath d='M21 18.2v3l2.2 1.8' fill='none' stroke='%23F4EFE6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, wait;
     }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html, body { width: 100%; min-height: 100%; }
-
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+    }
     body {
         min-height: 100vh;
         display: flex;
@@ -76,17 +69,16 @@
         background: #0c0b0a;
         font-family: Arial, Helvetica, sans-serif;
     }
-
-    /* Stage is sized to exactly wrap the rendered background image (not a
-       fixed box), so percentage positioning below lines up with the actual
-       artwork instead of empty letterbox space around it. */
+    html,
+    body {
+        cursor: var(--cursor-arrow);
+    }
     .stage {
         position: relative;
         height: clamp(300px, 74vh, 680px);
         width: fit-content;
         max-width: calc(100vw - 20mm);
     }
-
     .bg-layer {
         position: relative;
         display: block;
@@ -100,10 +92,6 @@
         border: 1.5px solid #b08d57;
         box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
     }
-
-    /* Positioned as a % across the rendered background image via --logo-x,
-       sized to 50% of the background's height and nudged up 20% of its own
-       height off the vertical center. */
     .card-wrapper {
         position: absolute;
         top: 50%;
@@ -115,7 +103,6 @@
         perspective: 1100px;
         touch-action: none;
     }
-
     .frame {
         position: relative;
         z-index: 1;
@@ -126,7 +113,6 @@
         transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
         will-change: transform;
     }
-
     .frame img {
         position: relative;
         z-index: 1;
@@ -139,39 +125,151 @@
         user-select: none;
         -webkit-user-drag: none;
     }
-
-    /* Social icon row: centered on the same horizontal anchor as the
-       foreground logo (--logo-x), sitting on the stage independently of
-       the tilting card. The card-wrapper's untransformed box bottom sits
-       flush with the stage floor (bottom: 100%), then the transform lifts
-       it 35% of its own height (50% + 20%), leaving the card's bottom edge
-       35% up from the floor. Bottom: 25% sits it a bit higher than the
-       midpoint of that floor-to-card-bottom gap. */
-    .social-links {
+    /* =========================================================
+       BELOW-FRAME GROUP (email + social, stacked, never overlaps)
+       ========================================================= */
+    .below-frame {
         position: absolute;
-        bottom: 27%;
-        left: var(--logo-x);
+        top: 100%;
+        left: 50%;
         transform: translateX(-50%);
-        z-index: 2;
+        z-index: 5;
+        margin-top: -4px;
+        width: min(360px, 88vw);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+        pointer-events: auto;
+        touch-action: auto;
+    }
+    /* =========================================================
+       EARLY ACCESS SIGNUP
+       ========================================================= */
+    .early-access-form {
+        position: static;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .early-access-label {
+        display: block;
+        margin-bottom: 9px;
+        text-align: center;
+        color: var(--bb-gold);
+        font-size: 10px;
+        line-height: 1.4;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        text-shadow:
+            0 1px 5px rgba(0, 0, 0, 0.7);
+    }
+    .early-access-row {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+        background: rgba(23, 20, 18, 0.78);
+        border: 1.5px solid var(--bb-gold);
+        box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+    .early-access-input {
+        flex: 1;
+        min-width: 0;
+        height: 42px;
+        padding: 0 13px;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--bb-cream);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 13px;
+        -webkit-appearance: none;
+        appearance: none;
+        cursor: var(--cursor-text);
+    }
+    .early-access-input::placeholder {
+        color: rgba(184, 174, 161, 0.7);
+        font-style: italic;
+        letter-spacing: 0.02em;
+    }
+    .early-access-input:focus {
+        background: rgba(176, 141, 87, 0.08);
+    }
+    .early-access-button {
+        flex: 0 0 auto;
+        height: 42px;
+        padding: 0 16px;
+        border: 0;
+        border-left: 1px solid rgba(23, 20, 18, 0.4);
+        background: var(--bb-gold);
+        color: var(--bb-dark);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        cursor: var(--cursor-pointer);
+        transition:
+            background 180ms ease,
+            color 180ms ease;
+    }
+    .early-access-button:hover {
+        background: #c6a06a;
+    }
+    .early-access-button:active {
+        background: #9c7943;
+    }
+    .early-access-button:disabled {
+        opacity: 0.55;
+        cursor: var(--cursor-wait);
+    }
+    .early-access-message {
+        min-height: 17px;
+        margin-top: 8px;
+        text-align: center;
+        color: var(--bb-muted);
+        font-size: 10px;
+        line-height: 1.4;
+        letter-spacing: 0.02em;
+        text-shadow:
+            0 1px 5px rgba(0, 0, 0, 0.7);
+    }
+    .early-access-message.success {
+        color: var(--bb-gold);
+    }
+    .early-access-message.error {
+        color: #d0aaa0;
+    }
+    /* =========================================================
+       SOCIAL LINKS
+       ========================================================= */
+    .social-links {
+        position: static;
         display: flex;
         align-items: center;
         gap: 26px;
     }
-
     .social-links a {
         display: inline-flex;
         width: 28px;
         height: 28px;
         opacity: 0.92;
-        transition: opacity 200ms ease, transform 200ms ease;
+        cursor: var(--cursor-pointer);
+        transition:
+            opacity 200ms ease,
+            transform 200ms ease;
     }
-
     .social-links a:hover,
     .social-links a:focus-visible {
         opacity: 1;
         transform: translateY(-2px);
     }
-
     .social-links img {
         width: 100%;
         height: 100%;
@@ -181,8 +279,9 @@
         user-select: none;
         -webkit-user-drag: none;
     }
-
-    /* Mobile "enable tilt" prompt (iOS requires a tap to grant motion permission) */
+    /* =========================================================
+       TILT BUTTON
+       ========================================================= */
     .tilt-enable {
         position: absolute;
         left: 50%;
@@ -197,21 +296,37 @@
         letter-spacing: 0.02em;
         padding: 8px 16px;
         border-radius: 999px;
-        cursor: pointer;
+        cursor: var(--cursor-pointer);
         display: none;
-        transition: opacity 240ms ease, background 200ms ease;
+        transition:
+            opacity 240ms ease,
+            background 200ms ease;
     }
-
-    .tilt-enable:active { background: rgba(255, 255, 255, 0.14); }
-    .tilt-enable.visible { display: inline-block; }
-
+    .tilt-enable:active {
+        background: rgba(255, 255, 255, 0.14);
+    }
+    .tilt-enable.visible {
+        display: inline-block;
+    }
+    /* =========================================================
+       MOBILE
+       ========================================================= */
     @media (max-width: 600px) {
-        /* No buffer on mobile: background fills the entire screen. */
-        html, body { height: 100%; overflow: hidden; }
-        body { padding: 0; }
-        .frame { padding: 10px; }
-        .glow { inset: -24px; filter: blur(26px); }
-
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+        body {
+            padding: 0;
+        }
+        .frame {
+            padding: 10px;
+        }
+        .glow {
+            inset: -24px;
+            filter: blur(26px);
+        }
         .stage {
             position: fixed;
             inset: 0;
@@ -219,7 +334,6 @@
             width: 100vw;
             max-width: 100vw;
         }
-
         .bg-layer {
             height: 100%;
             width: 100%;
@@ -228,58 +342,76 @@
             border: none;
             box-shadow: none;
         }
-
-        /* Vertical mobile background: foreground sits centered
-           horizontally on the stage, logo pinned near the top with a real
-           buffer, socials pinned to the bottom with the same buffer,
-           instead of the desktop's cart-relative --logo-x offset. */
         .card-wrapper {
             top: var(--mobile-edge-buffer);
             left: 50%;
             transform: translate(-50%, 0);
-            /* Width-constrained (not height-constrained) so the image's
-               on-screen width is always the viewport minus the buffer on
-               both sides, no matter its aspect ratio. */
             width: calc(100% - (var(--mobile-edge-buffer) * 2));
             height: auto;
             max-height: 40%;
         }
-
         .frame {
             width: 100%;
             height: auto;
         }
-
         .frame img {
             width: 100%;
             height: auto;
             max-height: 100%;
             object-fit: contain;
         }
-
-        .social-links {
-            top: auto;
-            bottom: calc(var(--mobile-edge-buffer) + env(safe-area-inset-bottom, 0px));
-            left: 50%;
-            transform: translateX(-50%);
-            gap: 20px;
+        /* Below-frame group position on mobile */
+        .below-frame {
+            margin-top: -4px;
+            width: min(360px, calc(100% - (var(--mobile-edge-buffer) * 2)));
+            gap: 16px;
+            padding-bottom: calc(
+                var(--mobile-edge-buffer) +
+                env(safe-area-inset-bottom, 0px)
+            );
         }
-        .social-links a { width: 30px; height: 30px; }
+        .early-access-label {
+            font-size: 9px;
+            letter-spacing: 0.18em;
+            margin-bottom: 7px;
+        }
+        .early-access-input {
+            height: 40px;
+            font-size: 12px;
+        }
+        .early-access-button {
+            height: 40px;
+            padding: 0 13px;
+            font-size: 8px;
+        }
+        .social-links a {
+            width: 30px;
+            height: 30px;
+        }
     }
-
+    @media (max-width: 380px) {
+        .below-frame {
+            width: calc(100vw - 32px);
+        }
+        .early-access-button {
+            padding: 0 10px;
+            font-size: 7px;
+            letter-spacing: 0.12em;
+        }
+        .early-access-input {
+            padding: 0 10px;
+        }
+    }
     @media (prefers-reduced-motion: reduce) {
-        .frame, .glow, .frame::before {
+        .frame,
+        .glow,
+        .frame::before {
             transition: none;
             animation: none !important;
         }
     }
 </style>
-
-<!-- ============ STRUCTURED DATA (LocalBusiness + Offers) ============
-     No telephone field is published, by request. Consider adding a real
-     aggregateRating once you have a public review count from Google
-     Business Profile (don't fabricate a number — Google can penalise
-     inaccurate review schema). -->
+<!-- STRUCTURED DATA -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -301,7 +433,11 @@
   },
   "areaServed": {
     "@type": "GeoCircle",
-    "geoMidpoint": { "@type": "GeoCoordinates", "latitude": -33.8688, "longitude": 151.2093 },
+    "geoMidpoint": {
+      "@type": "GeoCoordinates",
+      "latitude": -33.8688,
+      "longitude": 151.2093
+    },
     "geoRadius": "50000"
   },
   "sameAs": [
@@ -311,246 +447,675 @@
   "review": [
     {
       "@type": "Review",
-      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-      "author": { "@type": "Organization", "name": "ASR Technology" },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "ASR Technology"
+      },
       "reviewBody": "Professional setup, on time, and seamless service. A perfect standout feature to our corporate event."
     },
     {
       "@type": "Review",
-      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-      "author": { "@type": "Person", "name": "Sarah & James" },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Sarah & James"
+      },
       "reviewBody": "Absolutely incredible service by Mari and Simon on our wedding day. The coffee cart was a huge hit with guests and looked amazing in our photos."
     },
     {
       "@type": "Review",
-      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-      "author": { "@type": "Person", "name": "Daniel R." },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Daniel R."
+      },
       "reviewBody": "Best part of the night. Everyone kept going back for coffees. It made the whole party unforgettable."
     }
   ],
   "makesOffer": [
-    { "@type": "Offer", "name": "Babycino Package", "description": "25 coffees, suitable for approx. 15 guests", "price": "350", "priceCurrency": "AUD" },
-    { "@type": "Offer", "name": "Piccolo Package", "description": "50 coffees, suitable for approx. 30 guests", "price": "550", "priceCurrency": "AUD" },
-    { "@type": "Offer", "name": "The Latte Package", "description": "100 coffees, suitable for approx. 60 guests", "price": "950", "priceCurrency": "AUD" },
-    { "@type": "Offer", "name": "The Grande Package", "description": "150 coffees, suitable for approx. 90 guests", "price": "1300", "priceCurrency": "AUD" },
-    { "@type": "Offer", "name": "The Barista Package", "description": "200 coffees, suitable for approx. 125 guests", "price": "1500", "priceCurrency": "AUD" }
+    {
+      "@type": "Offer",
+      "name": "Babycino Package",
+      "description": "25 coffees, suitable for approx. 15 guests",
+      "price": "350",
+      "priceCurrency": "AUD"
+    },
+    {
+      "@type": "Offer",
+      "name": "Piccolo Package",
+      "description": "50 coffees, suitable for approx. 30 guests",
+      "price": "550",
+      "priceCurrency": "AUD"
+    },
+    {
+      "@type": "Offer",
+      "name": "The Latte Package",
+      "description": "100 coffees, suitable for approx. 60 guests",
+      "price": "950",
+      "priceCurrency": "AUD"
+    },
+    {
+      "@type": "Offer",
+      "name": "The Grande Package",
+      "description": "150 coffees, suitable for approx. 90 guests",
+      "price": "1300",
+      "priceCurrency": "AUD"
+    },
+    {
+      "@type": "Offer",
+      "name": "The Barista Package",
+      "description": "200 coffees, suitable for approx. 125 guests",
+      "price": "1500",
+      "priceCurrency": "AUD"
+    }
   ]
 }
 </script>
 </head>
-
 <body>
-
-<canvas id="splashCursorCanvas" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:50; pointer-events:none; display:block;"></canvas>
-
+<canvas
+    id="splashCursorCanvas"
+    style="
+        position:fixed;
+        top:0;
+        left:0;
+        width:100vw;
+        height:100vh;
+        z-index:50;
+        pointer-events:none;
+        display:block;
+    "
+></canvas>
 <div class="stage">
     <picture>
-        <source media="(max-width: 600px)" srcset="images/DropPage_Cart(V).webp">
-        <img class="bg-layer" src="images/BlendandBrew_ComingSoon_BG(Ext).webp" alt="Blend & Brew background">
+        <source
+            media="(max-width: 600px)"
+            srcset="images/DropPage_Cart(V).webp"
+        >
+        <img
+            class="bg-layer"
+            src="images/BlendandBrew_ComingSoon_BG(Ext).webp"
+            alt="Blend & Brew background"
+        >
     </picture>
-
     <div class="card-wrapper" id="card">
         <div class="glow"></div>
-
         <div class="frame">
-            <img src="images/BlendandBrew_ComingSoon_LogoText.png" alt="Blend & Brew Coming Soon">
+            <img
+                src="images/BlendandBrew_ComingSoon_LogoText.png"
+                alt="Blend & Brew Coming Soon"
+            >
         </div>
 
-        <button class="tilt-enable" id="tiltEnableBtn" type="button">Tap to enable tilt</button>
-    </div>
+        <!-- =====================================================
+             EMAIL SIGNUP + SOCIAL LINKS (stacked, non-overlapping)
+             ===================================================== -->
+        <div class="below-frame">
+            <form
+                class="early-access-form"
+                id="earlyAccessForm"
+                novalidate
+            >
+                <label
+                    class="early-access-label"
+                    for="earlyAccessEmail"
+                >
+                    Be first to know when we open
+                </label>
+                <div class="early-access-row">
+                    <input
+                        class="early-access-input"
+                        type="email"
+                        id="earlyAccessEmail"
+                        name="email"
+                        placeholder="Your email address"
+                        autocomplete="email"
+                        inputmode="email"
+                        required
+                        aria-label="Email address"
+                    >
+                    <button
+                        class="early-access-button"
+                        id="earlyAccessButton"
+                        type="submit"
+                    >
+                        Get Early Access
+                    </button>
+                </div>
+                <p
+                    class="early-access-message"
+                    id="earlyAccessMessage"
+                    aria-live="polite"
+                ></p>
+            </form>
 
-    <div class="social-links">
-        <a href="https://www.facebook.com/profile.php?id=61588292214287" target="_blank" rel="noopener noreferrer" aria-label="Blend & Brew on Facebook">
-            <img src="images/Facebook(W).png" alt="Facebook">
-        </a>
-        <a href="https://www.instagram.com/blendandbrew_au/" target="_blank" rel="noopener noreferrer" aria-label="Blend & Brew on Instagram">
-            <img src="images/Instagram(W).png" alt="Instagram">
-        </a>
+            <div class="social-links">
+                <a
+                    href="https://www.facebook.com/profile.php?id=61588292214287"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Blend & Brew on Facebook"
+                >
+                    <img
+                        src="images/Facebook(W).png"
+                        alt="Facebook"
+                    >
+                </a>
+                <a
+                    href="https://www.instagram.com/blendandbrew_au/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Blend & Brew on Instagram"
+                >
+                    <img
+                        src="images/Instagram(W).png"
+                        alt="Instagram"
+                    >
+                </a>
+            </div>
+        </div>
+
+        <button
+            class="tilt-enable"
+            id="tiltEnableBtn"
+            type="button"
+        >
+            Tap to enable tilt
+        </button>
     </div>
 </div>
-
 <script>
-    // Size the stage so the background image fills as much of the viewport
-    // as possible while keeping an exact 10mm gap on all four edges,
-    // regardless of the image's aspect ratio.
-    (function sizeStageToBuffer() {
-        const stage = document.querySelector('.stage');
-        const bg = document.querySelector('.bg-layer');
-        if (!stage || !bg) return;
-
-        const MM_TO_PX = 96 / 25.4;
-        const BUFFER_PX = 10 * MM_TO_PX; // per edge
-
-        function applySize() {
-            const isMobile = window.matchMedia('(max-width: 600px)').matches;
-            if (isMobile) {
-                // Full-bleed on mobile: clear any inline sizing so the
-                // stylesheet's 100vw/100dvh rules take over.
-                stage.style.height = '';
-                return;
-            }
-            if (!bg.naturalWidth || !bg.naturalHeight) return;
-            const aspect = bg.naturalWidth / bg.naturalHeight;
-            const availW = window.innerWidth - BUFFER_PX * 2;
-            const availH = window.innerHeight - BUFFER_PX * 2;
-            const heightFromWidth = availW / aspect;
-            const finalHeight = Math.max(0, Math.min(availH, heightFromWidth));
-            stage.style.height = `${finalHeight}px`;
+/* ============================================================
+   STAGE SIZING
+   ============================================================ */
+(function sizeStageToBuffer() {
+    const stage = document.querySelector('.stage');
+    const bg = document.querySelector('.bg-layer');
+    if (!stage || !bg) return;
+    const MM_TO_PX = 96 / 25.4;
+    const BUFFER_PX = 10 * MM_TO_PX;
+    function applySize() {
+        const isMobile =
+            window.matchMedia('(max-width: 600px)').matches;
+        if (isMobile) {
+            stage.style.height = '';
+            return;
         }
-
-        if (bg.complete) applySize();
-        else bg.addEventListener('load', applySize);
-
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(applySize, 100);
-        });
-    })();
-</script>
-
-<script>
-    // Keeps a live viewport-height CSS variable in sync with the browser's
-    // actual visible area, so mobile browser toolbars (e.g. Samsung
-    // Internet's bottom bar) that dvh doesn't always track correctly can't
-    // cover fixed-position content like the social icons.
-    (function trackVisualViewport() {
-        function updateVVH() {
-            const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-            document.documentElement.style.setProperty('--vvh', `${h}px`);
-        }
-        updateVVH();
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', updateVVH);
-            window.visualViewport.addEventListener('scroll', updateVVH);
-        }
-        window.addEventListener('resize', updateVVH);
-        window.addEventListener('orientationchange', updateVVH);
-    })();
-</script>
-
-<script>
-    const card = document.getElementById('card');
-    const tiltEnableBtn = document.getElementById('tiltEnableBtn');
-    const maxTilt = 8;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // ---- Smooth, interpolated animation loop ----
-    const state = {
-        targetX: 50, targetY: 50, targetRX: 0, targetRY: 0,
-        curX: 50, curY: 50, curRX: 0, curRY: 0,
-        glowTarget: 0, glowCur: 0
-    };
-
-    const EASE = 0.14; // lower = smoother/slower, higher = snappier
-
-    function lerp(a, b, t) { return a + (b - a) * t; }
-
-    function tick() {
-        state.curX = lerp(state.curX, state.targetX, EASE);
-        state.curY = lerp(state.curY, state.targetY, EASE);
-        state.curRX = lerp(state.curRX, state.targetRX, EASE);
-        state.curRY = lerp(state.curRY, state.targetRY, EASE);
-        state.glowCur = lerp(state.glowCur, state.glowTarget, EASE);
-
-        card.style.setProperty('--pointer-x', `${state.curX.toFixed(2)}%`);
-        card.style.setProperty('--pointer-y', `${state.curY.toFixed(2)}%`);
-        card.style.setProperty('--rotate-x', `${state.curRX.toFixed(2)}deg`);
-        card.style.setProperty('--rotate-y', `${state.curRY.toFixed(2)}deg`);
-        card.style.setProperty('--glow-opacity', state.glowCur.toFixed(3));
-
-        requestAnimationFrame(tick);
+        if (!bg.naturalWidth || !bg.naturalHeight) return;
+        const aspect =
+            bg.naturalWidth / bg.naturalHeight;
+        const availW =
+            window.innerWidth - BUFFER_PX * 2;
+        const availH =
+            window.innerHeight - BUFFER_PX * 2;
+        const heightFromWidth =
+            availW / aspect;
+        const finalHeight =
+            Math.max(
+                0,
+                Math.min(availH, heightFromWidth)
+            );
+        stage.style.height =
+            `${finalHeight}px`;
     }
-
-    if (!reducedMotion) requestAnimationFrame(tick);
-
-    function setTarget(percentX, percentY, glow = 1) {
-        percentX = Math.max(0, Math.min(100, percentX));
-        percentY = Math.max(0, Math.min(100, percentY));
-
-        state.targetX = percentX;
-        state.targetY = percentY;
-        state.targetRY = ((percentX - 50) / 50) * maxTilt;
-        state.targetRX = -((percentY - 50) / 50) * maxTilt;
-        state.glowTarget = glow;
+    if (bg.complete) {
+        applySize();
+    } else {
+        bg.addEventListener('load', applySize);
     }
-
-    function resetTarget() {
-        state.targetX = 50;
-        state.targetY = 50;
-        state.targetRX = 0;
-        state.targetRY = 0;
-        state.glowTarget = 0;
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(
+            applySize,
+            100
+        );
+    });
+})();
+/* ============================================================
+   MOBILE VIEWPORT HEIGHT
+   ============================================================ */
+(function trackVisualViewport() {
+    function updateVVH() {
+        const h =
+            window.visualViewport
+                ? window.visualViewport.height
+                : window.innerHeight;
+        document.documentElement
+            .style
+            .setProperty('--vvh', `${h}px`);
     }
-
-    // ---- Desktop / mouse & touch pointer tilt ----
-    function updateFromPointer(clientX, clientY) {
-        const rect = card.getBoundingClientRect();
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
-        setTarget((x / rect.width) * 100, (y / rect.height) * 100, 1);
+    updateVVH();
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener(
+            'resize',
+            updateVVH
+        );
+        window.visualViewport.addEventListener(
+            'scroll',
+            updateVVH
+        );
     }
-
-    card.addEventListener('pointerenter', event => {
+    window.addEventListener(
+        'resize',
+        updateVVH
+    );
+    window.addEventListener(
+        'orientationchange',
+        updateVVH
+    );
+})();
+/* ============================================================
+   CARD TILT
+   ============================================================ */
+const card =
+    document.getElementById('card');
+const tiltEnableBtn =
+    document.getElementById('tiltEnableBtn');
+const maxTilt = 8;
+const reducedMotion =
+    window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+    ).matches;
+const state = {
+    targetX: 50,
+    targetY: 50,
+    targetRX: 0,
+    targetRY: 0,
+    curX: 50,
+    curY: 50,
+    curRX: 0,
+    curRY: 0,
+    glowTarget: 0,
+    glowCur: 0
+};
+const EASE = 0.14;
+function lerp(a, b, t) {
+    return a + (b - a) * t;
+}
+function tick() {
+    state.curX =
+        lerp(
+            state.curX,
+            state.targetX,
+            EASE
+        );
+    state.curY =
+        lerp(
+            state.curY,
+            state.targetY,
+            EASE
+        );
+    state.curRX =
+        lerp(
+            state.curRX,
+            state.targetRX,
+            EASE
+        );
+    state.curRY =
+        lerp(
+            state.curRY,
+            state.targetRY,
+            EASE
+        );
+    state.glowCur =
+        lerp(
+            state.glowCur,
+            state.glowTarget,
+            EASE
+        );
+    card.style.setProperty(
+        '--pointer-x',
+        `${state.curX.toFixed(2)}%`
+    );
+    card.style.setProperty(
+        '--pointer-y',
+        `${state.curY.toFixed(2)}%`
+    );
+    card.style.setProperty(
+        '--rotate-x',
+        `${state.curRX.toFixed(2)}deg`
+    );
+    card.style.setProperty(
+        '--rotate-y',
+        `${state.curRY.toFixed(2)}deg`
+    );
+    card.style.setProperty(
+        '--glow-opacity',
+        state.glowCur.toFixed(3)
+    );
+    requestAnimationFrame(tick);
+}
+if (!reducedMotion) {
+    requestAnimationFrame(tick);
+}
+function setTarget(
+    percentX,
+    percentY,
+    glow = 1
+) {
+    percentX =
+        Math.max(
+            0,
+            Math.min(100, percentX)
+        );
+    percentY =
+        Math.max(
+            0,
+            Math.min(100, percentY)
+        );
+    state.targetX = percentX;
+    state.targetY = percentY;
+    state.targetRY =
+        ((percentX - 50) / 50) *
+        maxTilt;
+    state.targetRX =
+        -((percentY - 50) / 50) *
+        maxTilt;
+    state.glowTarget = glow;
+}
+function resetTarget() {
+    state.targetX = 50;
+    state.targetY = 50;
+    state.targetRX = 0;
+    state.targetRY = 0;
+    state.glowTarget = 0;
+}
+function updateFromPointer(
+    clientX,
+    clientY
+) {
+    const rect =
+        card.getBoundingClientRect();
+    const x =
+        clientX - rect.left;
+    const y =
+        clientY - rect.top;
+    setTarget(
+        (x / rect.width) * 100,
+        (y / rect.height) * 100,
+        1
+    );
+}
+function isOverBelowFrame(target) {
+    return !!(
+        target &&
+        target.closest &&
+        target.closest('.below-frame, .tilt-enable')
+    );
+}
+card.addEventListener(
+    'pointerenter',
+    event => {
+        if (isOverBelowFrame(event.target)) return;
         card.classList.add('active');
-        updateFromPointer(event.clientX, event.clientY);
-    });
-
-    card.addEventListener('pointermove', event => {
-        updateFromPointer(event.clientX, event.clientY);
-    });
-
-    card.addEventListener('pointerleave', () => {
+        updateFromPointer(
+            event.clientX,
+            event.clientY
+        );
+    }
+);
+card.addEventListener(
+    'pointermove',
+    event => {
+        if (isOverBelowFrame(event.target)) {
+            card.classList.remove('active');
+            resetTarget();
+            return;
+        }
+        card.classList.add('active');
+        updateFromPointer(
+            event.clientX,
+            event.clientY
+        );
+    }
+);
+card.addEventListener(
+    'pointerleave',
+    () => {
         card.classList.remove('active');
         resetTarget();
-    });
-
-    // ---- Mobile device tilt (gyroscope) ----
-    let gyroActive = false;
-    const gyroMaxAngle = 14; // degrees of physical tilt mapped to full maxTilt
-
-    function handleOrientation(event) {
-        if (event.beta === null || event.gamma === null) return;
-
-        const beta = Math.max(-gyroMaxAngle, Math.min(gyroMaxAngle, event.beta - 45));
-        const gamma = Math.max(-gyroMaxAngle, Math.min(gyroMaxAngle, event.gamma));
-
-        const percentX = 50 + (gamma / gyroMaxAngle) * 50;
-        const percentY = 50 + (beta / gyroMaxAngle) * 50;
-
-        if (!gyroActive) {
-            gyroActive = true;
-            card.classList.add('active');
-        }
-
-        setTarget(percentX, percentY, 0.85);
     }
-
-    function enableGyro() {
-        window.addEventListener('deviceorientation', handleOrientation);
-        tiltEnableBtn.classList.remove('visible');
+);
+/* ============================================================
+   MOBILE DEVICE TILT
+   ============================================================ */
+let gyroActive = false;
+const gyroMaxAngle = 14;
+function handleOrientation(event) {
+    if (
+        event.beta === null ||
+        event.gamma === null
+    ) {
+        return;
     }
-
-    const supportsDeviceOrientation = 'DeviceOrientationEvent' in window;
-    const needsPermission = supportsDeviceOrientation &&
-        typeof DeviceOrientationEvent.requestPermission === 'function';
-    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-
-    if (supportsDeviceOrientation && isTouchDevice && !reducedMotion) {
-        if (needsPermission) {
-            tiltEnableBtn.classList.add('visible');
-            tiltEnableBtn.addEventListener('click', () => {
-                DeviceOrientationEvent.requestPermission()
+    const beta =
+        Math.max(
+            -gyroMaxAngle,
+            Math.min(
+                gyroMaxAngle,
+                event.beta - 45
+            )
+        );
+    const gamma =
+        Math.max(
+            -gyroMaxAngle,
+            Math.min(
+                gyroMaxAngle,
+                event.gamma
+            )
+        );
+    const percentX =
+        50 +
+        (gamma / gyroMaxAngle) * 50;
+    const percentY =
+        50 +
+        (beta / gyroMaxAngle) * 50;
+    if (!gyroActive) {
+        gyroActive = true;
+        card.classList.add('active');
+    }
+    setTarget(
+        percentX,
+        percentY,
+        0.85
+    );
+}
+function enableGyro() {
+    window.addEventListener(
+        'deviceorientation',
+        handleOrientation
+    );
+    tiltEnableBtn.classList.remove(
+        'visible'
+    );
+}
+const supportsDeviceOrientation =
+    'DeviceOrientationEvent' in window;
+const needsPermission =
+    supportsDeviceOrientation &&
+    typeof DeviceOrientationEvent.requestPermission ===
+        'function';
+const isTouchDevice =
+    window.matchMedia(
+        '(pointer: coarse)'
+    ).matches;
+if (
+    supportsDeviceOrientation &&
+    isTouchDevice &&
+    !reducedMotion
+) {
+    if (needsPermission) {
+        tiltEnableBtn.classList.add(
+            'visible'
+        );
+        tiltEnableBtn.addEventListener(
+            'click',
+            () => {
+                DeviceOrientationEvent
+                    .requestPermission()
                     .then(response => {
-                        if (response === 'granted') enableGyro();
-                        else tiltEnableBtn.classList.remove('visible');
+                        if (
+                            response ===
+                            'granted'
+                        ) {
+                            enableGyro();
+                        } else {
+                            tiltEnableBtn
+                                .classList
+                                .remove(
+                                    'visible'
+                                );
+                        }
                     })
-                    .catch(() => tiltEnableBtn.classList.remove('visible'));
-            });
-        } else {
-            enableGyro();
-        }
+                    .catch(() => {
+                        tiltEnableBtn
+                            .classList
+                            .remove(
+                                'visible'
+                            );
+                    });
+            }
+        );
+    } else {
+        enableGyro();
     }
+}
+/* ============================================================
+   CUSTOM MAILERLITE SIGNUP
+   ============================================================ */
+(function initEarlyAccessForm() {
+    const form =
+        document.getElementById(
+            'earlyAccessForm'
+        );
+    const input =
+        document.getElementById(
+            'earlyAccessEmail'
+        );
+    const button =
+        document.getElementById(
+            'earlyAccessButton'
+        );
+    const message =
+        document.getElementById(
+            'earlyAccessMessage'
+        );
+    if (
+        !form ||
+        !input ||
+        !button ||
+        !message
+    ) {
+        return;
+    }
+    form.addEventListener(
+        'submit',
+        async function(event) {
+            event.preventDefault();
+            message.textContent = '';
+            message.className =
+                'early-access-message';
+            const email =
+                input.value.trim();
+            if (!email) {
+                message.textContent =
+                    'Please enter your email address.';
+                message.classList.add(
+                    'error'
+                );
+                input.focus();
+                return;
+            }
+            if (
+                !input.checkValidity()
+            ) {
+                message.textContent =
+                    'Please enter a valid email address.';
+                message.classList.add(
+                    'error'
+                );
+                input.focus();
+                return;
+            }
+            button.disabled = true;
+            button.textContent =
+                'Joining...';
+            try {
+                /*
+                 * IMPORTANT:
+                 *
+                 * This calls YOUR secure backend.
+                 *
+                 * Your MailerLite API key does NOT
+                 * appear anywhere in this HTML.
+                 */
+                const response =
+                    await fetch(
+                        '/api/subscribe',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type':
+                                    'application/json'
+                            },
+                            body: JSON.stringify({
+                                email: email
+                            })
+                        }
+                    );
+                let data = {};
+                try {
+                    data =
+                        await response.json();
+                } catch {
+                    data = {};
+                }
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        'Something went wrong. Please try again.'
+                    );
+                }
+                input.value = '';
+                message.textContent =
+                    'You’re on the list. We’ll let you know when we open.';
+                message.classList.add(
+                    'success'
+                );
+                button.textContent =
+                    'You’re In';
+            } catch (error) {
+                console.error(
+                    'Early access signup error:',
+                    error
+                );
+                message.textContent =
+                    error.message ||
+                    'Something went wrong. Please try again.';
+                message.classList.add(
+                    'error'
+                );
+                button.textContent =
+                    'Get Early Access';
+                button.disabled = false;
+            }
+        }
+    );
+})();
 </script>
 
 <script>
@@ -564,7 +1129,7 @@
         PRESSURE: 0.15,
         PRESSURE_ITERATIONS: 20,
         CURL: 3,
-        SPLAT_RADIUS: 0.15,
+        SPLAT_RADIUS: 0.09,
         SPLAT_FORCE: 6000,
         SHADING: true,
         COLOR_UPDATE_SPEED: 7,
@@ -1476,7 +2041,13 @@
         return hash;
     }
 
+    function pointIsOverCard(clientX, clientY) {
+        const el = document.elementFromPoint(clientX, clientY);
+        return !!(el && el.closest && el.closest('#card'));
+    }
+
     function handleMouseDown(e) {
+        if (pointIsOverCard(e.clientX, e.clientY)) return;
         let pointer = pointers[0];
         let posX = scaleByPixelRatio(e.clientX);
         let posY = scaleByPixelRatio(e.clientY);
@@ -1489,6 +2060,21 @@
         let pointer = pointers[0];
         let posX = scaleByPixelRatio(e.clientX);
         let posY = scaleByPixelRatio(e.clientY);
+        if (pointIsOverCard(e.clientX, e.clientY)) {
+            // Keep the tracked position in sync (no jump when the pointer
+            // re-enters the reactive area) but never mark it as "moved",
+            // so no splat/steam is produced while over the logo, email
+            // form, or social icons.
+            pointer.texcoordX = posX / canvas.width;
+            pointer.texcoordY = 1.0 - posY / canvas.height;
+            pointer.prevTexcoordX = pointer.texcoordX;
+            pointer.prevTexcoordY = pointer.texcoordY;
+            pointer.deltaX = 0;
+            pointer.deltaY = 0;
+            pointer.moved = false;
+            firstMouseMoveHandled = true;
+            return;
+        }
         if (!firstMouseMoveHandled) {
             let color = generateColor();
             updatePointerMoveData(pointer, posX, posY, color);
@@ -1502,6 +2088,7 @@
         const touches = e.targetTouches;
         let pointer = pointers[0];
         for (let i = 0; i < touches.length; i++) {
+            if (pointIsOverCard(touches[i].clientX, touches[i].clientY)) continue;
             let posX = scaleByPixelRatio(touches[i].clientX);
             let posY = scaleByPixelRatio(touches[i].clientY);
             updatePointerDownData(pointer, touches[i].identifier, posX, posY);
@@ -1514,6 +2101,16 @@
         for (let i = 0; i < touches.length; i++) {
             let posX = scaleByPixelRatio(touches[i].clientX);
             let posY = scaleByPixelRatio(touches[i].clientY);
+            if (pointIsOverCard(touches[i].clientX, touches[i].clientY)) {
+                pointer.texcoordX = posX / canvas.width;
+                pointer.texcoordY = 1.0 - posY / canvas.height;
+                pointer.prevTexcoordX = pointer.texcoordX;
+                pointer.prevTexcoordY = pointer.texcoordY;
+                pointer.deltaX = 0;
+                pointer.deltaY = 0;
+                pointer.moved = false;
+                continue;
+            }
             updatePointerMoveData(pointer, posX, posY, pointer.color);
         }
     }
