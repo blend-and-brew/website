@@ -187,6 +187,7 @@
         outline: 0;
         background: transparent;
         color: var(--bb-cream);
+        font: inherit;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 13px;
         -webkit-appearance: none;
@@ -209,6 +210,7 @@
         border-left: 1px solid rgba(23, 20, 18, 0.4);
         background: var(--bb-gold);
         color: var(--bb-dark);
+        font: inherit;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 9px;
         font-weight: 700;
@@ -349,7 +351,7 @@
             transform: none;
             width: auto;
             height: auto;
-            max-height: 40%;
+            max-height: 36%;
         }
         .frame {
             width: 100%;
@@ -379,8 +381,7 @@
             left: 50%;
             bottom: calc(
                 var(--mobile-edge-buffer) +
-                env(safe-area-inset-bottom, 0px) +
-                46px
+                env(safe-area-inset-bottom, 0px)
             );
             transform: translateX(-50%);
             z-index: 5;
@@ -391,10 +392,12 @@
             left: 50%;
             bottom: calc(
                 var(--mobile-edge-buffer) +
-                env(safe-area-inset-bottom, 0px)
+                env(safe-area-inset-bottom, 0px) +
+                92px
             );
             transform: translateX(-50%);
             z-index: 5;
+            gap: 18px;
         }
         .early-access-label {
             font-size: 9px;
@@ -411,8 +414,8 @@
             font-size: 8px;
         }
         .social-links a {
-            width: 30px;
-            height: 30px;
+            width: 22px;
+            height: 22px;
         }
     }
     @media (max-width: 380px) {
