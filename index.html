@@ -185,13 +185,14 @@
         padding: 0 13px;
         border: 0;
         outline: 0;
-        background: transparent;
+        background: rgba(23, 20, 18, 0.78);
         color: var(--bb-cream);
         font: inherit;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 13px;
         -webkit-appearance: none;
         appearance: none;
+        color-scheme: dark;
         cursor: var(--cursor-text);
     }
     .early-access-input::placeholder {
@@ -200,7 +201,19 @@
         letter-spacing: 0.02em;
     }
     .early-access-input:focus {
-        background: rgba(176, 141, 87, 0.08);
+        background: rgba(176, 141, 87, 0.14);
+    }
+    /* Force the dark fill even when the OS/browser is set to light mode,
+       and stop Chrome/Safari autofill from injecting a light background. */
+    .early-access-input:-webkit-autofill,
+    .early-access-input:-webkit-autofill:hover,
+    .early-access-input:-webkit-autofill:focus,
+    .early-access-input:-webkit-autofill:active {
+        -webkit-text-fill-color: var(--bb-cream);
+        caret-color: var(--bb-cream);
+        -webkit-box-shadow: 0 0 0px 1000px rgba(23, 20, 18, 0.92) inset;
+        box-shadow: 0 0 0px 1000px rgba(23, 20, 18, 0.92) inset;
+        transition: background-color 9999s ease-in-out 0s;
     }
     .early-access-button {
         flex: 0 0 auto;
@@ -354,17 +367,21 @@
             transform: none;
             width: auto;
             height: auto;
-            max-height: 30%;
+            max-height: 33%;
         }
         .frame {
             width: 100%;
             height: auto;
+            transform: none !important;
         }
         .frame img {
             width: 100%;
             height: auto;
             max-height: 100%;
             object-fit: contain;
+        }
+        .tilt-enable {
+            display: none !important;
         }
         /* On mobile, the form and the social row are each pinned to the
            real viewport independently — the social row's distance from
@@ -383,7 +400,7 @@
             position: fixed;
             left: 50%;
             bottom: calc(
-                2px +
+                -6px +
                 env(safe-area-inset-bottom, 0px)
             );
             transform: translateX(-50%);
@@ -396,7 +413,7 @@
             top: calc(
                 4px +
                 30% +
-                10px
+                4px
             );
             transform: translateX(-50%);
             z-index: 5;
@@ -416,11 +433,11 @@
             order: 3;
         }
         .early-access-input {
-            height: 30px;
+            height: 25px;
             font-size: 12px;
         }
         .early-access-button {
-            height: 30px;
+            height: 25px;
             padding: 0 11px;
             font-size: 8px;
         }
@@ -768,7 +785,7 @@
     const social = document.querySelector('.social-links');
     if (!wrapper || !social) return;
 
-    const GAP_PX = 32;
+    const GAP_PX = -6;
 
     function update() {
         const isMobile =
@@ -813,6 +830,11 @@ const maxTilt = 8;
 const reducedMotion =
     window.matchMedia(
         '(prefers-reduced-motion: reduce)'
+    ).matches;
+/* Tilt is a desktop/tablet-only effect — mobile keeps the card flat. */
+const isMobileTiltViewport =
+    window.matchMedia(
+        '(max-width: 600px)'
     ).matches;
 const state = {
     targetX: 50,
@@ -944,6 +966,7 @@ function isOverBelowFrame(target) {
 card.addEventListener(
     'pointerenter',
     event => {
+        if (isMobileTiltViewport) return;
         if (isOverBelowFrame(event.target)) return;
         card.classList.add('active');
         updateFromPointer(
@@ -955,6 +978,7 @@ card.addEventListener(
 card.addEventListener(
     'pointermove',
     event => {
+        if (isMobileTiltViewport) return;
         if (isOverBelowFrame(event.target)) {
             card.classList.remove('active');
             resetTarget();
@@ -970,6 +994,7 @@ card.addEventListener(
 card.addEventListener(
     'pointerleave',
     () => {
+        if (isMobileTiltViewport) return;
         card.classList.remove('active');
         resetTarget();
     }
@@ -1040,7 +1065,8 @@ const isTouchDevice =
 if (
     supportsDeviceOrientation &&
     isTouchDevice &&
-    !reducedMotion
+    !reducedMotion &&
+    !isMobileTiltViewport
 ) {
     if (needsPermission) {
         tiltEnableBtn.classList.add(
@@ -2096,6 +2122,10 @@ if (
         return !!(el && el.closest && el.closest('#card'));
     }
 
+    function isMobileViewport() {
+        return window.matchMedia('(max-width: 600px)').matches;
+    }
+
     function handleMouseDown(e) {
         if (pointIsOverCard(e.clientX, e.clientY)) return;
         let pointer = pointers[0];
@@ -2133,8 +2163,9 @@ if (
     function handleTouchStart(e) {
         const touches = e.targetTouches;
         let pointer = pointers[0];
+        const skipCard = !isMobileViewport();
         for (let i = 0; i < touches.length; i++) {
-            if (pointIsOverCard(touches[i].clientX, touches[i].clientY)) continue;
+            if (skipCard && pointIsOverCard(touches[i].clientX, touches[i].clientY)) continue;
             let posX = scaleByPixelRatio(touches[i].clientX);
             let posY = scaleByPixelRatio(touches[i].clientY);
             updatePointerDownData(pointer, touches[i].identifier, posX, posY);
@@ -2144,10 +2175,11 @@ if (
     function handleTouchMove(e) {
         const touches = e.targetTouches;
         let pointer = pointers[0];
+        const skipCard = !isMobileViewport();
         for (let i = 0; i < touches.length; i++) {
             let posX = scaleByPixelRatio(touches[i].clientX);
             let posY = scaleByPixelRatio(touches[i].clientY);
-            if (pointIsOverCard(touches[i].clientX, touches[i].clientY)) {
+            if (skipCard && pointIsOverCard(touches[i].clientX, touches[i].clientY)) {
                 pointer.texcoordX = posX / canvas.width;
                 pointer.texcoordY = 1.0 - posY / canvas.height;
                 pointer.prevTexcoordX = pointer.texcoordX;
