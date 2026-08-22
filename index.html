@@ -362,12 +362,12 @@
         }
         .card-wrapper {
             top: 4px;
-            left: 11%;
-            right: 11%;
+            left: 7%;
+            right: 7%;
             transform: none;
             width: auto;
             height: auto;
-            max-height: 33%;
+            max-height: 40%;
         }
         .frame {
             width: 100%;
@@ -412,8 +412,8 @@
             left: 50%;
             top: calc(
                 4px +
-                30% +
-                4px
+                40% -
+                18px
             );
             transform: translateX(-50%);
             z-index: 5;
@@ -777,6 +777,41 @@
     );
 })();
 /* ============================================================
+   MOBILE: STOP SAFARI FROM SCROLLING THE PAGE WHEN THE EMAIL
+   INPUT IS FOCUSED
+   iOS scrolls the whole document to bring a focused input above
+   the keyboard, even though everything here is position:fixed —
+   that scroll offset shifts the fixed .stage layer up and out
+   from behind it, revealing the plain body background below.
+   Since nothing on this page should ever actually scroll, we
+   just snap it straight back to (0,0) whenever it tries.
+   ============================================================ */
+(function lockMobileScroll() {
+    function isMobile() {
+        return window.matchMedia('(max-width: 600px)').matches;
+    }
+    function resetScroll() {
+        if (isMobile() && (window.scrollX !== 0 || window.scrollY !== 0)) {
+            window.scrollTo(0, 0);
+        }
+    }
+    window.addEventListener('scroll', resetScroll, { passive: true });
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('scroll', resetScroll);
+        window.visualViewport.addEventListener('resize', resetScroll);
+    }
+    document.querySelectorAll('.early-access-input').forEach((input) => {
+        input.addEventListener('focus', () => {
+            resetScroll();
+            setTimeout(resetScroll, 50);
+            setTimeout(resetScroll, 300);
+        });
+        input.addEventListener('blur', () => {
+            setTimeout(resetScroll, 50);
+        });
+    });
+})();
+/* ============================================================
    MOBILE: POSITION SOCIAL ICONS PRECISELY UNDER THE TILT IMAGE
    (measured from the real rendered image, not guessed via %)
    ============================================================ */
@@ -785,7 +820,7 @@
     const social = document.querySelector('.social-links');
     if (!wrapper || !social) return;
 
-    const GAP_PX = -6;
+    const GAP_PX = -22;
 
     function update() {
         const isMobile =
