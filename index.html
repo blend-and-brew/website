@@ -747,14 +747,26 @@
    MOBILE VIEWPORT HEIGHT
    ============================================================ */
 (function trackVisualViewport() {
+    // Track the tallest height we've seen and never shrink below it.
+    // On iOS, opening the keyboard shrinks visualViewport.height, which
+    // was shrinking the fixed .stage (and its background) along with it —
+    // revealing the plain black body background behind it. Since this
+    // page never actually needs to resize for the keyboard, we pin
+    // --vvh to the largest height seen and only reset it on a genuine
+    // orientation change.
+    let maxVVH = 0;
+    let lastWidth = window.innerWidth;
     function updateVVH() {
         const h =
             window.visualViewport
                 ? window.visualViewport.height
                 : window.innerHeight;
+        if (h > maxVVH) {
+            maxVVH = h;
+        }
         document.documentElement
             .style
-            .setProperty('--vvh', `${h}px`);
+            .setProperty('--vvh', `${maxVVH}px`);
     }
     updateVVH();
     if (window.visualViewport) {
@@ -762,19 +774,22 @@
             'resize',
             updateVVH
         );
-        window.visualViewport.addEventListener(
-            'scroll',
-            updateVVH
-        );
     }
-    window.addEventListener(
-        'resize',
-        updateVVH
-    );
-    window.addEventListener(
-        'orientationchange',
-        updateVVH
-    );
+    function handleOrientationReset() {
+        // A width change means a real orientation/layout change (not the
+        // keyboard, which only affects height) — safe to recalc from zero.
+        if (window.innerWidth !== lastWidth) {
+            lastWidth = window.innerWidth;
+            maxVVH = 0;
+            updateVVH();
+        }
+    }
+    window.addEventListener('orientationchange', () => {
+        lastWidth = window.innerWidth;
+        maxVVH = 0;
+        updateVVH();
+    });
+    window.addEventListener('resize', handleOrientationReset);
 })();
 /* ============================================================
    MOBILE: STOP SAFARI FROM SCROLLING THE PAGE WHEN THE EMAIL
@@ -820,7 +835,7 @@
     const social = document.querySelector('.social-links');
     if (!wrapper || !social) return;
 
-    const GAP_PX = -22;
+    const GAP_PX = -34;
 
     function update() {
         const isMobile =
