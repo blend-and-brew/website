@@ -651,7 +651,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // This must be a server endpoint (see payment-worker.js) — Square
   // does not allow charging a card directly from browser JavaScript,
   // for security reasons.
-  const PAYMENT_ENDPOINT = 'https://YOUR-CLOUDFLARE-WORKER-URL/charge';
+  const PAYMENT_ENDPOINT = 'https://blendandbrew.com.au/payment';
 
   if (!window.Square){
     showError('Payment form failed to load. Please refresh the page or try again shortly.');

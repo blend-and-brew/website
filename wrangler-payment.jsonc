@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "blend-brew-payment-worker",
+  "main": "payment-worker.js",
+  "compatibility_date": "2026-08-31",
+
+  // This binds the worker to blendandbrew.com.au/payment specifically.
+  // Adjust the zone_name if your Cloudflare zone is set up differently.
+  "routes": [
+    {
+      "pattern": "blendandbrew.com.au/payment",
+      "zone_name": "blendandbrew.com.au"
+    }
+  ]
+
+  // Note: SQUARE_ACCESS_TOKEN is NOT set here — it's a secret, added
+  // via `wrangler secret put SQUARE_ACCESS_TOKEN` after first deploy,
+  // never committed to this file or version control.
+}
