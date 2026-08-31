@@ -215,6 +215,12 @@ img{max-width:100%;display:block;}
   font-weight:600;
   text-align:right;
 }
+.pay-summary-row.desc-row{
+  align-items:flex-start;
+}
+.pay-summary-row.desc-row .value{
+  line-height:1.6;
+}
 .pay-summary-row.total{
   padding-top:14px;
   margin-top:4px;
@@ -421,7 +427,7 @@ img{max-width:100%;display:block;}
       <span class="label">Reference</span>
       <span class="value" id="summaryRef">—</span>
     </div>
-    <div class="pay-summary-row">
+    <div class="pay-summary-row desc-row">
       <span class="label" id="summaryDescLabel">For</span>
       <span class="value" id="summaryDesc">Coffee wagon booking</span>
     </div>
@@ -582,19 +588,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   let descValue = params.get('desc');
-  if (!descValue){
+  let descLines;
+  if (descValue){
+    descLines = [descValue];
+  } else {
     const dateLabel = formatEventDate(params.get('date'));
     const locationLabel = (params.get('location') || '').trim();
     const startLabel = formatEventTime(params.get('start'));
     const endLabel = formatEventTime(params.get('end'));
     const timeLabel = (startLabel && endLabel) ? (startLabel + '–' + endLabel) : (startLabel || endLabel || '');
-    const parts = [dateLabel, locationLabel, timeLabel].filter(Boolean);
-    descValue = parts.length ? parts.join(' · ') : 'Coffee wagon booking';
+    descLines = [dateLabel, locationLabel, timeLabel].filter(Boolean);
+    descValue = descLines.length ? descLines.join(' · ') : 'Coffee wagon booking';
+    if (!descLines.length) descLines = [descValue];
   }
 
   document.getElementById('summaryName').textContent = nameValue;
   document.getElementById('summaryRef').textContent = refValue;
-  document.getElementById('summaryDesc').textContent = descValue;
+  document.getElementById('summaryDesc').innerHTML = descLines
+    .map(line => line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+    .join('<br>');
   document.getElementById('summaryAmount').textContent =
     hasValidAmount ? ('$' + amountDollars.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })) : '$0.00';
 
