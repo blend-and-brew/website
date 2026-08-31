@@ -524,6 +524,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (particleTimer){ clearInterval(particleTimer); particleTimer = null; }
     }
 
+    function setSpotlightFromPoint(clientX, clientY){
+      const rect = card.getBoundingClientRect();
+      const relX = ((clientX - rect.left) / rect.width) * 100;
+      const relY = ((clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--bento-x', relX + '%');
+      card.style.setProperty('--bento-y', relY + '%');
+    }
+
     wrapper.addEventListener('mouseenter', () => {
       card.classList.add('bento-hover');
       startParticles();
@@ -534,13 +542,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     wrapper.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-
       // Spotlight / border glow follow the cursor within SPOTLIGHT_RADIUS reach
-      const relX = ((e.clientX - rect.left) / rect.width) * 100;
-      const relY = ((e.clientY - rect.top) / rect.height) * 100;
-      card.style.setProperty('--bento-x', relX + '%');
-      card.style.setProperty('--bento-y', relY + '%');
+      setSpotlightFromPoint(e.clientX, e.clientY);
+    });
+
+    // Touch equivalents — finger tap/drag drives the same spotlight,
+    // border glow and particle effects as desktop hover.
+    wrapper.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      card.classList.add('bento-hover');
+      startParticles();
+      setSpotlightFromPoint(touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    wrapper.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      setSpotlightFromPoint(touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', () => {
+      card.classList.remove('bento-hover');
+      stopParticles();
+    });
+    wrapper.addEventListener('touchcancel', () => {
+      card.classList.remove('bento-hover');
+      stopParticles();
     });
 
     card.addEventListener('click', (e) => {
@@ -595,10 +623,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dateLabel = formatEventDate(params.get('date'));
     const locationLabel = (params.get('location') || '').trim()
       .replace(/,(\s*)([A-Za-z]{2,3})(\s*),(\s*)(\d{4})/, ' $2 $5');
+    // Force the address onto two lines: street (with its comma) on top,
+    // suburb/state/postcode below — regardless of screen width.
+    let locationLines = [];
+    if (locationLabel){
+      const firstComma = locationLabel.indexOf(',');
+      if (firstComma === -1){
+        locationLines = [locationLabel];
+      } else {
+        const streetLine = locationLabel.slice(0, firstComma + 1).trim();
+        const restLine = locationLabel.slice(firstComma + 1).trim();
+        locationLines = restLine ? [streetLine, restLine] : [streetLine];
+      }
+    }
     const startLabel = formatEventTime(params.get('start'));
     const endLabel = formatEventTime(params.get('end'));
     const timeLabel = (startLabel && endLabel) ? (startLabel + ' – ' + endLabel) : (startLabel || endLabel || '');
-    descLines = [dateLabel, locationLabel, timeLabel].filter(Boolean);
+    descLines = [dateLabel, ...locationLines, timeLabel].filter(Boolean);
     descValue = descLines.length ? descLines.join(' · ') : 'Coffee wagon booking';
     if (!descLines.length) descLines = [descValue];
   }
@@ -667,7 +708,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         input: {
           color: '#13110F',
           fontSize: '15px',
-          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
         },
         'input::placeholder': {
           color: 'rgba(19,17,15,0.35)',
