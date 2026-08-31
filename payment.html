@@ -560,6 +560,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   //    Link to this page like:
   //    payment.html?amount=350&ref=BB-2043&name=Sarah%20James&desc=The%20Latte%20package%20deposit
   //    Any missing values fall back to sensible defaults below.
+  //
+  //    For the "For" line's location, pass the address as a single
+  //    comma-separated string, e.g.
+  //    location=23%20Gwandalan%20Road,%20Suburb%20NSW%202176
+  //    It will automatically render on two lines:
+  //      23 Gwandalan Road,
+  //      Suburb NSW 2176
   // ============================================================
   const params = new URLSearchParams(window.location.search);
 
@@ -571,7 +578,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const nameValue = params.get('name') || '—';
 
   // "For" line: use an explicit ?desc= if given, otherwise build one from
-  // ?date=&location=&start=&end= (e.g. date=2026-09-12&location=Bondi%20Beach&start=10:00&end=14:00)
+  // ?date=&location=&start=&end= (e.g. date=2026-09-12&location=23%20Gwandalan%20Road,%20Suburb%20NSW%202176&start=10:00&end=14:00)
   function formatEventDate(dateStr){
     if (!dateStr) return '';
     const d = new Date(dateStr + 'T00:00:00');
@@ -586,6 +593,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const hour12 = ((h + 11) % 12) + 1;
     return hour12 + ':' + String(m).padStart(2, '0') + ' ' + period;
   }
+  // Splits an address like "23 Gwandalan Road, Suburb NSW 2176" into
+  // two display lines: "23 Gwandalan Road," and "Suburb NSW 2176".
+  // Returns an array of 1 or 2 lines (falls back to a single line if
+  // there's no comma to split on).
+  function formatAddressLines(locationStr){
+    if (!locationStr) return [];
+    const commaIndex = locationStr.indexOf(',');
+    if (commaIndex === -1) return [locationStr];
+    const street = locationStr.slice(0, commaIndex).trim();
+    const rest = locationStr.slice(commaIndex + 1).trim();
+    if (!rest) return [street];
+    return [street + ',', rest];
+  }
 
   let descValue = params.get('desc');
   let descLines;
@@ -593,11 +613,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     descLines = [descValue];
   } else {
     const dateLabel = formatEventDate(params.get('date'));
-    const locationLabel = (params.get('location') || '').trim();
+    const locationLines = formatAddressLines((params.get('location') || '').trim());
     const startLabel = formatEventTime(params.get('start'));
     const endLabel = formatEventTime(params.get('end'));
     const timeLabel = (startLabel && endLabel) ? (startLabel + '–' + endLabel) : (startLabel || endLabel || '');
-    descLines = [dateLabel, locationLabel, timeLabel].filter(Boolean);
+    descLines = [dateLabel, ...locationLines, timeLabel].filter(Boolean);
     descValue = descLines.length ? descLines.join(' · ') : 'Coffee wagon booking';
     if (!descLines.length) descLines = [descValue];
   }
