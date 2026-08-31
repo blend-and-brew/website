@@ -36,8 +36,8 @@ const SQUARE_LOCATION_ID = 'L7FM3WCWEHZCE';
 
 // Allowed origins for CORS — add any other domains this form is served from.
 const ALLOWED_ORIGINS = [
-  'https://blendandbrew.com.au',
   'https://www.blendandbrew.com.au',
+  'https://blendandbrew.com.au',
 ];
 
 function corsHeaders(origin) {
