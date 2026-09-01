@@ -760,26 +760,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Square's card fields render inside a cross-origin iframe on Square's own
-  // domain. To use a custom font in there, Square looks the font up by name
-  // in this page's document.fonts registry and mirrors its @font-face rule
-  // into the iframe. Google Fonts load asynchronously, so if we call
-  // payments.card() before Inter has actually finished loading, that lookup
-  // can fail and the SDK throws — which is what was landing us in the catch
-  // block below with "Payment form could not be initialised". Waiting on
-  // document.fonts.ready (with a short timeout fallback for older browsers,
-  // or if the font somehow never finishes) fixes that.
-  function waitForFontsReady(timeoutMs){
-    if (!document.fonts || !document.fonts.ready){
-      return Promise.resolve(); // very old browser — just proceed
-    }
-    return Promise.race([
-      document.fonts.ready,
-      new Promise((resolve) => setTimeout(resolve, timeoutMs))
-    ]);
-  }
-  await waitForFontsReady(1500);
-
   let card;
   try {
     const payments = window.Square.payments(SQUARE_APPLICATION_ID, SQUARE_LOCATION_ID);
@@ -788,10 +768,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         input: {
           color: '#13110F',
           fontSize: '15px',
-          // Square expects a single font NAME to look up here (it mirrors
-          // that font's @font-face into its iframe) — not a full CSS
-          // font-family stack with a fallback like 'Inter, sans-serif'.
-          fontFamily: 'Inter',
+          // Use a CSS generic font family accepted by Square's card iframe.
+          fontFamily: 'sans-serif',
         },
         'input::placeholder': {
           color: 'rgba(19,17,15,0.35)',
