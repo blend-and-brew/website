@@ -810,13 +810,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setLoading(true);
 
     try {
-      const tokenResult = await card.tokenize({
-  billingContact: {
-    firstName: nameInput.value.trim(),
-    countryCode: 'AU',
-    postalCode: '2176'
-  }
-});
+      const tokenResult = await card.tokenize();
 
       if (tokenResult.status !== 'OK'){
         const detail = (tokenResult.errors && tokenResult.errors[0] && tokenResult.errors[0].message)
