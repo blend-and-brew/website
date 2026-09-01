@@ -276,15 +276,7 @@ img{max-width:100%;display:block;}
 
 #card-container{
   min-height:56px;
-  background:#211F1B;
-  border:1px solid var(--line-on-dark);
-  border-radius:8px;
-  padding:10px 12px;
   margin-bottom:16px;
-  transition:border-color .15s ease;
-}
-#card-container.sq-focus{
-  border-color:var(--brass);
 }
 
 .pay-name-input{
@@ -781,13 +773,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         '.message-text': {
           color: '#BD5A34',
         },
+        // Exterior border of the card field itself (the div Square renders
+        // its iframe into). This is the only border Square's SDK exposes —
+        // the dividers between the number/expiry/CVV segments inside the
+        // iframe are fixed by Square and can't be restyled.
+        '.input-container': {
+          backgroundColor: '#211F1B',
+          borderColor: 'rgba(198,138,69,0.4)',
+          borderWidth: '1px',
+          borderRadius: '8px',
+        },
+        '.input-container.is-focus': {
+          backgroundColor: '#211F1B',
+          borderColor: '#E0A85F',
+          borderWidth: '1px',
+          borderRadius: '8px',
+        },
+        '.input-container.is-error': {
+          backgroundColor: '#211F1B',
+          borderColor: '#BD5A34',
+          borderWidth: '1px',
+          borderRadius: '8px',
+        },
       }
     });
     await card.attach('#card-container');
-
-    const cardContainerEl = document.getElementById('card-container');
-    card.addEventListener('focusClassAdded', () => cardContainerEl.classList.add('sq-focus'));
-    card.addEventListener('focusClassRemoved', () => cardContainerEl.classList.remove('sq-focus'));
   } catch (err) {
     console.error('Square initialization failed:', err);
     const detail = (err && err.message) ? ' (' + err.message + ')' : '';
