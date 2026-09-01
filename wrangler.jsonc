@@ -8,6 +8,18 @@
   "observability": {
     "enabled": true
   },
+
+  // ADDED: this was missing, which is why the site wasn't bound to your
+  // real domain at all. Wildcard route — catches every path on the
+  // domain EXCEPT the exact path /payment, which is more specific and so
+  // is matched first by the separate blend-brew-payment-worker instead.
+  "routes": [
+    {
+      "pattern": "www.blendandbrew.com.au/*",
+      "zone_name": "blendandbrew.com.au"
+    }
+  ],
+
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
