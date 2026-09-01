@@ -240,6 +240,28 @@ img{max-width:100%;display:block;}
   color:var(--brass-bright);
 }
 
+.pay-view-quote-row{
+  text-align:center;
+  margin-bottom:26px;
+}
+.pay-view-quote-link{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--brass-bright);
+  text-decoration:none;
+  border-bottom:1px solid rgba(224,168,95,0.35);
+  padding-bottom:2px;
+  transition:color .15s ease, border-color .15s ease;
+}
+.pay-view-quote-link:hover{
+  color:var(--cream);
+  border-color:var(--cream);
+}
+.pay-view-quote-link svg{flex-shrink:0;}
+
 /* ============ FORM ============ */
 .pay-field-label{
   display:block;
@@ -435,6 +457,14 @@ img{max-width:100%;display:block;}
       <span class="label">Amount due</span>
       <span class="value" id="summaryAmount">$0.00</span>
     </div>
+  </div>
+
+  <!-- ============ VIEW QUOTE LINK (shown only if the link came from a quote) ============ -->
+  <div class="pay-view-quote-row" id="payViewQuoteRow" style="display:none;">
+    <a href="#" class="pay-view-quote-link" id="viewQuoteLink">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 11h1"/></svg>
+      View your full quote
+    </a>
   </div>
 
   <!-- ============ PAYMENT FORM ============ -->
@@ -656,6 +686,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('cardholderName').value = params.get('name');
   }
 
+  // ============ VIEW QUOTE LINK ============
+  // COGS.html embeds a compact, image-free copy of the quote directly in
+  // the payment link as ?q=<base64>. If present, decode it and wire up the
+  // link to open it in a fresh window/tab — no server or storage needed.
+  function fromBase64Utf8(b64){
+    return decodeURIComponent(escape(atob(b64)));
+  }
+  const quoteParam = params.get('q');
+  if (quoteParam){
+    try {
+      const quoteHtml = fromBase64Utf8(quoteParam);
+      const viewQuoteRow = document.getElementById('payViewQuoteRow');
+      const viewQuoteLink = document.getElementById('viewQuoteLink');
+      viewQuoteRow.style.display = 'block';
+      viewQuoteLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const quoteWin = window.open('', '_blank');
+        if (!quoteWin){
+          alert('Your browser blocked the pop-up. Please allow pop-ups for this site and try again.');
+          return;
+        }
+        quoteWin.document.open();
+        quoteWin.document.write(quoteHtml);
+        quoteWin.document.close();
+      });
+    } catch (err){
+      console.error('Could not decode quote data from payment link:', err);
+    }
+  }
+
   const payBtn = document.getElementById('payBtn');
   const payBtnLabel = document.getElementById('payBtnLabel');
   const payError = document.getElementById('payError');
@@ -700,6 +760,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // Square's card fields render inside a cross-origin iframe on Square's own
+  // domain. To use a custom font in there, Square looks the font up by name
+  // in this page's document.fonts registry and mirrors its @font-face rule
+  // into the iframe. Google Fonts load asynchronously, so if we call
+  // payments.card() before Inter has actually finished loading, that lookup
+  // can fail and the SDK throws — which is what was landing us in the catch
+  // block below with "Payment form could not be initialised". Waiting on
+  // document.fonts.ready (with a short timeout fallback for older browsers,
+  // or if the font somehow never finishes) fixes that.
+  function waitForFontsReady(timeoutMs){
+    if (!document.fonts || !document.fonts.ready){
+      return Promise.resolve(); // very old browser — just proceed
+    }
+    return Promise.race([
+      document.fonts.ready,
+      new Promise((resolve) => setTimeout(resolve, timeoutMs))
+    ]);
+  }
+  await waitForFontsReady(1500);
+
   let card;
   try {
     const payments = window.Square.payments(SQUARE_APPLICATION_ID, SQUARE_LOCATION_ID);
@@ -708,7 +788,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         input: {
           color: '#13110F',
           fontSize: '15px',
-          fontFamily: 'Inter, sans-serif',
+          // Square expects a single font NAME to look up here (it mirrors
+          // that font's @font-face into its iframe) — not a full CSS
+          // font-family stack with a fallback like 'Inter, sans-serif'.
+          fontFamily: 'Inter',
         },
         'input::placeholder': {
           color: 'rgba(19,17,15,0.35)',
@@ -725,7 +808,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     card.addEventListener('focusClassRemoved', () => cardContainerEl.classList.remove('sq-focus'));
   } catch (err) {
     console.error('Square initialization failed:', err);
-    showError('Payment form could not be initialised. Please check your Square Application ID and Location ID.');
+    const detail = (err && err.message) ? ' (' + err.message + ')' : '';
+    showError('Payment form could not be initialised. Please check your Square Application ID and Location ID.' + detail);
     payBtn.disabled = true;
     return;
   }
