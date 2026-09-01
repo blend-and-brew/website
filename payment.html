@@ -276,11 +276,11 @@ img{max-width:100%;display:block;}
 
 #card-container{
   min-height:56px;
-  background:#fff;
+  background:#211F1B;
   border:1px solid var(--line-on-dark);
   border-radius:8px;
   padding:10px 12px;
-  margin-bottom:6px;
+  margin-bottom:16px;
   transition:border-color .15s ease;
 }
 #card-container.sq-focus{
@@ -765,14 +765,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     const payments = window.Square.payments(SQUARE_APPLICATION_ID, SQUARE_LOCATION_ID);
     card = await payments.card({
       style: {
+        // Square's card iframe defaults to a light theme; these overrides
+        // force it to match the page's permanent dark (walnut/cream) look
+        // regardless of the visitor's OS/browser colour-scheme setting.
         input: {
-          color: '#13110F',
+          color: '#F4EFE6',
           fontSize: '15px',
           // Use a CSS generic font family accepted by Square's card iframe.
           fontFamily: 'sans-serif',
         },
         'input::placeholder': {
-          color: 'rgba(19,17,15,0.35)',
+          color: 'rgba(244,239,230,0.35)',
         },
         '.message-text': {
           color: '#BD5A34',
