@@ -274,10 +274,24 @@
     .subscriber-count.visible {
         opacity: 1;
     }
+    .subscriber-count-card {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 12px 26px 10px;
+        background: rgba(12, 11, 10, 0.82);
+        border: 1px solid rgba(176, 141, 87, 0.55);
+        border-radius: 10px;
+        box-shadow:
+            0 10px 28px rgba(0, 0, 0, 0.45),
+            inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
     .subscriber-count-number {
         display: block;
         color: var(--bb-gold);
-        font-size: 19px;
+        font-size: 22px;
         font-weight: 700;
         letter-spacing: 0.01em;
         text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
@@ -285,7 +299,7 @@
     }
     .subscriber-count-label {
         display: block;
-        margin-top: 3px;
+        margin-top: 4px;
         color: var(--bb-muted);
         font-size: 9px;
         font-weight: 600;
@@ -356,15 +370,59 @@
         display: inline-block;
     }
     /* =========================================================
+       SCROLL-DOWN SECTION (mobile only)
+       Hidden entirely on desktop/tablet; the hero stage there
+       already carries the email form and subscriber count.
+       ========================================================= */
+    .scroll-section {
+        display: none;
+    }
+    .scroll-indicator {
+        display: none;
+    }
+    /* =========================================================
+       TILT BUTTON
+       ========================================================= */
+    .tilt-enable {
+        position: absolute;
+        left: 50%;
+        bottom: -46px;
+        transform: translateX(-50%);
+        z-index: 4;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 13px;
+        letter-spacing: 0.02em;
+        padding: 8px 16px;
+        border-radius: 999px;
+        cursor: var(--cursor-pointer);
+        display: none;
+        transition:
+            opacity 240ms ease,
+            background 200ms ease;
+    }
+    .tilt-enable:active {
+        background: rgba(255, 255, 255, 0.14);
+    }
+    .tilt-enable.visible {
+        display: inline-block;
+    }
+    /* =========================================================
        MOBILE
        ========================================================= */
     @media (max-width: 600px) {
         html,
         body {
-            height: 100%;
-            overflow: hidden;
+            height: auto;
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         body {
+            display: block;
             padding: 0;
         }
         .frame {
@@ -375,9 +433,8 @@
             filter: blur(26px);
         }
         .stage {
-            position: fixed;
-            inset: 0;
-            height: var(--vvh, 100dvh);
+            position: relative;
+            height: 100dvh;
             width: 100vw;
             max-width: 100vw;
             overflow: hidden;
@@ -415,9 +472,9 @@
         .tilt-enable {
             display: none !important;
         }
-        /* On mobile, the form and the social row are each pinned to the
-           real viewport independently — the social row's distance from
-           the bottom never depends on the form's height or presence. */
+        /* The email form is teleported down into the scroll section by
+           JS on mobile; the social row and the scroll prompt take over
+           its old spot, each pinned to the real viewport independently. */
         .below-frame {
             position: static;
             top: auto;
@@ -442,11 +499,11 @@
         .social-links {
             position: fixed;
             left: 50%;
-            top: calc(
-                4px +
-                40% -
-                18px
+            bottom: calc(
+                52px +
+                env(safe-area-inset-bottom, 0px)
             );
+            top: auto;
             transform: translateX(-50%);
             z-index: 5;
             gap: 18px;
@@ -468,8 +525,11 @@
             order: 4;
             margin-top: 2px;
         }
+        .subscriber-count-card {
+            padding: 9px 18px 7px;
+        }
         .subscriber-count-number {
-            font-size: 15px;
+            font-size: 16px;
         }
         .subscriber-count-label {
             font-size: 8px;
@@ -488,10 +548,102 @@
             width: 22px;
             height: 22px;
         }
+        /* -----------------------------------------------------
+           Scroll-down prompt — sits below the social icons, in
+           the old email-form spot's lower edge.
+           ----------------------------------------------------- */
+        .scroll-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            position: fixed;
+            left: 50%;
+            bottom: calc(
+                -4px +
+                env(safe-area-inset-bottom, 0px)
+            );
+            transform: translateX(-50%);
+            z-index: 5;
+            border: 0;
+            background: none;
+            padding: 6px 10px;
+            color: var(--bb-cream);
+            font-family: Arial, Helvetica, sans-serif;
+            cursor: var(--cursor-pointer);
+        }
+        .scroll-indicator-text {
+            font-size: 8px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--bb-muted);
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
+        }
+        .scroll-indicator-arrow {
+            display: block;
+            color: var(--bb-gold);
+            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.7));
+            animation: scrollBounce 1.6s ease-in-out infinite;
+        }
+        /* -----------------------------------------------------
+           Scroll section: timber borders sandwiching the
+           wallpaper panel that now holds the form + count.
+           ----------------------------------------------------- */
+        .scroll-section {
+            display: block;
+            position: relative;
+            width: 100%;
+            background: var(--bb-dark);
+        }
+        .timber-slat {
+            display: block;
+            width: 100%;
+            height: auto;
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+        }
+        .scroll-content {
+            position: relative;
+            width: 100%;
+            background-image: url('images/BB_FooterWallpaper2.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            padding: 44px 24px calc(44px + env(safe-area-inset-bottom, 0px));
+        }
+        .scroll-content .early-access-form {
+            position: static;
+            left: auto;
+            bottom: auto;
+            transform: none;
+            z-index: auto;
+            width: min(340px, 100%);
+        }
+    }
+    @keyframes scrollBounce {
+        0%,
+        100% {
+            transform: translateY(0);
+            opacity: 0.85;
+        }
+        50% {
+            transform: translateY(6px);
+            opacity: 1;
+        }
     }
     @media (max-width: 380px) {
         .early-access-form {
             width: calc(100vw - 32px);
+        }
+        .scroll-content .early-access-form {
+            width: 100%;
         }
         .early-access-button {
             padding: 0 10px;
@@ -505,7 +657,8 @@
     @media (prefers-reduced-motion: reduce) {
         .frame,
         .glow,
-        .frame::before {
+        .frame::before,
+        .scroll-indicator-arrow {
             transition: none;
             animation: none !important;
         }
@@ -706,12 +859,14 @@
                     id="subscriberCount"
                     aria-live="polite"
                 >
-                    <span
-                        class="subscriber-count-number"
-                        id="subscriberCountNumber"
-                    >0</span>
-                    <span class="subscriber-count-label">
-                        people already on the list
+                    <span class="subscriber-count-card">
+                        <span
+                            class="subscriber-count-number"
+                            id="subscriberCountNumber"
+                        >0</span>
+                        <span class="subscriber-count-label">
+                            people already on the list
+                        </span>
                     </span>
                 </p>
             </form>
@@ -740,6 +895,31 @@
                     >
                 </a>
             </div>
+
+            <button
+                class="scroll-indicator"
+                id="scrollIndicator"
+                type="button"
+                aria-label="Scroll down to join our early access list"
+            >
+                <span class="scroll-indicator-text">Scroll to join</span>
+                <svg
+                    class="scroll-indicator-arrow"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    height="18"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M12 5v14M12 19l-6-6M12 19l6-6"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+            </button>
         </div>
 
         <button
@@ -750,6 +930,30 @@
             Tap to enable tilt
         </button>
     </div>
+</div>
+
+<!-- =====================================================
+     MOBILE-ONLY SCROLL SECTION
+     Timber-slat borders sandwiching a wallpapered panel.
+     The email form (with the subscriber count inside it)
+     is moved in here by JS on mobile viewports only; on
+     desktop it stays in the hero card and this whole
+     section stays hidden.
+     ===================================================== -->
+<div class="scroll-section" id="scrollSection" aria-hidden="true">
+    <img
+        class="timber-slat timber-slat-top"
+        src="images/TimberSlat_Image.webp"
+        alt=""
+        aria-hidden="true"
+    >
+    <div class="scroll-content" id="scrollContent"></div>
+    <img
+        class="timber-slat timber-slat-bottom"
+        src="images/TimberSlat_Image.webp"
+        alt=""
+        aria-hidden="true"
+    >
 </div>
 <script>
 /* ============================================================
@@ -800,135 +1004,80 @@
     });
 })();
 /* ============================================================
-   MOBILE VIEWPORT HEIGHT
+   MOBILE: TELEPORT THE EMAIL FORM INTO THE SCROLL SECTION
+   On mobile, the hero card only shows the logo, social icons and
+   a scroll prompt — the actual signup form (with the subscriber
+   count nested inside it) is moved down into the timber-bordered
+   scroll section below. On desktop/tablet it's moved straight
+   back to its original spot in the hero card. Moving the real
+   node (not cloning) keeps every id, listener and live value
+   intact wherever it currently lives.
    ============================================================ */
-(function trackVisualViewport() {
-    // Track the tallest height we've seen and never shrink below it.
-    // On iOS, opening the keyboard shrinks visualViewport.height, which
-    // was shrinking the fixed .stage (and its background) along with it —
-    // revealing the plain black body background behind it. Since this
-    // page never actually needs to resize for the keyboard, we pin
-    // --vvh to the largest height seen and only reset it on a genuine
-    // orientation change.
-    let maxVVH = 0;
-    let lastWidth = window.innerWidth;
-    function updateVVH() {
-        const h =
-            window.visualViewport
-                ? window.visualViewport.height
-                : window.innerHeight;
-        if (h > maxVVH) {
-            maxVVH = h;
-        }
-        document.documentElement
-            .style
-            .setProperty('--vvh', `${maxVVH}px`);
-    }
-    updateVVH();
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener(
-            'resize',
-            updateVVH
-        );
-    }
-    function handleOrientationReset() {
-        // A width change means a real orientation/layout change (not the
-        // keyboard, which only affects height) — safe to recalc from zero.
-        if (window.innerWidth !== lastWidth) {
-            lastWidth = window.innerWidth;
-            maxVVH = 0;
-            updateVVH();
-        }
-    }
-    window.addEventListener('orientationchange', () => {
-        lastWidth = window.innerWidth;
-        maxVVH = 0;
-        updateVVH();
-    });
-    window.addEventListener('resize', handleOrientationReset);
-})();
-/* ============================================================
-   MOBILE: STOP SAFARI FROM SCROLLING THE PAGE WHEN THE EMAIL
-   INPUT IS FOCUSED
-   iOS scrolls the whole document to bring a focused input above
-   the keyboard, even though everything here is position:fixed —
-   that scroll offset shifts the fixed .stage layer up and out
-   from behind it, revealing the plain body background below.
-   Since nothing on this page should ever actually scroll, we
-   just snap it straight back to (0,0) whenever it tries.
-   ============================================================ */
-(function lockMobileScroll() {
+(function teleportSignupForm() {
+    const form = document.getElementById('earlyAccessForm');
+    const socialLinks = document.querySelector('.social-links');
+    const heroHome = document.querySelector('.below-frame');
+    const scrollTarget = document.getElementById('scrollContent');
+    if (!form || !socialLinks || !heroHome || !scrollTarget) return;
+
     function isMobile() {
         return window.matchMedia('(max-width: 600px)').matches;
     }
-    // While an input is focused, iOS needs to scroll the page slightly to
-    // bring it above the keyboard — fighting that with scrollTo(0,0) is
-    // what was breaking the caret position and freezing the keyboard.
-    // We only re-lock the scroll once the field is blurred again.
-    let inputFocused = false;
-    function resetScroll() {
-        if (inputFocused) return;
-        if (isMobile() && (window.scrollX !== 0 || window.scrollY !== 0)) {
-            window.scrollTo(0, 0);
+
+    let placement = null; // 'scroll' | 'hero'
+    function place() {
+        const mobile = isMobile();
+        if (mobile && placement !== 'scroll') {
+            scrollTarget.appendChild(form);
+            placement = 'scroll';
+        } else if (!mobile && placement !== 'hero') {
+            heroHome.insertBefore(form, socialLinks);
+            placement = 'hero';
         }
     }
-    window.addEventListener('scroll', resetScroll, { passive: true });
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener('scroll', resetScroll);
-        window.visualViewport.addEventListener('resize', resetScroll);
+
+    place();
+
+    const mq = window.matchMedia('(max-width: 600px)');
+    if (mq.addEventListener) {
+        mq.addEventListener('change', place);
+    } else if (mq.addListener) {
+        // Safari < 14 fallback
+        mq.addListener(place);
     }
-    document.querySelectorAll('.early-access-input').forEach((input) => {
-        input.addEventListener('focus', () => {
-            inputFocused = true;
-        });
-        input.addEventListener('blur', () => {
-            inputFocused = false;
-            setTimeout(resetScroll, 50);
-        });
-    });
+    window.addEventListener('orientationchange', place);
 })();
 /* ============================================================
-   MOBILE: POSITION SOCIAL ICONS PRECISELY UNDER THE TILT IMAGE
-   (measured from the real rendered image, not guessed via %)
+   MOBILE: SCROLL-DOWN PROMPT
+   Smooth-scrolls to the signup section when tapped, and hides
+   itself once the user has already scrolled there.
    ============================================================ */
-(function positionMobileSocials() {
-    const wrapper = document.querySelector('.card-wrapper');
-    const social = document.querySelector('.social-links');
-    if (!wrapper || !social) return;
+(function initScrollIndicator() {
+    const indicator = document.getElementById('scrollIndicator');
+    const target = document.getElementById('scrollSection');
+    if (!indicator || !target) return;
 
-    const GAP_PX = -34;
+    indicator.addEventListener('click', () => {
+        target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    });
 
-    function update() {
-        const isMobile =
-            window.matchMedia('(max-width: 600px)').matches;
-        if (!isMobile) {
-            social.style.top = '';
+    function updateVisibility() {
+        if (!window.matchMedia('(max-width: 600px)').matches) {
+            indicator.style.opacity = '';
             return;
         }
-        const rect = wrapper.getBoundingClientRect();
-        social.style.top =
-            `${Math.round(rect.bottom + GAP_PX)}px`;
+        const rect = target.getBoundingClientRect();
+        const reachedTarget = rect.top <= window.innerHeight * 0.5;
+        indicator.style.opacity = reachedTarget ? '0' : '';
+        indicator.style.pointerEvents = reachedTarget ? 'none' : '';
     }
 
-    update();
-    window.addEventListener('resize', update);
-    window.addEventListener('orientationchange', update);
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', update);
-    }
-
-    const logoImg = wrapper.querySelector('img');
-    if (logoImg) {
-        if (logoImg.complete) {
-            update();
-        } else {
-            logoImg.addEventListener('load', update);
-        }
-    }
-    if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(update);
-    }
-    setTimeout(update, 250);
+    updateVisibility();
+    window.addEventListener('scroll', updateVisibility, { passive: true });
+    window.addEventListener('resize', updateVisibility);
 })();
 /* ============================================================
    CARD TILT
@@ -1231,8 +1380,8 @@ if (
     }
 
     function animateCount(to) {
-        const stiffness = 90;
-        const damping = 18;
+        const stiffness = 28;
+        const damping = 13;
         let value = 0;
         let velocity = 0;
         let lastTime = performance.now();
