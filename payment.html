@@ -433,7 +433,9 @@ img{max-width:100%;display:block;}
   margin:0;
 }
 .pay-success .pay-receipt-ref{
-  display:inline-block;
+  position:relative;
+  display:inline-flex;
+  align-items:center;
   margin-top:16px;
   padding:8px 16px;
   border:1px solid var(--line-on-dark);
@@ -441,7 +443,59 @@ img{max-width:100%;display:block;}
   font-size:12px;
   letter-spacing:0.03em;
   color:var(--brass-bright);
+  background:none;
+  font-family:inherit;
+  cursor:pointer;
+  transition:border-color .15s ease, background .15s ease;
 }
+.pay-success .pay-receipt-ref:hover{
+  border-color:var(--brass);
+  background:rgba(198,138,69,0.08);
+}
+.pay-success .pay-receipt-ref:active{
+  transform:scale(0.97);
+}
+.pay-copy-toast{
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:50%;
+  transform:translateX(-50%) translateY(4px);
+  background:var(--cream);
+  color:var(--walnut);
+  font-size:10.5px;
+  font-weight:600;
+  padding:4px 10px;
+  border-radius:20px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+}
+.pay-copy-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+.pay-print-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  margin:12px auto 0;
+  padding:8px 16px;
+  background:none;
+  border:1px solid var(--line-on-dark);
+  border-radius:30px;
+  color:var(--cream-dim);
+  font-family:inherit;
+  font-size:12px;
+  cursor:pointer;
+  transition:border-color .15s ease, color .15s ease;
+}
+.pay-print-btn:hover{
+  border-color:var(--brass);
+  color:var(--cream);
+}
+.pay-print-btn svg{flex-shrink:0;}
 
 @keyframes tickJump{
   0%{transform:scale(0.6) translateY(8px);opacity:0;}
@@ -455,6 +509,22 @@ img{max-width:100%;display:block;}
 
 @media (max-width:480px){
   .pay-card{padding:30px 22px 26px;}
+}
+
+@media print{
+  body{background:#fff; padding:0; display:block;}
+  .bento-particles, .bento-ripple, .pay-print-btn, .pay-secure-note,
+  .pay-view-quote-row, .pay-quote-details, #paymentFormWrap{display:none !important;}
+  .pay-card{box-shadow:none; border:1px solid #ccc; background:#fff;}
+  .pay-card::before, .pay-card::after{display:none;}
+  .pay-eyebrow{color:#8C5B28;}
+  .pay-title, .pay-success h3{color:#181614;}
+  .pay-success p{color:#5A5550;}
+  .pay-summary{background:#fff; border:1px solid #ccc;}
+  .pay-summary-row .label{color:#5A5550;}
+  .pay-summary-row .value{color:#181614;}
+  .pay-summary-row.total .value{color:#8C5B28;}
+  .pay-success .pay-receipt-ref{color:#8C5B28; border-color:#ccc;}
 }
 </style>
 </head>
@@ -537,7 +607,14 @@ img{max-width:100%;display:block;}
     </div>
     <h3>Payment received</h3>
     <p id="successText">Thank you! Your payment has been processed and a receipt will be emailed to you shortly.</p>
-    <div class="pay-receipt-ref" id="successReceiptId"></div>
+    <button type="button" class="pay-receipt-ref" id="successReceiptId" aria-label="Copy receipt reference">
+      <span id="successReceiptIdText"></span>
+      <span class="pay-copy-toast" id="successCopyToast">Copied</span>
+    </button>
+    <button type="button" class="pay-print-btn" id="printReceiptBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print receipt
+    </button>
   </div>
 
 </div>
@@ -900,9 +977,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       // own receipt number appended unmodified after it — so it's still
       // directly searchable in the Square dashboard/receipt lookup.
       const squareReceiptId = data.receiptId || data.paymentId || '';
-      document.getElementById('successReceiptId').textContent =
-        squareReceiptId ? (refValue + ' · #' + squareReceiptId) : ('Receipt #' + refValue);
+      const receiptDisplayText = squareReceiptId ? (refValue + ' · #' + squareReceiptId) : ('Receipt #' + refValue);
+      document.getElementById('successReceiptIdText').textContent = receiptDisplayText;
       document.getElementById('paySuccess').classList.add('show');
+
+      // Click-to-copy the receipt reference, with a subtle toast confirming it copied.
+      const copyBtn = document.getElementById('successReceiptId');
+      const copyToast = document.getElementById('successCopyToast');
+      let copyToastTimer = null;
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(receiptDisplayText);
+        } catch (copyErr) {
+          console.error('Copy failed:', copyErr);
+          return;
+        }
+        copyToast.classList.add('show');
+        clearTimeout(copyToastTimer);
+        copyToastTimer = setTimeout(() => copyToast.classList.remove('show'), 1400);
+      });
+
+      // Print / save-to-PDF the confirmation screen.
+      document.getElementById('printReceiptBtn').addEventListener('click', () => {
+        window.print();
+      });
 
     } catch (err) {
       console.error('Payment failed:', err);
