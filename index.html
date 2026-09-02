@@ -380,6 +380,9 @@
     .scroll-indicator {
         display: none;
     }
+    .stage-fade {
+        display: none;
+    }
     /* =========================================================
        TILT BUTTON
        ========================================================= */
@@ -587,8 +590,8 @@
             animation: scrollBounce 1.6s ease-in-out infinite;
         }
         /* -----------------------------------------------------
-           Scroll section: timber borders sandwiching the
-           wallpaper panel that now holds the form + count.
+           Scroll section: solid dark panel holding the form
+           + subscriber count.
            ----------------------------------------------------- */
         .scroll-section {
             display: block;
@@ -596,21 +599,32 @@
             width: 100%;
             background: var(--bb-dark);
         }
-        .timber-slat {
+        /* -----------------------------------------------------
+           Reveal fade — sits over the bottom of the hero image,
+           solid at the very base (matching the scroll section's
+           dark fill) and fading to transparent going up, so the
+           image appears to dissolve into the section below.
+           ----------------------------------------------------- */
+        .stage-fade {
             display: block;
-            width: 100%;
-            height: auto;
-            user-select: none;
-            -webkit-user-drag: none;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 26vh;
+            background: linear-gradient(
+                to top,
+                var(--bb-dark) 0%,
+                rgba(23, 20, 18, 0.55) 40%,
+                rgba(23, 20, 18, 0) 100%
+            );
             pointer-events: none;
+            z-index: 3;
         }
         .scroll-content {
             position: relative;
             width: 100%;
-            background-image: url('images/BB_FooterWallpaper2.webp');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background: var(--bb-dark);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -805,6 +819,7 @@
             alt=""
         >
     </picture>
+    <div class="stage-fade" aria-hidden="true"></div>
     <div class="card-wrapper" id="card">
         <div class="glow"></div>
         <div class="frame">
@@ -941,19 +956,7 @@
      section stays hidden.
      ===================================================== -->
 <div class="scroll-section" id="scrollSection" aria-hidden="true">
-    <img
-        class="timber-slat timber-slat-top"
-        src="images/TimberSlat_Image.webp"
-        alt=""
-        aria-hidden="true"
-    >
     <div class="scroll-content" id="scrollContent"></div>
-    <img
-        class="timber-slat timber-slat-bottom"
-        src="images/TimberSlat_Image.webp"
-        alt=""
-        aria-hidden="true"
-    >
 </div>
 <script>
 /* ============================================================
