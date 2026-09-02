@@ -15,7 +15,7 @@
 <!-- ============ SQUARE WEB PAYMENTS SDK ============
      Sandbox URL is used here so you can test end-to-end before going
      live. Swap to the production URL (https://web.squarecdn.com/v1/square.js)
-     once you are ready to accept real cards — see the setup notes at the
+     once you're ready to accept real cards — see the setup notes at the
      bottom of this file for exactly what needs to change. -->
 <script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
 
@@ -895,9 +895,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       // ============ SUCCESS ============
       document.getElementById('paymentFormWrap').style.display = 'none';
       document.getElementById('successText').textContent =
-        `Thank you! Your payment of $${amountDollars.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} has been processed and a receipt will be emailed to you shortly.`;
+        `Thank you! Your payment of $${amountDollars.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} has been processed.`;
+      // Show our own booking reference as the primary label, with Square's
+      // own receipt number appended unmodified after it — so it's still
+      // directly searchable in the Square dashboard/receipt lookup.
+      const squareReceiptId = data.receiptId || data.paymentId || '';
       document.getElementById('successReceiptId').textContent =
-        'Receipt #' + (data.receiptId || data.paymentId || refValue);
+        squareReceiptId ? (refValue + ' · #' + squareReceiptId) : ('Receipt #' + refValue);
       document.getElementById('paySuccess').classList.add('show');
 
     } catch (err) {
