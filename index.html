@@ -266,6 +266,10 @@
        ========================================================= */
     .subscriber-count {
         margin-top: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
         text-align: center;
         line-height: 1.3;
         opacity: 0;
@@ -276,9 +280,9 @@
     }
     .subscriber-count-card {
         display: inline-flex;
-        flex-direction: column;
         align-items: center;
-        padding: 12px 26px 10px;
+        justify-content: center;
+        padding: 8px 20px;
         background: rgba(12, 11, 10, 0.82);
         border: 1px solid rgba(176, 141, 87, 0.55);
         border-radius: 10px;
@@ -299,7 +303,6 @@
     }
     .subscriber-count-label {
         display: block;
-        margin-top: 4px;
         color: var(--bb-muted);
         font-size: 9px;
         font-weight: 600;
@@ -497,7 +500,7 @@
             width: min(306px, calc(100% - (var(--mobile-edge-buffer) * 2)));
         }
         .social-links {
-            position: fixed;
+            position: absolute;
             left: 50%;
             bottom: calc(
                 52px +
@@ -524,9 +527,10 @@
         .subscriber-count {
             order: 4;
             margin-top: 2px;
+            gap: 4px;
         }
         .subscriber-count-card {
-            padding: 9px 18px 7px;
+            padding: 6px 14px;
         }
         .subscriber-count-number {
             font-size: 16px;
@@ -864,9 +868,9 @@
                             class="subscriber-count-number"
                             id="subscriberCountNumber"
                         >0</span>
-                        <span class="subscriber-count-label">
-                            people already on the list
-                        </span>
+                    </span>
+                    <span class="subscriber-count-label">
+                        people already on the list
                     </span>
                 </p>
             </form>
