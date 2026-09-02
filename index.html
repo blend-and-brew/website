@@ -453,7 +453,7 @@
         }
         .stage {
             position: relative;
-            height: 100dvh;
+            height: var(--stage-vh, 100dvh);
             width: 100vw;
             max-width: 100vw;
             overflow: hidden;
@@ -548,7 +548,7 @@
         .subscriber-count {
             order: 1;
             margin-top: 2px;
-            margin-bottom: 12px;
+            margin-bottom: 28px;
         }
         .subscriber-count-frame {
             padding: 7px 16px;
@@ -983,6 +983,49 @@
     <div class="scroll-content" id="scrollContent"></div>
 </div>
 <script>
+/* ============================================================
+   MOBILE STAGE HEIGHT LOCK
+   Mobile browsers resize the visible viewport (and therefore
+   100dvh) as the address bar shows/hides while the page scrolls.
+   That made the hero background image appear to change size on
+   every scroll. Instead we measure the viewport height once (on
+   load and on genuine orientation/size changes only) and pin the
+   stage to that fixed pixel value, so scrolling never re-triggers
+   the resize.
+   ============================================================ */
+(function lockMobileStageHeight() {
+    const root = document.documentElement;
+    let lastWidth = window.innerWidth;
+
+    function isMobile() {
+        return window.matchMedia('(max-width: 600px)').matches;
+    }
+
+    function setStageHeight() {
+        if (!isMobile()) return;
+        root.style.setProperty('--stage-vh', window.innerHeight + 'px');
+    }
+
+    setStageHeight();
+
+    window.addEventListener('resize', () => {
+        if (!isMobile()) return;
+        // Only recalculate when the width actually changes (rotation,
+        // real window resize) — not when only the height shifts, which
+        // is what happens when the mobile address bar collapses/expands
+        // during scrolling.
+        if (window.innerWidth !== lastWidth) {
+            lastWidth = window.innerWidth;
+            setStageHeight();
+        }
+    });
+
+    window.addEventListener('orientationchange', () => {
+        lastWidth = window.innerWidth;
+        setTimeout(setStageHeight, 50);
+    });
+})();
+
 /* ============================================================
    STAGE SIZING
    ============================================================ */
