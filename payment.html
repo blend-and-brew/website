@@ -251,6 +251,74 @@ img{max-width:100%;display:block;}
   color:var(--brass-bright);
 }
 
+/* ============ COST BREAKDOWN (collapsible, under Amount due) ============ */
+.pay-breakdown-toggle-row{
+  text-align:center;
+  padding-top:12px;
+  margin-top:10px;
+  border-top:1px solid var(--line-on-dark);
+}
+.pay-breakdown-link{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:11.5px;
+  font-weight:600;
+  color:var(--brass-bright);
+  text-decoration:none;
+  background:none;
+  border:none;
+  padding:0;
+  font-family:inherit;
+  cursor:var(--cursor-pointer);
+  transition:color .15s ease;
+}
+.pay-breakdown-link:hover{
+  color:var(--cream);
+}
+.pay-breakdown-chevron{
+  transition:transform .2s ease;
+}
+.pay-breakdown-link[aria-expanded="true"] .pay-breakdown-chevron{
+  transform:rotate(180deg);
+}
+.pay-breakdown-panel{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .3s ease, margin-top .3s ease;
+}
+.pay-breakdown-panel.is-open{
+  max-height:400px;
+  margin-top:12px;
+}
+.pay-breakdown-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:12px;
+  font-size:12.5px;
+  color:var(--cream-dim);
+  padding:5px 0;
+}
+.pay-breakdown-item .b-label{
+  opacity:0.75;
+}
+.pay-breakdown-item .b-value{
+  color:var(--cream);
+  font-weight:600;
+  white-space:nowrap;
+}
+.pay-breakdown-item.b-subtotal{
+  border-top:1px solid var(--line-on-dark);
+  margin-top:4px;
+  padding-top:8px;
+}
+.pay-breakdown-item.b-subtotal .b-label,
+.pay-breakdown-item.b-subtotal .b-value{
+  opacity:1;
+  font-weight:700;
+}
+
 .pay-view-quote-row{
   text-align:center;
   margin-bottom:26px;
@@ -538,16 +606,17 @@ img{max-width:100%;display:block;}
   height:10px;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  background:radial-gradient(circle, rgba(198,138,69,0.32) 0%, rgba(198,138,69,0.12) 40%, rgba(198,138,69,0) 72%);
+  background:radial-gradient(circle, rgba(224,168,95,0.55) 0%, rgba(198,138,69,0.30) 35%, rgba(198,138,69,0.08) 60%, rgba(198,138,69,0) 75%);
   opacity:0;
   pointer-events:none;
 }
 .pay-pulse-bg.pulse{
-  animation:paySuccessPulse 1.8s cubic-bezier(.16,.8,.3,1) forwards;
+  animation:paySuccessPulse 1.6s cubic-bezier(.16,.8,.3,1) forwards;
 }
 @keyframes paySuccessPulse{
-  0%{width:10px;height:10px;opacity:0.6;}
-  100%{width:2400px;height:2400px;opacity:0;}
+  0%{width:10px;height:10px;opacity:0.95;}
+  10%{width:140px;height:140px;opacity:1;}
+  100%{width:2600px;height:2600px;opacity:0;}
 }
 @media (prefers-reduced-motion: reduce){
   .pay-pulse-bg.pulse{animation:none;}
@@ -569,7 +638,8 @@ img{max-width:100%;display:block;}
   body{background:#fff; padding:0; display:block;}
   .bento-wrapper{margin:0 auto;}
   .bento-particles, .bento-ripple, .pay-print-btn, .pay-secure-note,
-  .pay-view-quote-row, .pay-quote-details, #paymentFormWrap,
+  .pay-view-quote-row, .pay-quote-details, .pay-breakdown-toggle-row,
+  .pay-breakdown-panel, #paymentFormWrap,
   .pay-pulse-bg{display:none !important;}
   .pay-card{
     box-shadow:none;
@@ -621,6 +691,17 @@ img{max-width:100%;display:block;}
     <div class="pay-summary-row total">
       <span class="label">Amount due</span>
       <span class="value" id="summaryAmount">$0.00</span>
+    </div>
+
+    <!-- ============ COST BREAKDOWN TOGGLE (shown only if ?breakdown= is present) ============ -->
+    <div class="pay-breakdown-toggle-row" id="payBreakdownToggleRow" style="display:none;">
+      <button type="button" class="pay-breakdown-link" id="breakdownToggle" aria-expanded="false">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pay-breakdown-chevron" id="breakdownChevron"><path d="m6 9 6 6 6-6"/></svg>
+        <span id="breakdownToggleLabel">View cost breakdown</span>
+      </button>
+    </div>
+    <div class="pay-breakdown-panel" id="payBreakdownPanel">
+      <div id="breakdownItems"></div>
     </div>
   </div>
 
@@ -869,14 +950,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('cardholderName').value = params.get('name');
   }
 
+  function fromBase64Utf8(b64){
+    return decodeURIComponent(escape(atob(b64)));
+  }
+
+  // ============ COST BREAKDOWN (collapsible, under Amount due) ============
+  // COGS can pass a compact breakdown of what makes up the total as
+  // ?breakdown=<base64 JSON>, e.g. an array of line items:
+  // [{"label":"The Latte package","amount":650},{"label":"Travel surcharge (18km)","amount":27}]
+  // Add "subtotal": true on any item to give it a bold divider line (handy
+  // for a repeated "Total" row at the bottom of the breakdown if you want one).
+  // This param is entirely optional — omit it and the toggle stays hidden.
+  const breakdownParam = params.get('breakdown');
+  if (breakdownParam){
+    try {
+      const items = JSON.parse(fromBase64Utf8(breakdownParam));
+      if (Array.isArray(items) && items.length){
+        const breakdownToggleRow = document.getElementById('payBreakdownToggleRow');
+        const breakdownToggle = document.getElementById('breakdownToggle');
+        const breakdownToggleLabel = document.getElementById('breakdownToggleLabel');
+        const breakdownPanel = document.getElementById('payBreakdownPanel');
+        const breakdownItemsEl = document.getElementById('breakdownItems');
+
+        breakdownItemsEl.innerHTML = items.map(item => {
+          const label = String(item.label || '')
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          const amt = parseFloat(item.amount);
+          const amtLabel = isNaN(amt)
+            ? '—'
+            : ('$' + amt.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+          const isSubtotal = item.subtotal === true;
+          return '<div class="pay-breakdown-item' + (isSubtotal ? ' b-subtotal' : '') + '">'
+            + '<span class="b-label">' + label + '</span>'
+            + '<span class="b-value">' + amtLabel + '</span>'
+            + '</div>';
+        }).join('');
+
+        breakdownToggleRow.style.display = 'block';
+
+        let breakdownOpen = false;
+        breakdownToggle.addEventListener('click', () => {
+          breakdownOpen = !breakdownOpen;
+          breakdownPanel.classList.toggle('is-open', breakdownOpen);
+          breakdownToggle.setAttribute('aria-expanded', String(breakdownOpen));
+          breakdownToggleLabel.textContent = breakdownOpen ? 'Hide cost breakdown' : 'View cost breakdown';
+        });
+      }
+    } catch (err){
+      console.error('Could not decode cost breakdown from payment link:', err);
+    }
+  }
+
   // ============ VIEW QUOTE DETAILS (inline expand) ============
   // COGS.html embeds a compact, image-free copy of the quote directly in
   // the payment link as ?q=<base64>. If present, decode it and let the
   // buyer expand it inline (in an iframe) right on this page, so they can
   // double-check what's included before paying — no popup to get blocked.
-  function fromBase64Utf8(b64){
-    return decodeURIComponent(escape(atob(b64)));
-  }
   const quoteParam = params.get('q');
   if (quoteParam){
     try {
