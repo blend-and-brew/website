@@ -1055,6 +1055,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const copyBtn = document.getElementById('successReceiptId');
       const copyToast = document.getElementById('successCopyToast');
       let copyToastTimer = null;
+      let followToastMouse = null;
       copyBtn.addEventListener('click', async (e) => {
         try {
           await navigator.clipboard.writeText(receiptDisplayText);
@@ -1074,8 +1075,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         copyToast.style.left = x + 'px';
         copyToast.style.top = y + 'px';
         copyToast.classList.add('show');
+
+        // From here, the toast trails the real cursor — like a little label
+        // attached to it — until it fades out a moment later.
+        if (followToastMouse) document.removeEventListener('mousemove', followToastMouse);
+        followToastMouse = (moveEvent) => {
+          copyToast.style.left = moveEvent.clientX + 'px';
+          copyToast.style.top = moveEvent.clientY + 'px';
+        };
+        document.addEventListener('mousemove', followToastMouse);
+
         clearTimeout(copyToastTimer);
-        copyToastTimer = setTimeout(() => copyToast.classList.remove('show'), 1400);
+        copyToastTimer = setTimeout(() => {
+          copyToast.classList.remove('show');
+          if (followToastMouse){
+            document.removeEventListener('mousemove', followToastMouse);
+            followToastMouse = null;
+          }
+        }, 1400);
       });
 
       // Print / save-to-PDF the confirmation screen.
