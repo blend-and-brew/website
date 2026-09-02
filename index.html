@@ -275,11 +275,11 @@
     .subscriber-count.visible {
         opacity: 1;
     }
-    .subscriber-count-card {
+    .subscriber-count-frame {
         display: inline-flex;
-        flex-direction: column;
         align-items: center;
-        padding: 12px 26px 10px;
+        justify-content: center;
+        padding: 8px 22px;
         background: rgba(12, 11, 10, 0.82);
         border: 1px solid rgba(176, 141, 87, 0.55);
         border-radius: 10px;
@@ -300,13 +300,27 @@
     }
     .subscriber-count-label {
         display: block;
-        margin-top: 4px;
+        margin-top: 6px;
         color: var(--bb-muted);
         font-size: 9px;
         font-weight: 600;
         letter-spacing: 0.2em;
         text-transform: uppercase;
         text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
+    }
+    /* -----------------------------------------------------
+       Desktop-only corner placement — JS moves the live
+       #subscriberCount node in here on wide viewports and
+       back into the form on mobile.
+       ----------------------------------------------------- */
+    .corner-subscriber-count-anchor {
+        position: absolute;
+        top: 22px;
+        right: 22px;
+        z-index: 4;
+    }
+    .corner-subscriber-count-anchor .subscriber-count {
+        margin-top: 0;
     }
     /* =========================================================
        SOCIAL LINKS
@@ -530,8 +544,8 @@
             order: 4;
             margin-top: 2px;
         }
-        .subscriber-count-card {
-            padding: 9px 18px 7px;
+        .subscriber-count-frame {
+            padding: 7px 16px;
         }
         .subscriber-count-number {
             font-size: 16px;
@@ -539,6 +553,9 @@
         .subscriber-count-label {
             font-size: 8px;
             letter-spacing: 0.16em;
+        }
+        .corner-subscriber-count-anchor {
+            display: none;
         }
         .early-access-input {
             height: 25px;
@@ -554,15 +571,18 @@
             height: 22px;
         }
         /* -----------------------------------------------------
-           Scroll-down prompt — icon only, no label. A slim outline
-           with a dot that drifts down and fades, like a classic
-           "scroll" mouse glyph. Sits below the social icons, in
-           the old email-form spot's lower edge.
+           Scroll-down prompt — icon only, no label. Three
+           chevrons pulse downward in sequence, like a flowing
+           "keep going" cue. Sits below the social icons, in
+           the old email-form spot's lower edge. Once the user
+           scrolls it fades out for good (see JS) rather than
+           reappearing when they scroll back up.
            ----------------------------------------------------- */
         .scroll-indicator {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            gap: 2px;
             position: absolute;
             left: 50%;
             bottom: calc(
@@ -575,27 +595,28 @@
             background: none;
             padding: 6px 10px;
             cursor: var(--cursor-pointer);
+            transition: opacity 520ms ease;
         }
-        .scroll-indicator-glyph {
+        .scroll-indicator.dismissed {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        .scroll-chevron {
             display: block;
-            width: 20px;
-            height: 32px;
-            border: 1.5px solid var(--bb-gold);
-            border-radius: 11px;
-            position: relative;
+            width: 9px;
+            height: 9px;
+            border-right: 1.5px solid var(--bb-gold);
+            border-bottom: 1.5px solid var(--bb-gold);
+            transform: rotate(45deg);
+            opacity: 0;
             filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.7));
+            animation: chevronPulse 1.8s ease-in-out infinite;
         }
-        .scroll-indicator-glyph::before {
-            content: "";
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            width: 3px;
-            height: 3px;
-            margin-left: -1.5px;
-            border-radius: 50%;
-            background: var(--bb-gold);
-            animation: scrollDot 1.7s ease-in-out infinite;
+        .scroll-chevron:nth-child(2) {
+            animation-delay: 0.18s;
+        }
+        .scroll-chevron:nth-child(3) {
+            animation-delay: 0.36s;
         }
         /* -----------------------------------------------------
            Scroll section: solid dark panel holding the form
@@ -651,18 +672,19 @@
             width: min(340px, 100%);
         }
     }
-    @keyframes scrollDot {
+    @keyframes chevronPulse {
         0% {
-            transform: translateY(0);
+            opacity: 0;
+            transform: rotate(45deg) translate(0, -3px);
+        }
+        35% {
             opacity: 1;
+            transform: rotate(45deg) translate(0, 0);
         }
-        70% {
-            transform: translateY(14px);
-            opacity: 0;
-        }
+        70%,
         100% {
-            transform: translateY(0);
             opacity: 0;
+            transform: rotate(45deg) translate(0, 5px);
         }
     }
     @media (max-width: 380px) {
@@ -685,7 +707,7 @@
         .frame,
         .glow,
         .frame::before,
-        .scroll-indicator-glyph::before {
+        .scroll-chevron {
             transition: none;
             animation: none !important;
         }
@@ -833,6 +855,7 @@
         >
     </picture>
     <div class="stage-fade" aria-hidden="true"></div>
+    <div class="corner-subscriber-count-anchor" id="cornerSubscriberCountAnchor"></div>
     <div class="card-wrapper" id="card">
         <div class="glow"></div>
         <div class="frame">
@@ -887,14 +910,14 @@
                     id="subscriberCount"
                     aria-live="polite"
                 >
-                    <span class="subscriber-count-card">
+                    <span class="subscriber-count-frame">
                         <span
                             class="subscriber-count-number"
                             id="subscriberCountNumber"
                         >0</span>
-                        <span class="subscriber-count-label">
-                            people already on the list
-                        </span>
+                    </span>
+                    <span class="subscriber-count-label">
+                        people already on the list
                     </span>
                 </p>
             </form>
@@ -930,7 +953,9 @@
                 type="button"
                 aria-label="Scroll down to join our early access list"
             >
-                <span class="scroll-indicator-glyph" aria-hidden="true"></span>
+                <span class="scroll-chevron" aria-hidden="true"></span>
+                <span class="scroll-chevron" aria-hidden="true"></span>
+                <span class="scroll-chevron" aria-hidden="true"></span>
             </button>
         </div>
 
@@ -1048,9 +1073,50 @@
     window.addEventListener('orientationchange', place);
 })();
 /* ============================================================
+   DESKTOP: MOVE SUBSCRIBER COUNT INTO THE IMAGE'S CORNER
+   On desktop/tablet the live subscriber count is pulled out of
+   the form and pinned to the top-right corner of the hero image.
+   On mobile it stays in its original spot inside the form (and
+   therefore travels with it into the scroll section). Moving the
+   real node keeps its id, listeners and live value intact.
+   ============================================================ */
+(function teleportSubscriberCount() {
+    const count = document.getElementById('subscriberCount');
+    const message = document.getElementById('earlyAccessMessage');
+    const cornerAnchor = document.getElementById('cornerSubscriberCountAnchor');
+    if (!count || !message || !cornerAnchor) return;
+
+    function isMobile() {
+        return window.matchMedia('(max-width: 600px)').matches;
+    }
+
+    let placement = null; // 'corner' | 'form'
+    function place() {
+        const mobile = isMobile();
+        if (!mobile && placement !== 'corner') {
+            cornerAnchor.appendChild(count);
+            placement = 'corner';
+        } else if (mobile && placement !== 'form') {
+            message.insertAdjacentElement('afterend', count);
+            placement = 'form';
+        }
+    }
+
+    place();
+
+    const mq = window.matchMedia('(max-width: 600px)');
+    if (mq.addEventListener) {
+        mq.addEventListener('change', place);
+    } else if (mq.addListener) {
+        mq.addListener(place);
+    }
+    window.addEventListener('orientationchange', place);
+})();
+/* ============================================================
    MOBILE: SCROLL-DOWN PROMPT
-   Smooth-scrolls to the signup section when tapped, and hides
-   itself once the user has already scrolled there.
+   Smooth-scrolls to the signup section when tapped. The first
+   time the user scrolls down it fades out for good — it does
+   not reappear even if they scroll back up.
    ============================================================ */
 (function initScrollIndicator() {
     const indicator = document.getElementById('scrollIndicator');
@@ -1064,20 +1130,23 @@
         });
     });
 
-    function updateVisibility() {
-        if (!window.matchMedia('(max-width: 600px)').matches) {
-            indicator.style.opacity = '';
-            return;
-        }
-        const rect = target.getBoundingClientRect();
-        const reachedTarget = rect.top <= window.innerHeight * 0.5;
-        indicator.style.opacity = reachedTarget ? '0' : '';
-        indicator.style.pointerEvents = reachedTarget ? 'none' : '';
+    let dismissed = false;
+    function dismissForGood() {
+        if (dismissed) return;
+        dismissed = true;
+        indicator.classList.add('dismissed');
+        window.removeEventListener('scroll', handleScroll);
     }
 
-    updateVisibility();
-    window.addEventListener('scroll', updateVisibility, { passive: true });
-    window.addEventListener('resize', updateVisibility);
+    function handleScroll() {
+        if (dismissed) return;
+        if (!window.matchMedia('(max-width: 600px)').matches) return;
+        if (window.scrollY > 8) {
+            dismissForGood();
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
 })();
 /* ============================================================
    CARD TILT
