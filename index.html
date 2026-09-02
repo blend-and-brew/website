@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Blend & Brew – Mobile Coffee Cart Hire | Sydney</title>
 <meta name="description" content="Sydney's mobile coffee cart for weddings, corporate events, parties and markets. Blend & Brew is launching soon — register now for early access bookings.">
 <meta name="keywords" content="mobile coffee cart Sydney, coffee wagon hire Sydney, coffee cart hire, wedding coffee cart, corporate coffee catering, mobile barista hire, coffee cart hire Western Sydney, coffee van hire">
@@ -805,7 +805,13 @@
     function isMobile() {
         return window.matchMedia('(max-width: 600px)').matches;
     }
+    // While an input is focused, iOS needs to scroll the page slightly to
+    // bring it above the keyboard — fighting that with scrollTo(0,0) is
+    // what was breaking the caret position and freezing the keyboard.
+    // We only re-lock the scroll once the field is blurred again.
+    let inputFocused = false;
     function resetScroll() {
+        if (inputFocused) return;
         if (isMobile() && (window.scrollX !== 0 || window.scrollY !== 0)) {
             window.scrollTo(0, 0);
         }
@@ -817,11 +823,10 @@
     }
     document.querySelectorAll('.early-access-input').forEach((input) => {
         input.addEventListener('focus', () => {
-            resetScroll();
-            setTimeout(resetScroll, 50);
-            setTimeout(resetScroll, 300);
+            inputFocused = true;
         });
         input.addEventListener('blur', () => {
+            inputFocused = false;
             setTimeout(resetScroll, 50);
         });
     });
