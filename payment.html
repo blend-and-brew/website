@@ -427,7 +427,6 @@ img{max-width:100%;display:block;}
 .pay-success.show{display:block;}
 .pay-success .stamp-icon{
   width:58px;height:58px;
-  border:1.5px solid var(--brass);
   border-radius:50%;
   display:flex;
   align-items:center;
@@ -526,6 +525,34 @@ img{max-width:100%;display:block;}
   .pay-card{padding:30px 22px 26px;}
 }
 
+/* ============ SUCCESS PULSE (background) ============
+   A single soft brass ring that expands from the centre of the viewport
+   and fades out the moment the payment-confirmed screen appears. Sits
+   first in the DOM with no z-index of its own, so normal stacking order
+   keeps it painted behind the card and every other element on the page. */
+.pay-pulse-bg{
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:10px;
+  height:10px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(198,138,69,0.32) 0%, rgba(198,138,69,0.12) 40%, rgba(198,138,69,0) 72%);
+  opacity:0;
+  pointer-events:none;
+}
+.pay-pulse-bg.pulse{
+  animation:paySuccessPulse 1.8s cubic-bezier(.16,.8,.3,1) forwards;
+}
+@keyframes paySuccessPulse{
+  0%{width:10px;height:10px;opacity:0.6;}
+  100%{width:2400px;height:2400px;opacity:0;}
+}
+@media (prefers-reduced-motion: reduce){
+  .pay-pulse-bg.pulse{animation:none;}
+}
+
 @page{
   size: portrait;
   margin: 0.5in;
@@ -542,7 +569,8 @@ img{max-width:100%;display:block;}
   body{background:#fff; padding:0; display:block;}
   .bento-wrapper{margin:0 auto;}
   .bento-particles, .bento-ripple, .pay-print-btn, .pay-secure-note,
-  .pay-view-quote-row, .pay-quote-details, #paymentFormWrap{display:none !important;}
+  .pay-view-quote-row, .pay-quote-details, #paymentFormWrap,
+  .pay-pulse-bg{display:none !important;}
   .pay-card{
     box-shadow:none;
     border:1px solid var(--line-on-dark);
@@ -562,6 +590,8 @@ img{max-width:100%;display:block;}
 </style>
 </head>
 <body>
+
+<div class="pay-pulse-bg" id="payPulseBg"></div>
 
 <div class="bento-wrapper" id="bentoWrapper">
 <div class="bento-particles" id="bentoParticles"></div>
@@ -634,8 +664,14 @@ img{max-width:100%;display:block;}
   <!-- ============ SUCCESS STATE ============ -->
   <div class="pay-success" id="paySuccess">
     <div class="stamp-icon">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C68A45" stroke-width="2.5">
-        <path d="M20 6L9 17l-5-5"/>
+      <svg width="58" height="58" viewBox="0 0 58 58" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <mask id="stampTickMask" maskUnits="userSpaceOnUse" x="0" y="0" width="58" height="58">
+            <rect x="0" y="0" width="58" height="58" fill="#ffffff"/>
+            <path d="M17 30l8 8 16-16" fill="none" stroke="#000000" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </mask>
+        </defs>
+        <circle cx="29" cy="29" r="28" fill="#C68A45" mask="url(#stampTickMask)"/>
       </svg>
     </div>
     <h3>Payment received</h3>
@@ -1012,6 +1048,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const receiptDisplayText = squareReceiptId ? (refValue + ' · #' + squareReceiptId) : ('Receipt #' + refValue);
       document.getElementById('successReceiptIdText').textContent = receiptDisplayText;
       document.getElementById('paySuccess').classList.add('show');
+      document.getElementById('payPulseBg').classList.add('pulse');
 
       // Click-to-copy the receipt reference, with a subtle toast confirming it copied.
       // The toast appears right where the click happened, rather than fixed above the button.
