@@ -262,6 +262,38 @@
         color: #d0aaa0;
     }
     /* =========================================================
+       SUBSCRIBER COUNT
+       ========================================================= */
+    .subscriber-count {
+        margin-top: 4px;
+        text-align: center;
+        line-height: 1.3;
+        opacity: 0;
+        transition: opacity 480ms ease;
+    }
+    .subscriber-count.visible {
+        opacity: 1;
+    }
+    .subscriber-count-number {
+        display: block;
+        color: var(--bb-gold);
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
+        font-variant-numeric: tabular-nums;
+    }
+    .subscriber-count-label {
+        display: block;
+        margin-top: 3px;
+        color: var(--bb-muted);
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
+    }
+    /* =========================================================
        SOCIAL LINKS
        ========================================================= */
     .social-links {
@@ -431,6 +463,17 @@
         }
         .early-access-message {
             order: 3;
+        }
+        .subscriber-count {
+            order: 4;
+            margin-top: 2px;
+        }
+        .subscriber-count-number {
+            font-size: 15px;
+        }
+        .subscriber-count-label {
+            font-size: 8px;
+            letter-spacing: 0.16em;
         }
         .early-access-input {
             height: 25px;
@@ -658,6 +701,19 @@
                     id="earlyAccessMessage"
                     aria-live="polite"
                 ></p>
+                <p
+                    class="subscriber-count"
+                    id="subscriberCount"
+                    aria-live="polite"
+                >
+                    <span
+                        class="subscriber-count-number"
+                        id="subscriberCountNumber"
+                    >0</span>
+                    <span class="subscriber-count-label">
+                        people already on the list
+                    </span>
+                </p>
             </form>
 
             <div class="social-links">
@@ -1159,6 +1215,71 @@ if (
         enableGyro();
     }
 }
+
+/* ============================================================
+   SUBSCRIBER COUNT
+   Fetches a live count from /api/subscriber-count (a Cloudflare
+   Function that reads MailerLite server-side) and counts up to it
+   with a lightweight spring, the same shape as a Framer Motion
+   useSpring — no external library needed.
+   ============================================================ */
+(function initSubscriberCount() {
+    const wrap = document.getElementById('subscriberCount');
+    const numberEl = document.getElementById('subscriberCountNumber');
+    if (!wrap || !numberEl) {
+        return;
+    }
+
+    function animateCount(to) {
+        const stiffness = 90;
+        const damping = 18;
+        let value = 0;
+        let velocity = 0;
+        let lastTime = performance.now();
+
+        function step(now) {
+            const dt = Math.min((now - lastTime) / 1000, 0.05);
+            lastTime = now;
+
+            const springForce = -stiffness * (value - to);
+            const dampingForce = -damping * velocity;
+            velocity += (springForce + dampingForce) * dt;
+            value += velocity * dt;
+
+            const displayValue = Math.max(0, Math.round(value));
+            numberEl.textContent = displayValue.toLocaleString('en-US');
+
+            if (Math.abs(to - value) > 0.5 || Math.abs(velocity) > 0.5) {
+                requestAnimationFrame(step);
+            } else {
+                numberEl.textContent = to.toLocaleString('en-US');
+            }
+        }
+
+        requestAnimationFrame(step);
+    }
+
+    fetch('/api/subscriber-count')
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`subscriber-count responded ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            const count = Number(data.count);
+            if (!Number.isFinite(count) || count < 0) {
+                return;
+            }
+            wrap.classList.add('visible');
+            animateCount(count);
+        })
+        .catch((error) => {
+            // Fail quietly — leave the counter hidden rather than show a
+            // broken or stale number.
+            console.error('Subscriber count error:', error);
+        });
+})();
 
 /* ============================================================
    CUSTOM MAILERLITE SIGNUP
