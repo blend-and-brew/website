@@ -290,13 +290,66 @@
         -webkit-backdrop-filter: blur(6px);
     }
     .subscriber-count-number {
-        display: block;
+        display: inline-flex;
+        align-items: stretch;
         color: var(--bb-gold);
         font-size: 22px;
         font-weight: 700;
         letter-spacing: 0.01em;
         text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
         font-variant-numeric: tabular-nums;
+    }
+    /* -----------------------------------------------------
+       ROLLING DIGIT COUNTER
+       Each digit gets its own column showing a 0–9 strip;
+       the strip slides vertically to reveal the target digit,
+       giving the classic odometer / Counter-component roll.
+       ----------------------------------------------------- */
+    .counter-digit-col {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+        height: 1.1em;
+        width: 0.62em;
+        line-height: 1.1;
+    }
+    .counter-digit-strip {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        transform: translateY(0%);
+        transition: transform 900ms cubic-bezier(0.34, 1.15, 0.32, 1);
+    }
+    .counter-digit-strip span {
+        display: block;
+        height: 1.1em;
+        line-height: 1.1;
+        text-align: center;
+    }
+    .counter-comma {
+        display: inline-block;
+        align-self: flex-end;
+        width: 0.32em;
+        line-height: 1.1;
+    }
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .counter-digit-strip {
+            transition: none;
+        }
     }
     .subscriber-count-label {
         display: block;
@@ -930,7 +983,12 @@
                         <span
                             class="subscriber-count-number"
                             id="subscriberCountNumber"
-                        >0</span>
+                            aria-hidden="true"
+                        ></span>
+                        <span
+                            class="sr-only"
+                            id="subscriberCountSR"
+                        ></span>
                     </span>
                     <span class="subscriber-count-label">
                         people already<br>on the list
@@ -1509,44 +1567,98 @@ if (
 /* ============================================================
    SUBSCRIBER COUNT
    Fetches a live count from /api/subscriber-count (a Cloudflare
-   Function that reads MailerLite server-side) and counts up to it
-   with a lightweight spring, the same shape as a Framer Motion
-   useSpring — no external library needed.
+   Function that reads MailerLite server-side) and rolls each
+   digit into place — the same "odometer" feel as the reactbits
+   Counter component (per-digit column, spring-eased transform),
+   built here with plain CSS transitions so no extra library is
+   needed.
    ============================================================ */
 (function initSubscriberCount() {
     const wrap = document.getElementById('subscriberCount');
     const numberEl = document.getElementById('subscriberCountNumber');
+    const srEl = document.getElementById('subscriberCountSR');
     if (!wrap || !numberEl) {
         return;
     }
 
-    function animateCount(to) {
-        const stiffness = 28;
-        const damping = 13;
-        let value = 0;
-        let velocity = 0;
-        let lastTime = performance.now();
+    const reducedMotion =
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        function step(now) {
-            const dt = Math.min((now - lastTime) / 1000, 0.05);
-            lastTime = now;
+    // Builds one overflow-hidden column per digit, each containing a
+    // 0–9 strip. Setting the strip's transform on the following frame
+    // (after it's painted at rest) triggers the CSS transition, so
+    // every column rolls from "0" up to its final digit in place —
+    // the same shape as <Counter value={n} places={[...]} />.
+    function renderDigits(to) {
+        const value = Math.max(0, Math.round(to));
+        const formatted = value.toLocaleString('en-US');
 
-            const springForce = -stiffness * (value - to);
-            const dampingForce = -damping * velocity;
-            velocity += (springForce + dampingForce) * dt;
-            value += velocity * dt;
+        numberEl.textContent = '';
 
-            const displayValue = Math.max(0, Math.round(value));
-            numberEl.textContent = displayValue.toLocaleString('en-US');
+        const chars = formatted.split('');
+        let place = 0; // digit index counted from the right, for stagger
 
-            if (Math.abs(to - value) > 0.5 || Math.abs(velocity) > 0.5) {
-                requestAnimationFrame(step);
-            } else {
-                numberEl.textContent = to.toLocaleString('en-US');
+        // Walk right-to-left so the stagger delay increases with each
+        // more-significant digit, like real odometer wheels settling
+        // in sequence.
+        const nodes = [];
+        for (let i = chars.length - 1; i >= 0; i--) {
+            const ch = chars[i];
+            if (ch === ',') {
+                nodes.unshift({ type: 'comma' });
+                continue;
             }
+            nodes.unshift({ type: 'digit', value: parseInt(ch, 10), place });
+            place++;
         }
 
-        requestAnimationFrame(step);
+        const strips = [];
+
+        nodes.forEach((node) => {
+            if (node.type === 'comma') {
+                const comma = document.createElement('span');
+                comma.className = 'counter-comma';
+                comma.textContent = ',';
+                numberEl.appendChild(comma);
+                return;
+            }
+
+            const col = document.createElement('span');
+            col.className = 'counter-digit-col';
+
+            const strip = document.createElement('span');
+            strip.className = 'counter-digit-strip';
+            for (let n = 0; n <= 9; n++) {
+                const digitSpan = document.createElement('span');
+                digitSpan.textContent = String(n);
+                strip.appendChild(digitSpan);
+            }
+            col.appendChild(strip);
+            numberEl.appendChild(col);
+
+            if (reducedMotion) {
+                strip.style.transition = 'none';
+                strip.style.transform = `translateY(-${node.value * 10}%)`;
+            } else {
+                // Higher place value = settles later, for a cascading roll.
+                strip.style.transitionDelay = `${node.place * 60}ms`;
+                strips.push({ strip, value: node.value });
+            }
+        });
+
+        if (!reducedMotion && strips.length) {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    strips.forEach(({ strip, value }) => {
+                        strip.style.transform = `translateY(-${value * 10}%)`;
+                    });
+                });
+            });
+        }
+
+        if (srEl) {
+            srEl.textContent = `${formatted} people already on the list`;
+        }
     }
 
     fetch('/api/subscriber-count')
@@ -1562,7 +1674,7 @@ if (
                 return;
             }
             wrap.classList.add('visible');
-            animateCount(count);
+            renderDigits(count);
         })
         .catch((error) => {
             // Fail quietly — leave the counter hidden rather than show a
