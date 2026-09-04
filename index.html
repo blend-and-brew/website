@@ -5241,6 +5241,29 @@ const wagonData = {
   let activeId = null;
   let lockedByClick = false;
 
+  // Forces the hotspot's highlighted look on or off via inline styles —
+  // a hard binary switch driven entirely by JS, so it can't be left in a
+  // stuck in-between state by mobile quirks like sticky :hover, lingering
+  // :focus rings, or the browser's native tap-highlight overlay. "On"
+  // mirrors the .active CSS rule below (kept as a fallback); "off" clears
+  // the inline styles so the base .hotspot rule takes over exactly as
+  // before any tap ever happened.
+  function setHotspotOn(el, isOn){
+    if (isOn){
+      el.style.background = 'var(--brass)';
+      el.style.color = 'var(--walnut)';
+      el.style.transform = 'translate(-50%,-50%) scale(1.12)';
+      el.style.boxShadow = '0 0 0 6px rgba(198,138,69,0.18)';
+      el.style.opacity = '1';
+    } else {
+      el.style.background = '';
+      el.style.color = '';
+      el.style.transform = '';
+      el.style.boxShadow = '';
+      el.style.opacity = '';
+    }
+  }
+
   function isMobile(){
     return window.innerWidth <= 900;
   }
@@ -5269,7 +5292,11 @@ const wagonData = {
     if (!data) return;
     activeId = id;
 
-    hotspots.forEach(h => h.classList.toggle('active', h === hotspotEl));
+    hotspots.forEach(h => {
+      const isTarget = h === hotspotEl;
+      h.classList.toggle('active', isTarget);
+      setHotspotOn(h, isTarget);
+    });
 
     if (isMobile()){
       cardLeft.classList.remove('active');
@@ -5310,6 +5337,7 @@ const wagonData = {
     cardMobile.classList.remove('active');
     hotspots.forEach(h => {
       h.classList.remove('active');
+      setHotspotOn(h, false);
       if (document.activeElement === h) h.blur();
     });
     line.classList.remove('active');
