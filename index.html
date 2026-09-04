@@ -72,6 +72,19 @@
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth; overflow-x:hidden; width:100%; color-scheme: light only;}
 
+/* Force light mode everywhere, including native form controls.
+   The rule on `html` above covers most rendering, but iOS Safari and
+   Android Chrome apply color-scheme to native controls (selects, the
+   time picker, number spinners, checkboxes) somewhat independently —
+   they can still flip to dark chrome on a dark-mode device even when
+   html/body are light. Setting it explicitly on the controls themselves
+   closes that gap, so there is no separate dark palette anywhere: light
+   mode is the only mode, on any device setting. */
+:root, body,
+input, select, textarea, button{
+  color-scheme: light only;
+}
+
 /* Scales the whole page down to match the look of ~95% browser zoom,
    desktop only (matches the site's existing 900px breakpoint) so mobile
    is untouched. CSS zoom scales font-size/padding/etc, but does NOT
