@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
 
 <!-- ============ PRIMARY SEO ============
      Domain is set to www.blendandbrew.com.au. No phone number is
@@ -69,7 +70,7 @@
   --cursor-text: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23F4EFE6' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23181614' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") 12 12, text;
 }
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth; overflow-x:hidden; width:100%;}
+html{scroll-behavior:smooth; overflow-x:hidden; width:100%; color-scheme: light only;}
 
 /* Scales the whole page down to match the look of ~95% browser zoom,
    desktop only (matches the site's existing 900px breakpoint) so mobile
@@ -2065,6 +2066,8 @@ height:100vh;
   backdrop-filter:blur(6px);
   transition:transform .25s ease, background .25s ease, box-shadow .25s ease, opacity .25s ease;
   transform:translate(-50%,-50%);
+  -webkit-tap-highlight-color:transparent;
+  outline:none;
 }
 .hotspot svg{width:18px;height:18px;}
 .hotspot::after{
@@ -5305,7 +5308,10 @@ const wagonData = {
     cardLeft.classList.remove('active');
     cardRight.classList.remove('active');
     cardMobile.classList.remove('active');
-    hotspots.forEach(h => h.classList.remove('active'));
+    hotspots.forEach(h => {
+      h.classList.remove('active');
+      if (document.activeElement === h) h.blur();
+    });
     line.classList.remove('active');
     dot.classList.remove('active');
   }
