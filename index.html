@@ -3270,7 +3270,7 @@ background: var(--cream);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 18px;
   width: 100%;
   text-align: left;
   font-family: inherit;
@@ -3297,18 +3297,41 @@ background: var(--cream);
   font-size: 13.5px;
   font-weight: 600;
   color: var(--ink);
-  flex: 0 0 auto;
+  flex: 0 0 84px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 22px;
 }
 
 .booking-pkg-meta{
   font-size: 11px;
   color: var(--ink-soft);
   flex: 1 1 auto;
-  text-align: center;
+  text-align: left;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.booking-pkg-hours{
+  flex: 0 0 auto;
+  font-weight: 600;
+  color: var(--brass-deep);
+  white-space: nowrap;
+}
+
+.booking-pkg-meta-sep{
+  opacity: 0.35;
+  flex: 0 0 auto;
 }
 
 .booking-pkg-guests{
   opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .booking-pkg-price{
@@ -3795,7 +3818,7 @@ background: var(--cream);
   height: 15px;
   border-radius: 50%;
   background: var(--brass);
-  border: 1.5px solid var(--walnut-soft);
+  border: 1.5px solid var(--cream);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6576,27 +6599,27 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="booking-pkg-list" id="bookingPkgList">
               <button type="button" class="booking-pkg-option" data-count="25">
                 <span class="booking-pkg-name">Babycino</span>
-                <span class="booking-pkg-meta"><span class="booking-pkg-guests">Suitable for ~20 guests</span></span>
+                <span class="booking-pkg-meta"><span class="booking-pkg-hours">1hr service</span><span class="booking-pkg-meta-sep">&middot;</span><span class="booking-pkg-guests">Suitable for ~20 guests</span></span>
                 <span class="booking-pkg-price">$350</span>
               </button>
               <button type="button" class="booking-pkg-option" data-count="50">
                 <span class="booking-pkg-name">Piccolo</span>
-                <span class="booking-pkg-meta"><span class="booking-pkg-guests">Suitable for ~40 guests</span></span>
+                <span class="booking-pkg-meta"><span class="booking-pkg-hours">1hr service</span><span class="booking-pkg-meta-sep">&middot;</span><span class="booking-pkg-guests">Suitable for ~40 guests</span></span>
                 <span class="booking-pkg-price">$550</span>
               </button>
               <button type="button" class="booking-pkg-option" data-count="100">
                 <span class="booking-pkg-name">The Latte</span>
-                <span class="booking-pkg-meta"><span class="booking-pkg-guests">Suitable for ~80 guests</span></span>
+                <span class="booking-pkg-meta"><span class="booking-pkg-hours">2hr service</span><span class="booking-pkg-meta-sep">&middot;</span><span class="booking-pkg-guests">Suitable for ~80 guests</span></span>
                 <span class="booking-pkg-price">$950</span>
               </button>
               <button type="button" class="booking-pkg-option" data-count="150">
                 <span class="booking-pkg-name">The Grande</span>
-                <span class="booking-pkg-meta"><span class="booking-pkg-guests">Suitable for ~120 guests</span></span>
+                <span class="booking-pkg-meta"><span class="booking-pkg-hours">2hr service</span><span class="booking-pkg-meta-sep">&middot;</span><span class="booking-pkg-guests">Suitable for ~120 guests</span></span>
                 <span class="booking-pkg-price">$1,300</span>
               </button>
               <button type="button" class="booking-pkg-option" data-count="200">
                 <span class="booking-pkg-name">The Barista</span>
-                <span class="booking-pkg-meta"><span class="booking-pkg-guests">Suitable for ~160 guests</span></span>
+                <span class="booking-pkg-meta"><span class="booking-pkg-hours">3hr service</span><span class="booking-pkg-meta-sep">&middot;</span><span class="booking-pkg-guests">Suitable for ~160 guests</span></span>
                 <span class="booking-pkg-price">$1,500</span>
               </button>
             </div>
