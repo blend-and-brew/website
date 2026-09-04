@@ -69,7 +69,7 @@
   --cursor-text: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23F4EFE6' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23181614' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") 12 12, text;
 }
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth; overflow-x:hidden; width:100%;}
 
 /* Scales the whole page down to match the look of ~95% browser zoom,
    desktop only (matches the site's existing 900px breakpoint) so mobile
@@ -2091,7 +2091,6 @@ height:100vh;
   animation-delay: 0.75s;
 }
 
-.hotspot:hover,
 .hotspot.active{
   transform:translate(-50%,-50%) scale(1.12);
   background:var(--brass);
@@ -2100,21 +2099,45 @@ height:100vh;
   box-shadow:0 0 0 6px rgba(198,138,69,0.18);
 }
 
+/* Hover-only glow, separated from .active above so a touch tap (which
+   simulates a "hover" on many mobile browsers that never clears until
+   tapping elsewhere) can't leave a hotspot looking stuck highlighted
+   after its card has actually been closed. */
+@media (hover:hover){
+  .hotspot:hover{
+    transform:translate(-50%,-50%) scale(1.12);
+    background:var(--brass);
+    color:var(--walnut);
+    opacity:1;
+    box-shadow:0 0 0 6px rgba(198,138,69,0.18);
+  }
+}
+
 .wagon-mobile{
   display:none;
-  margin-top:22px;
+  margin-top:0;
   background:var(--cream-dim);
   border:1px solid var(--line);
   border-radius:14px;
-  padding:22px;
+  padding:0 22px;
   opacity:0;
+  max-height:0;
+  overflow:hidden;
   transform:translateY(10px);
-  transition:opacity .3s ease, transform .3s ease, border-color .3s ease;
+  transition:opacity .3s ease, transform .3s ease, border-color .3s ease,
+              max-height .4s ease, margin-top .3s ease, padding .3s ease;
   max-width:1080px;
   margin-left:auto;
   margin-right:auto;
 }
-.wagon-mobile.active{opacity:1;transform:translateY(0);border-color:var(--brass);}
+.wagon-mobile.active{
+  opacity:1;
+  transform:translateY(0);
+  border-color:var(--brass);
+  max-height:640px;
+  margin-top:22px;
+  padding:22px;
+}
 
 .wagon-hint{
   display:flex;align-items:center;justify-content:center;gap:8px;
@@ -3808,6 +3831,13 @@ background: var(--cream);
   padding: 24px;
 }
 
+@media (max-width:540px){
+  .tc-modal-overlay{ padding: 12px; }
+  .tc-modal{ padding: 20px; max-height: 88vh; }
+  .tc-modal-header{ gap: 12px; margin-bottom: 16px; }
+  .tc-modal h3{ font-size: 19px; }
+}
+
 .tc-modal-overlay.show{
   display: flex;
 }
@@ -4356,7 +4386,7 @@ footer p.tag{
   }
 
   .hero-logo-wrap{
-    width:clamp(143px, 26vh, 221px);
+    width:clamp(110px, 20vh, 170px);
     margin-bottom:clamp(6px, 1.5vh, 12px);
   }
 
