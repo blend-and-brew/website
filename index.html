@@ -747,7 +747,7 @@
                 rgba(12, 11, 10, 0) 100%
             );
             pointer-events: none;
-            z-index: 1;
+            z-index: 0;
         }
         .scroll-content {
             position: relative;
@@ -2846,9 +2846,9 @@ if (
     const config = {
         color: hexToRgb('#b08d57'),
         speed: 0.55,
-        lightSpread: 0.42,
-        rayLength: 1.35,
-        fadeDistance: 1.0,
+        lightSpread: 0.65,
+        rayLength: 1.8,
+        fadeDistance: 1.4,
         saturation: 1.0,
         noiseAmount: 0.06,
         distortion: 0.025
@@ -2929,17 +2929,24 @@ if (
             vec4 rays2 = vec4(1.0) *
                 rayStrength(rayPos, rayDir, coord, 22.3991, 18.0234, 1.1 * raysSpeed);
 
-            vec4 fragColor = rays1 * 0.5 + rays2 * 0.4;
+            vec4 fragColor = rays1 * 0.85 + rays2 * 0.65;
 
             if (noiseAmount > 0.0) {
                 float n = noise(coord * 0.01 + iTime * 0.1);
                 fragColor.rgb *= (1.0 - noiseAmount + noiseAmount * n);
             }
 
+            /* Previously this floored the red channel at 0.1x and the
+               rest at 0.3x/0.5x by the bottom of the frame, which combined
+               with the length falloff above to crush the rays to near
+               nothing past the top sliver of the image. Raise the floors
+               so the beams stay visible for the full height. */
             float brightness = 1.0 - (coord.y / iResolution.y);
-            fragColor.x *= 0.1 + brightness * 0.8;
-            fragColor.y *= 0.3 + brightness * 0.6;
-            fragColor.z *= 0.5 + brightness * 0.5;
+            fragColor.x *= 0.55 + brightness * 0.45;
+            fragColor.y *= 0.6 + brightness * 0.4;
+            fragColor.z *= 0.7 + brightness * 0.3;
+            fragColor.rgb *= 1.6;
+            fragColor.a = clamp(fragColor.a * 1.7, 0.0, 0.9);
 
             if (saturation != 1.0) {
                 float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114));
