@@ -2945,8 +2945,8 @@ if (
             fragColor.x *= 0.55 + brightness * 0.45;
             fragColor.y *= 0.6 + brightness * 0.4;
             fragColor.z *= 0.7 + brightness * 0.3;
-            fragColor.rgb *= 2.8;
-            fragColor.a = clamp(fragColor.a * 0.9, 0.0, 0.48);
+            fragColor.rgb *= 3.5;
+            fragColor.a = clamp(fragColor.a * 0.9, 0.0, 0.6);
 
             if (saturation != 1.0) {
                 float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114));
