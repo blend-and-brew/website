@@ -186,9 +186,9 @@ img{max-width:100%;display:block;}
   opacity:0;
 }
 .pay-card.success-brass{
-  background:var(--brass);
+  background:linear-gradient(180deg, var(--brass-bright) 0%, var(--brass) 45%, var(--brass-deep) 100%);
   border-color:rgba(19,17,15,0.25);
-  transition:background-color .6s ease, border-color .6s ease;
+  transition:background-color .6s ease, background .6s ease, border-color .6s ease;
 }
 .pay-card.success-brass .pay-card-shine{
   animation:payCardShineSweep 1.1s ease .2s both;
@@ -198,6 +198,40 @@ img{max-width:100%;display:block;}
   15%{opacity:0.9;}
   55%{opacity:0.7;}
   100%{transform:translateX(120%); opacity:0;}
+}
+
+/* Text sitting directly on the brass fill (not inside the dark order-
+   summary box, which keeps its own dark background and cream text)
+   flips to a dark ink so it stays readable on the gold surface. */
+.pay-card.success-brass .pay-eyebrow,
+.pay-card.success-brass .pay-title,
+.pay-card.success-brass .pay-view-quote-link,
+.pay-card.success-brass .pay-success h3{
+  color:var(--walnut);
+  transition:color .6s ease;
+}
+.pay-card.success-brass .pay-success p{
+  color:rgba(19,17,15,0.72);
+  transition:color .6s ease;
+}
+.pay-card.success-brass .pay-success .pay-receipt-ref{
+  color:var(--walnut);
+  border-color:rgba(19,17,15,0.35);
+  transition:color .6s ease, border-color .6s ease;
+}
+.pay-card.success-brass .pay-success .pay-receipt-ref:hover{
+  border-color:var(--walnut);
+  background:rgba(19,17,15,0.08);
+}
+.pay-card.success-brass .pay-print-btn{
+  color:rgba(19,17,15,0.72);
+  border-color:rgba(19,17,15,0.25);
+  transition:color .6s ease, border-color .6s ease;
+}
+.pay-card.success-brass .pay-print-btn:hover{
+  border-color:var(--walnut);
+  color:var(--walnut);
+  background:rgba(19,17,15,0.08);
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -214,6 +248,7 @@ img{max-width:100%;display:block;}
 }
 .pay-logo img{
   width:128px;height:128px;
+  transition:opacity .3s ease;
 }
 
 .pay-eyebrow{
@@ -711,7 +746,7 @@ img{max-width:100%;display:block;}
   <div class="pay-card-shine" id="payCardShine"></div>
 
   <div class="pay-logo">
-    <img src="images/Blend&Blew_Square(White).webp" alt="Blend & Brew">
+    <img id="payLogoImg" src="images/Blend&Blew_Square(White).webp" alt="Blend & Brew">
   </div>
 
   <div class="pay-eyebrow">Secure payment</div>
@@ -1222,6 +1257,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById('paySuccess').classList.add('show');
       document.getElementById('payPulseBg').classList.add('pulse');
       document.getElementById('payCard').classList.add('success-brass');
+
+      // Swap to the dark logo variant so it reads against the new brass
+      // fill instead of disappearing into it. A quick fade hides the swap.
+      const payLogoImg = document.getElementById('payLogoImg');
+      if (payLogoImg){
+        payLogoImg.style.opacity = '0';
+        setTimeout(() => {
+          payLogoImg.src = 'images/Blend&Blew_Square.webp';
+          payLogoImg.style.opacity = '1';
+        }, 300);
+      }
 
       // Click-to-copy the receipt reference, with a subtle toast confirming it copied.
       // The toast appears right where the click happened, rather than fixed above the button.
