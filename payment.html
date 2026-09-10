@@ -167,93 +167,9 @@ img{max-width:100%;display:block;}
 .pay-card > *{position:relative; z-index:2;}
 .pay-card > .bento-ripple{position:absolute; z-index:2;}
 
-/* ============ SUCCESS BRASS FLIP ============
-   On payment confirmation the card face flips from walnut to brass, with
-   a shine sweeping across it. Both the brass fill and the shine sit at
-   z-index:1 — same layer as the spotlight/border-glow — so every piece of
-   real content (icon, heading, text, buttons) stays on top at z-index:2,
-   and the background success pulse (fixed, no elevated z-index) stays
-   behind the card itself. */
-.pay-card > .pay-card-shine{
-  position:absolute;
-  z-index:1;
-}
-.pay-card-shine{
-  inset:0;
-  pointer-events:none;
-  background:linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.55) 50%, transparent 80%);
-  transform:translateX(-120%);
-  opacity:0;
-}
-.pay-card.success-brass{
-  background:linear-gradient(180deg, var(--brass-bright) 0%, var(--brass) 45%, var(--brass-deep) 100%);
-  border-color:rgba(19,17,15,0.4);
-  /* Beveled edge: a bright top/left highlight and a darker bottom/right
-     shadow, inset, so the brass fill reads as a raised 3D bar rather than
-     a flat panel. Original outer drop shadow is kept alongside it. */
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.55),
-    inset 0 -3px 6px rgba(19,17,15,0.5),
-    inset 2px 0 0 rgba(255,255,255,0.22),
-    inset -2px 0 0 rgba(19,17,15,0.4),
-    0 40px 90px -30px rgba(0,0,0,0.6);
-  transition:background-color .6s ease, background .6s ease, border-color .6s ease, box-shadow .6s ease;
-}
-.pay-card.success-brass .pay-card-shine{
-  animation:payCardShineSweep 3s ease-in-out .2s infinite;
-}
-@keyframes payCardShineSweep{
-  0%{transform:translateX(-120%); opacity:0;}
-  6%{opacity:0.9;}
-  20%{opacity:0.7;}
-  37%{transform:translateX(120%); opacity:0;}
-  100%{transform:translateX(120%); opacity:0;}
-}
-
-/* Text sitting directly on the brass fill (not inside the dark order-
-   summary box, which keeps its own dark background and cream text)
-   flips to a dark ink so it stays readable on the gold surface. */
-.pay-card.success-brass .pay-eyebrow,
-.pay-card.success-brass .pay-title,
-.pay-card.success-brass .pay-view-quote-link,
-.pay-card.success-brass .pay-success h3{
-  color:var(--walnut);
-  transition:color .6s ease;
-}
-.pay-card.success-brass .pay-success p{
-  color:rgba(19,17,15,0.72);
-  transition:color .6s ease;
-}
-/* Receipt reference and print buttons get the opposite treatment: a solid
-   dark fill with brass text, instead of dark text on the exposed brass —
-   makes them read as distinct pressable chips against the gold bar. */
-.pay-card.success-brass .pay-success .pay-receipt-ref{
-  color:var(--brass-bright);
-  background:var(--walnut);
-  border-color:var(--walnut);
-  transition:color .6s ease, background .6s ease, border-color .6s ease;
-}
-.pay-card.success-brass .pay-success .pay-receipt-ref:hover{
-  background:var(--walnut-soft);
-  border-color:var(--walnut-soft);
-  color:var(--cream);
-}
-.pay-card.success-brass .pay-print-btn{
-  color:var(--brass-bright);
-  background:var(--walnut);
-  border-color:var(--walnut);
-  transition:color .6s ease, background .6s ease, border-color .6s ease;
-}
-.pay-card.success-brass .pay-print-btn:hover{
-  background:var(--walnut-soft);
-  border-color:var(--walnut-soft);
-  color:var(--cream);
-}
-
 @media (prefers-reduced-motion: reduce){
   .pay-card::before,.pay-card::after{transition:none;}
   .bento-particle,.bento-ripple{animation:none; display:none;}
-  .pay-card.success-brass .pay-card-shine{animation:none; opacity:0;}
 }
 
 .pay-logo{
@@ -264,7 +180,6 @@ img{max-width:100%;display:block;}
 }
 .pay-logo img{
   width:128px;height:128px;
-  transition:opacity .3s ease;
 }
 
 .pay-eyebrow{
@@ -674,14 +589,6 @@ img{max-width:100%;display:block;}
   animation:tickJump 0.6s cubic-bezier(.2,.8,.2,1) both;
 }
 
-/* Tick colours invert once the card flips to brass: the ring fill swaps
-   from brass to walnut, so the cut-out tick shape reveals the now-brass
-   card behind it instead of the dark one — ring and mark trade places. */
-.pay-card.success-brass .stamp-icon svg circle{
-  fill:var(--walnut);
-  transition:fill .6s ease;
-}
-
 @media (max-width:480px){
   .pay-card{padding:30px 22px 26px;}
 }
@@ -759,10 +666,9 @@ img{max-width:100%;display:block;}
 <div class="bento-wrapper" id="bentoWrapper">
 <div class="bento-particles" id="bentoParticles"></div>
 <div class="pay-card" id="payCard">
-  <div class="pay-card-shine" id="payCardShine"></div>
 
   <div class="pay-logo">
-    <img id="payLogoImg" src="images/Blend&Blew_Square(White).webp" alt="Blend & Brew">
+    <img src="images/Blend&Blew_Square(White).webp" alt="Blend & Brew">
   </div>
 
   <div class="pay-eyebrow">Secure payment</div>
@@ -1272,18 +1178,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById('successReceiptIdText').textContent = receiptDisplayText;
       document.getElementById('paySuccess').classList.add('show');
       document.getElementById('payPulseBg').classList.add('pulse');
-      document.getElementById('payCard').classList.add('success-brass');
-
-      // Swap to the dark logo variant so it reads against the new brass
-      // fill instead of disappearing into it. A quick fade hides the swap.
-      const payLogoImg = document.getElementById('payLogoImg');
-      if (payLogoImg){
-        payLogoImg.style.opacity = '0';
-        setTimeout(() => {
-          payLogoImg.src = 'images/Blend&Blew_Square.webp';
-          payLogoImg.style.opacity = '1';
-        }, 300);
-      }
 
       // Click-to-copy the receipt reference, with a subtle toast confirming it copied.
       // The toast appears right where the click happened, rather than fixed above the button.
