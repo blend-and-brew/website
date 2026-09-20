@@ -100,11 +100,12 @@
        so it never dims or interferes with foreground content.
        ========================================================= */
     .light-rays-canvas {
-        display: none;
+        display: block;
         position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
+        top: 1.5px;
+        left: 1.5px;
+        width: calc(100% - 3px);
+        height: calc(100% - 3px);
         z-index: 1;
         pointer-events: none;
     }
@@ -549,6 +550,10 @@
         }
         .light-rays-canvas {
             display: block;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
         .glow {
             inset: -24px;
@@ -749,16 +754,21 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: 0;
-            height: 26vh;
+            bottom: -2px;
+            height: 42vh;
             background: linear-gradient(
                 to top,
                 var(--bb-page-dark) 0%,
-                rgba(12, 11, 10, 0.55) 40%,
+                var(--bb-page-dark) 6%,
+                rgba(12, 11, 10, 0.92) 18%,
+                rgba(12, 11, 10, 0.75) 32%,
+                rgba(12, 11, 10, 0.5) 50%,
+                rgba(12, 11, 10, 0.26) 68%,
+                rgba(12, 11, 10, 0.1) 84%,
                 rgba(12, 11, 10, 0) 100%
             );
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
         }
         .scroll-content {
             position: relative;
@@ -2839,10 +2849,9 @@ if (
     const canvas = document.getElementById('lightRaysCanvas');
     if (!canvas) return;
  
-    // Mobile only, per request — desktop leaves the canvas hidden via CSS
-    // and skips WebGL init entirely rather than paying for an invisible context.
-    const isMobile = window.matchMedia('(max-width: 600px)').matches;
-    if (!isMobile) return;
+    function isMobileViewport() {
+        return window.matchMedia('(max-width: 600px)').matches;
+    }
  
     const reducedMotion =
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -3042,15 +3051,22 @@ if (
         // Use the taller dimension as the falloff reference — on a narrow,
         // tall mobile screen, scaling reach off width alone made the rays
         // fizzle out just below the top edge instead of reaching the card.
-        gl.uniform1f(uniforms.scaleRef, Math.max(width, height));
-        // top-center origin: rays start just above the frame and fall
-        // downward/outward across the photo.
-        gl.uniform2f(uniforms.rayPos, width * 0.5, -0.2 * height);
+        const mobile = isMobileViewport();
+        // Mobile: tall narrow screen, so use the taller side. Desktop: the
+        // framed image is wide, so use its height to keep the beams' reach
+        // proportioned to the frame rather than stretching across its width.
+        gl.uniform1f(uniforms.scaleRef, mobile ? Math.max(width, height) : height);
+        // Origin sits just above the frame. Mobile: top-centre.
+        // Desktop: 27% of the way in from the left edge.
+        gl.uniform2f(uniforms.rayPos, width * (mobile ? 0.5 : 0.27), -0.2 * height);
         gl.uniform2f(uniforms.rayDir, 0, 1);
     }
  
     resize();
     window.addEventListener('resize', resize);
+    if (window.ResizeObserver) {
+        new ResizeObserver(resize).observe(canvas);
+    }
     window.addEventListener('orientationchange', () => setTimeout(resize, 50));
  
     let start = null;
