@@ -1619,6 +1619,109 @@ height:100vh;
 }
 .social-link svg{width:18px;height:18px;}
 
+/* ============ GALLERY REVIEW BAR (leave a review) ============ */
+.review-bar{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  margin-top:24px;
+  padding:18px 22px;
+  border-radius:14px;
+  background:var(--walnut-soft);
+  border:1px solid var(--line-on-dark);
+  color:var(--cream);
+  overflow:hidden;
+}
+.review-bar::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(ellipse 50% 140% at 0% 50%, rgba(224,168,95,0.14), transparent 70%);
+}
+.review-bar > *{position:relative;}
+.review-bar-left{display:flex;align-items:center;gap:16px;min-width:0;}
+.review-bar-stars{display:flex;gap:3px;color:var(--brass-bright);flex-shrink:0;}
+.review-bar-stars svg{width:16px;height:16px;display:block;fill:currentColor;filter:drop-shadow(0 0 6px rgba(242,200,121,0.35));}
+.review-bar-text{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.review-bar-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--cream);}
+.review-bar-sub{font-size:12.5px;line-height:1.4;color:var(--cream-dim);opacity:0.8;}
+.review-bar .btn{flex-shrink:0;padding:11px 20px;font-size:13px;white-space:nowrap;}
+.review-bar .btn svg{width:16px;height:16px;flex-shrink:0;}
+/* Leave-a-review hover glow: 6px down, 20px blur */
+.review-bar .btn-brass:hover{box-shadow:0 6px 20px rgba(198,138,69,.35);}
+@media (max-width:700px){
+  .review-bar{flex-direction:column;text-align:center;gap:16px;padding:22px 20px;}
+  .review-bar-left{flex-direction:column;gap:10px;}
+  .review-bar-text{align-items:center;}
+}
+@media (max-width:900px){
+  .mobile-gallery .review-bar{margin:28px 20px 0;}
+}
+/* Desktop: review bar (2/3) and social banner (1/3) sit side by side */
+@media (min-width:901px){
+  /* One connected container: review bar (2/3) + social icons (1/3).
+     The container owns the review bar's dark background, border and radius;
+     the hover photo fill + colour pulse are drawn across the WHOLE container. */
+  .gallery-actions{
+    position:relative;
+    display:flex;
+    align-items:center;
+    /* equal buffer: stars -> left edge  ==  email icon -> right edge */
+    padding:0 48px;
+    /* equal gap: button -> Facebook  ==  gap between the social icons */
+    gap:18px;
+    margin-top:24px;
+    border-radius:14px;
+    background:var(--walnut-soft);
+    border:1px solid var(--line-on-dark);
+    overflow:hidden;
+    /* border-color is changed instantly by JS on hover — no transition */
+  }
+  .gallery-actions::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:radial-gradient(ellipse 50% 140% at 0% 50%, rgba(224,168,95,0.14), transparent 70%);
+  }
+  .gallery-actions > .review-bar,
+  .gallery-actions > .social-banner{
+    margin-top:0;
+    margin-bottom:0;
+    background:none;
+    border:none;
+    border-radius:0;
+    overflow:visible;
+    /* static so the icons / pulse position against .gallery-actions */
+    position:static;
+    z-index:1;
+  }
+  .gallery-actions > .review-bar{flex:1 1 auto;min-width:0;padding:0;}
+  /* last star -> title gap matches the gap between the social icons */
+  .gallery-actions .review-bar-left{gap:18px;}
+  .gallery-actions > .review-bar::before{display:none;}
+  .gallery-actions > .review-bar > *{position:relative;z-index:1;}
+  .gallery-actions > .social-banner{flex:none;padding:0;gap:18px;justify-content:flex-start;}
+  .gallery-actions > .social-banner-fill{
+    background-size:100% 100%, cover;
+    background-position:center, center;
+    z-index:0;
+  }
+}
+/* Desktop: review bar and social banner share one fixed height */
+@media (min-width:901px){
+  .wagon-carousel-page .gallery-actions{height:92px;}
+  .wagon-carousel-page .review-bar,
+  .wagon-carousel-page .social-banner{
+    height:100%;
+    padding-top:0;
+    padding-bottom:0;
+  }
+}
+
 /* ============ PACKAGES (PRICING CALCULATOR) ============ */
 
 .calc-card{
@@ -5351,32 +5454,6 @@ textarea{
     "https://www.facebook.com/profile.php?id=61588292214287",
     "https://www.instagram.com/blendandbrew_au/"
   ],
-  "review": [
-    {
-      "@type": "Review",
-      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-      "author": { "@type": "Organization", "name": "ASR Technology" },
-      "reviewBody": "Professional setup, on time, and seamless service. A perfect standout feature to our corporate event."
-    },
-    {
-      "@type": "Review",
-      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-      "author": { "@type": "Person", "name": "Sarah & James" },
-      "reviewBody": "Absolutely incredible service by Mari and Simon on our wedding day. The coffee cart was a huge hit with guests and looked amazing in our photos."
-    },
-    {
-      "@type": "Review",
-      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-      "author": { "@type": "Person", "name": "Daniel R." },
-      "reviewBody": "Best part of the night. Everyone kept going back for coffees. It made the whole party unforgettable."
-    },
-    {
-      "@type": "Review",
-      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-      "author": { "@type": "Person", "name": "Rana M." },
-      "reviewBody": "Had Blend & Brew at our event and they were fantastic. The coffee was really good, the cart looked awesome and the whole setup fit in perfectly. Everyone loved having proper barista coffee available and Mari and Simon were really friendly and easy to deal with. Would definitely use them again!"
-    }
-  ],
   "makesOffer": [
     { "@type": "Offer", "name": "Babycino Package", "description": "25 coffees, suitable for approx. 20 guests", "price": "295", "priceCurrency": "AUD" },
     { "@type": "Offer", "name": "Piccolo Package", "description": "50 coffees, suitable for approx. 40 guests", "price": "450", "priceCurrency": "AUD" },
@@ -5827,7 +5904,22 @@ void main() {
             </div>
 
 
-            <div class="social-banner reveal" id="socialBanner">
+            <div class="gallery-actions reveal">
+            <div class="review-bar">
+              <div class="review-bar-left">
+                <div class="review-bar-stars" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg></div>
+                <div class="review-bar-text">
+                  <span class="review-bar-title">Had a coffee from us?</span>
+                  <span class="review-bar-sub">A quick Google review means a lot to our small team.</span>
+                </div>
+              </div>
+              <a class="btn btn-brass js-review-link" href="https://search.google.com/local/writereview?placeid=ChIJo5fqQMqXEmsRZlekh5zYHnA" target="_blank" rel="noopener">
+                Leave a review
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 2.5c-1 1 1 2 0 3.5"/><path d="M12.5 2.5c-1 1 1 2 0 3.5"/><path fill="currentColor" d="M4.5 10h12v4.5a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V10z"/><path d="M16.5 11.5h1a2.5 2.5 0 0 1 0 5h-1"/></svg>
+              </a>
+            </div>
+
+            <div class="social-banner" id="socialBanner">
               <!-- FACEBOOK -->
               <a href="https://www.facebook.com/profile.php?id=61588292214287"
                  class="social-link"
@@ -5877,6 +5969,7 @@ void main() {
               </a>
 
             </div>
+            </div><!-- /gallery-actions -->
 
             <script>
             function hexToRgba(hex, alpha){
@@ -5892,12 +5985,25 @@ void main() {
             // between icons, each fade-in and fade-out plays out fully and
             // independently instead of a layer being interrupted mid-fade
             // and jump-cutting to a new image.
-            function addFillLayer(banner, bgImage){
+            // On desktop the banner sits inside .gallery-actions (the joined
+            // container) — that's the frame the fill/border/pulse apply to.
+            // Elsewhere (mobile relocation) it falls back to the banner itself.
+            function getFrame(){
+              const banner = document.getElementById('socialBanner');
+              if (!banner) return null;
+              return banner.closest('.gallery-actions') || banner;
+            }
+            function addFillLayer(frame, bgImage){
               const layer = document.createElement('div');
               layer.className = 'social-banner-fill';
+              // Joined container has a dark base + cream text, so use a dark
+              // scrim (keeps the review text readable); standalone banner keeps
+              // its original light wash.
+              const scrim = frame.classList.contains('gallery-actions')
+                ? 'rgba(20,18,16,0.35)' : 'rgba(255,255,255,0.70)';
               layer.style.backgroundImage =
-                `linear-gradient(rgba(255,255,255,0.70), rgba(255,255,255,0.70)), url('${bgImage}')`;
-              banner.appendChild(layer);
+                `linear-gradient(${scrim}, ${scrim}), url('${bgImage}')`;
+              frame.appendChild(layer);
 
               // force a reflow so the transition from the CSS default
               // (opacity:0) to '1' below actually plays as a fade-in
@@ -5931,6 +6037,7 @@ void main() {
 // local layout units — so they stay correct under the page's desktop zoom.
 function sendBannerPulse(banner, iconEl, color){
   if (!banner || !iconEl || !iconEl.animate) return;
+  banner = banner.closest('.gallery-actions') || banner;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const cx = iconEl.offsetLeft + iconEl.offsetWidth / 2;
@@ -5968,7 +6075,7 @@ function bannerIconHover(el, color, bgImage){
 
               el.style.borderColor = color; // icon outline matches the frame outline colour below
 
-              const banner = document.getElementById('socialBanner');
+              const banner = getFrame();
 
               // border-color has no CSS transition, so this switches instantly
               if (banner) banner.style.borderColor = color;
@@ -5992,7 +6099,7 @@ function bannerIconHover(el, color, bgImage){
               // has actually left every icon, not just this one.
               setTimeout(() => {
                 if (hoverCount === 0){
-                  const banner = document.getElementById('socialBanner');
+                  const banner = getFrame();
                   if (banner) banner.style.borderColor = '';
                   fillLayers.forEach(fadeOutAndRemove);
                 }
@@ -6748,16 +6855,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const items = [
     { image: 'images/Cart_Wedding_Image.webp',           alt: 'Blend & Brew mobile coffee wagon serving guests at a Sydney wedding reception' },
     { image: 'images/BlendandBrew_Event_120926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
-    { review: { text: 'Professional setup, on time, and seamless service. A perfect standout feature to our corporate event.', name: '- ASR Technology' } },
     { image: 'images/BlendandBrew_Accent1.webp',         alt: 'Blend & Brew coffee wagon detail' },
     { image: 'images/BlendandBrew_Event_130926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
     { image: 'images/LatteArt_Image.webp',               alt: 'Latte art crafted by a Blend & Brew certified barista' },
-    { review: { text: 'Absolutely incredible service by Mari and Simon on our wedding day. The coffee cart was a huge hit with guests and looked amazing in our photos.', name: '- Sarah & James' } },
     { image: 'images/BlendandBrew_Event_230926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
     { image: 'images/BlendandBrew_Accent2.webp',         alt: 'Blend & Brew coffee wagon detail' },
     { image: 'images/BlendandBrew_Event_250926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
-    { review: { text: 'Best part of the night. Everyone kept going back for coffees. It made the whole party unforgettable.', name: '- Daniel R.' } },
-    { review: { text: 'Had Blend & Brew at our event and they were fantastic. The coffee was really good, the cart looked awesome and the whole setup fit in perfectly. Everyone loved having proper barista coffee available and Mari and Simon were really friendly and easy to deal with. Would definitely use them again!', name: '- Rana M.' } },
     { image: 'images/BlendandBrew_Event_280926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
     { image: 'images/BlendandBrew_Accent3.webp',         alt: 'Blend & Brew coffee wagon detail' },
     { image: 'images/BlendandBrew_Accent4.webp',         alt: 'Blend & Brew coffee wagon detail' },
@@ -6767,6 +6870,38 @@ document.addEventListener("DOMContentLoaded", () => {
     { image: 'images/BlendandBrew_Event_031026.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
   ];
   window.__bbGalleryItems = items; // reused by the mobile gallery strip
+
+  // ---- live Google reviews ----
+  // Paste your Cloudflare Worker URL here once it's deployed (see worker.js).
+  // While this is empty, or if the Worker is slow/unreachable, the wall simply
+  // shows photos only — nothing breaks.
+  const REVIEWS_URL = '';
+  const REVIEWS_MIN_STARS = 4;   // lowest star rating to show
+  const REVIEWS_MAX = 8;         // most review tiles to show
+  const REVIEWS_MAX_CHARS = 280; // long reviews are trimmed to this with an ellipsis
+
+  const reviewsReady = (async () => {
+    if (!REVIEWS_URL) return;
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 4000);
+      const res = await fetch(REVIEWS_URL, { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (!res.ok) return;
+      const data = await res.json();
+      (data.reviews || [])
+        .filter(r => r && r.text && r.rating >= REVIEWS_MIN_STARS)
+        .slice(0, REVIEWS_MAX)
+        .forEach(r => {
+          let text = r.text.trim();
+          if (text.length > REVIEWS_MAX_CHARS) text = text.slice(0, REVIEWS_MAX_CHARS).replace(/\s+\S*$/, '') + '\u2026';
+          items.push({ review: { text, rating: Math.round(r.rating), name: '- ' + (r.name || 'Google reviewer') + ' \u00b7 Google' } });
+        });
+    } catch (err) {
+      console.warn('Reviews unavailable, showing photos only:', err);
+    }
+  })();
+  window.__bbGalleryReady = reviewsReady; // the mobile strip waits on this
 
   const config = {
     height: 420,        // starting height; the carousel script grows it to fill the section
@@ -6847,8 +6982,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (Math.abs(dx) > 50) showLightboxPhoto(lightboxIndex + (dx < 0 ? 1 : -1));
     });
   }
-  const photoIdx  = items.map((it, k) => it.image  ? k : -1).filter(k => k >= 0);
-  const reviewIdx = items.map((it, k) => it.review ? k : -1).filter(k => k >= 0);
+  let photoIdx = [], reviewIdx = [];
+  function indexItems(){
+    photoIdx  = items.map((it, k) => it.image  ? k : -1).filter(k => k >= 0);
+    reviewIdx = items.map((it, k) => it.review ? k : -1).filter(k => k >= 0);
+  }
 
   // Photo cards all share `tileWidth`; their height follows each photo's own
   // shape (taller photo = taller card), clamped between tileHeight and
@@ -6872,7 +7010,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tile.style.height = 'auto';
       const stars = document.createElement('div');
       stars.className = 'dw-stars';
-      stars.textContent = '★★★★★';
+      stars.textContent = '★'.repeat(item.review.rating || 5);
       const quote = document.createElement('div');
       quote.className = 'dw-quote';
       quote.style.flex = 'none';
@@ -7006,7 +7144,7 @@ document.addEventListener("DOMContentLoaded", () => {
             tile.classList.add('dw-review');
             const stars = document.createElement('div');
             stars.className = 'dw-stars';
-            stars.textContent = '★★★★★';
+            stars.textContent = '★'.repeat(item.review.rating || 5);
             const quote = document.createElement('div');
             quote.className = 'dw-quote';
             quote.textContent = '"' + item.review.text + '"';
@@ -7118,7 +7256,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // includes the carousel's cloned Gallery page (see note above)
-  measure().then(() => {
+  reviewsReady.then(() => { indexItems(); return measure(); }).then(() => {
     document.querySelectorAll('[data-driftwall]').forEach(build);
     if (window.updateWagonCarouselHeight) window.updateWagonCarouselHeight();
     kick();
@@ -7291,6 +7429,19 @@ document.addEventListener("DOMContentLoaded", () => {
   <div class="mg-track" id="mgTrack" role="region" aria-label="Photos and reviews, swipe sideways" tabindex="0"></div>
   <div class="mg-progress" aria-hidden="true"><span id="mgThumb"></span></div>
   <p class="mg-hint">Swipe to browse &middot; tap a photo to enlarge</p>
+  <div class="review-bar reveal">
+              <div class="review-bar-left">
+                <div class="review-bar-stars" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.4 6.9.5-5.3 4.5 1.7 6.7L12 17.1l-6 3.5 1.7-6.7-5.3-4.5 6.9-.5z"/></svg></div>
+                <div class="review-bar-text">
+                  <span class="review-bar-title">Had a coffee from us?</span>
+                  <span class="review-bar-sub">A quick Google review means a lot to our small team.</span>
+                </div>
+              </div>
+              <a class="btn btn-brass js-review-link" href="https://search.google.com/local/writereview?placeid=ChIJo5fqQMqXEmsRZlekh5zYHnA" target="_blank" rel="noopener">
+                Leave a review
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 2.5c-1 1 1 2 0 3.5"/><path d="M12.5 2.5c-1 1 1 2 0 3.5"/><path fill="currentColor" d="M4.5 10h12v4.5a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V10z"/><path d="M16.5 11.5h1a2.5 2.5 0 0 1 0 5h-1"/></svg>
+              </a>
+            </div>
 </section>
 
 <script>
@@ -7320,8 +7471,8 @@ document.addEventListener("DOMContentLoaded", () => {
         card.className = 'mg-card mg-review';
         const stars = document.createElement('div');
         stars.className = 'mg-stars';
-        stars.setAttribute('aria-label', '5 out of 5 stars');
-        stars.textContent = '\u2605\u2605\u2605\u2605\u2605';
+        stars.setAttribute('aria-label', (item.review.rating || 5) + ' out of 5 stars');
+        stars.textContent = '\u2605'.repeat(item.review.rating || 5);
         const quote = document.createElement('blockquote');
         quote.className = 'mg-quote';
         quote.style.margin = '0';
@@ -7361,7 +7512,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mq.matches) requestAnimationFrame(updateProgress);
   }
   if (mq.addEventListener) mq.addEventListener('change', sync); else if (mq.addListener) mq.addListener(sync);
-  sync();
+  (window.__bbGalleryReady || Promise.resolve()).then(sync);
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Your Google "leave a review" link (uses your Place ID)
+  // This one line updates every review button.
+  const GOOGLE_REVIEW_URL = 'https://search.google.com/local/writereview?placeid=ChIJo5fqQMqXEmsRZlekh5zYHnA';
+  document.querySelectorAll('.js-review-link').forEach(a => { a.href = GOOGLE_REVIEW_URL; });
 });
 </script>
 
@@ -8115,10 +8275,10 @@ document.addEventListener("DOMContentLoaded", () => {
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "What events do you cater for?",
+      "name": "What events do you do?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "We bring the coffee wagon to weddings, corporate events, private parties, markets and festivals across Western and Greater Sydney."
+        "text": "We love a good event! Weddings, work events, parties, markets and festivals all over Western and Greater Sydney."
       }
     },
     {
@@ -8126,7 +8286,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "name": "What's included in a package?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Every package includes two certified baristas and our fully self-contained coffee cart, set up on site at your event."
+        "text": "Two certified baristas and our self-contained coffee cart, all set up on site at your event."
       }
     },
     {
@@ -8134,7 +8294,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "name": "How many coffees should I book?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "As a guide, 25 coffees suits about 20 guests, 100 coffees about 80 guests and 200 coffees about 160 guests. Packages run from 25 to 200 coffees, and the calculator in the Packages section shows the price for your event size."
+        "text": "Here's a rough guide: 25 coffees suits about 20 guests, 100 coffees about 80 guests, and 200 coffees about 160 guests. Packages run from 25 to 200 coffees, and the calculator in the Packages section shows the price for your crowd."
       }
     },
     {
@@ -8142,7 +8302,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "name": "What can my guests order?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Barista coffee including flat whites, cappuccinos, lattes, long blacks, macchiatos and mochas, plus tea, hot chocolate and babycinos for the little ones, with vanilla, caramel or hazelnut syrup on request."
+        "text": "Proper barista coffee, like flat whites, cappuccinos, lattes, long blacks, macchiatos and mochas, plus tea, hot chocolate and babycinos for the little ones. Fancy a splash of vanilla, caramel or hazelnut? Just ask!"
       }
     },
     {
@@ -8150,47 +8310,47 @@ document.addEventListener("DOMContentLoaded", () => {
       "name": "How do I book the coffee wagon?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Pick an available date in the booking calendar and tell us about your event. We'll get back to you to lock in the details, then the wagon is set up and ready to serve."
+        "text": "Pick a free date in the booking calendar and tell us a bit about your event. We'll get back to you to sort out the details, then we turn up and start brewing."
       }
     },
     {
       "@type": "Question",
-      "name": "How far in advance should I book?",
+      "name": "How far ahead should I book?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Book as early as possible, especially for weekend weddings and peak season, since dates fill up fast. We'll still do our best to accommodate short-notice requests where availability allows."
+        "text": "As early as you can, especially for weekend weddings and busy times of year, because dates go fast. Last minute? Send a request anyway and we'll do our best to fit you in."
       }
     },
     {
       "@type": "Question",
-      "name": "What if it rains or gets windy on the day?",
+      "name": "What if it rains or gets windy?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The wagon can operate outdoors, but in wet or windy conditions you'll need to provide effective shelter, such as a marquee or veranda, along with access to power. Let us know your site setup when booking so we can help you plan around it."
+        "text": "We can work outdoors, but if it's wet or windy we'll need some cover, like a marquee or veranda, plus a power point nearby. Let us know your setup when you book and we'll help you plan around it."
       }
     },
     {
       "@type": "Question",
-      "name": "Can you cater for dairy-free or alternative milks?",
+      "name": "Do you have dairy-free or alternative milks?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes, every coffee is available with full cream, skim, lactose free, soy, oat or almond milk at no extra charge."
+        "text": "Yep! Full cream, skim, lactose free, soy, oat or almond, all at no extra charge."
       }
     },
     {
       "@type": "Question",
-      "name": "What happens if we need more coffees than our package includes?",
+      "name": "What if we need more coffees than our package includes?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No problem. We can keep serving beyond your package allowance, with extra drinks charged either to guests on the day or invoiced to you afterwards, whichever you prefer."
+        "text": "No worries, we'll keep the coffees coming. Extra drinks can either be paid for by your guests on the day or invoiced to you afterwards, whichever you prefer."
       }
     },
     {
       "@type": "Question",
-      "name": "Can we extend service on the day if we need more time?",
+      "name": "Can we extend service on the day?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Just ask your baristas on the day. Extra time is offered subject to availability and isn't guaranteed, and any extension is approved on-site before it begins. Approved extra time is charged at our standard hourly rate, at Blend & Brew's discretion."
+        "text": "Just have a chat with your baristas on the day. If they're free, they'll happily stay on, but we can't promise it. They'll confirm it with you before the extra time starts, and it's charged at our standard hourly rate."
       }
     },
     {
@@ -8198,7 +8358,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "name": "Is there a travel fee?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Standard travel is included for events within Western Sydney. If your event is further out, any distance-based travel fee is itemised transparently in your quote and confirmed with you in writing before your booking is finalised."
+        "text": "Travel is included for events in Western Sydney. If you're further out, we'll show any travel fee in your quote and confirm it with you in writing before anything is locked in."
       }
     },
     {
@@ -8206,7 +8366,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "name": "What does the venue need to provide?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Standard 10 Amp power outlets within reach of the cart, and parking close by for loading and unloading. The setup area must not be a footpath, slope, or uneven surface, and ramp or lift access is needed if there are stairs. Full details are in our Terms & Conditions."
+        "text": "A standard 10 Amp power point near the cart, and parking close by so we can load and unload. We need a flat, stable spot (not a footpath or slope), and a ramp or lift if there are stairs. The full details are in our Terms & Conditions."
       }
     }
   ]
@@ -9782,52 +9942,52 @@ function getFullAddress() {
     <div class="tc-modal-body">
       <div class="faq-list">
         <details class="faq-item">
-          <summary>What events do you cater for?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>We bring the coffee wagon to weddings, corporate events, private parties, markets and festivals across Western and Greater Sydney.</p>
+          <summary>What events do you do?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>We love a good event! Weddings, work events, parties, markets and festivals all over Western and Greater Sydney.</p>
         </details>
         <details class="faq-item">
           <summary>What's included in a package?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>Every package includes two certified baristas and our fully self-contained coffee cart, set up on site at your event.</p>
+          <p>Two certified baristas and our self-contained coffee cart, all set up on site at your event.</p>
         </details>
         <details class="faq-item">
           <summary>How many coffees should I book?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>As a guide, 25 coffees suits about 20 guests, 100 coffees about 80 guests and 200 coffees about 160 guests. Packages run from 25 to 200 coffees, and the calculator in the Packages section shows the price for your event size.</p>
+          <p>Here's a rough guide: 25 coffees suits about 20 guests, 100 coffees about 80 guests, and 200 coffees about 160 guests. Packages run from 25 to 200 coffees, and the calculator in the Packages section shows the price for your crowd.</p>
         </details>
         <details class="faq-item">
           <summary>What can my guests order?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>Barista coffee including flat whites, cappuccinos, lattes, long blacks, macchiatos and mochas, plus tea, hot chocolate and babycinos for the little ones, with vanilla, caramel or hazelnut syrup on request.</p>
+          <p>Proper barista coffee, like flat whites, cappuccinos, lattes, long blacks, macchiatos and mochas, plus tea, hot chocolate and babycinos for the little ones. Fancy a splash of vanilla, caramel or hazelnut? Just ask!</p>
         </details>
         <details class="faq-item">
           <summary>How do I book the coffee wagon?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>Pick an available date in the booking calendar and tell us about your event. We'll get back to you to lock in the details, then the wagon is set up and ready to serve.</p>
+          <p>Pick a free date in the booking calendar and tell us a bit about your event. We'll get back to you to sort out the details, then we turn up and start brewing.</p>
         </details>
         <details class="faq-item">
-          <summary>How far in advance should I book?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>Book as early as possible, especially for weekend weddings and peak season, since dates fill up fast. We'll still do our best to accommodate short-notice requests where availability allows.</p>
+          <summary>How far ahead should I book?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>As early as you can, especially for weekend weddings and busy times of year, because dates go fast. Last minute? Send a request anyway and we'll do our best to fit you in.</p>
         </details>
         <details class="faq-item">
-          <summary>What if it rains or gets windy on the day?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>The wagon can operate outdoors, but in wet or windy conditions you'll need to provide effective shelter, such as a marquee or veranda, along with access to power. Let us know your site setup when booking so we can help you plan around it.</p>
+          <summary>What if it rains or gets windy?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>We can work outdoors, but if it's wet or windy we'll need some cover, like a marquee or veranda, plus a power point nearby. Let us know your setup when you book and we'll help you plan around it.</p>
         </details>
         <details class="faq-item">
-          <summary>Can you cater for dairy-free or alternative milks?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>Yes, every coffee is available with full cream, skim, lactose free, soy, oat or almond milk at no extra charge.</p>
+          <summary>Do you have dairy-free or alternative milks?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>Yep! Full cream, skim, lactose free, soy, oat or almond, all at no extra charge.</p>
         </details>
         <details class="faq-item">
-          <summary>What happens if we need more coffees than our package includes?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>No problem. We can keep serving beyond your package allowance, with extra drinks charged either to guests on the day or invoiced to you afterwards, whichever you prefer.</p>
+          <summary>What if we need more coffees than our package includes?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>No worries, we'll keep the coffees coming. Extra drinks can either be paid for by your guests on the day or invoiced to you afterwards, whichever you prefer.</p>
         </details>
         <details class="faq-item">
-          <summary>Can we extend service on the day if we need more time?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>Just ask your baristas on the day. Extra time is offered subject to availability and isn't guaranteed, and any extension is approved on-site before it begins. Approved extra time is charged at our standard hourly rate, at Blend &amp; Brew's discretion.</p>
+          <summary>Can we extend service on the day?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <p>Just have a chat with your baristas on the day. If they're free, they'll happily stay on, but we can't promise it. They'll confirm it with you before the extra time starts, and it's charged at our standard hourly rate.</p>
         </details>
         <details class="faq-item">
           <summary>Is there a travel fee?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>Standard travel is included for events within Western Sydney. If your event is further out, any distance-based travel fee is itemised transparently in your quote and confirmed with you in writing before your booking is finalised.</p>
+          <p>Travel is included for events in Western Sydney. If you're further out, we'll show any travel fee in your quote and confirm it with you in writing before anything is locked in.</p>
         </details>
         <details class="faq-item">
           <summary>What does the venue need to provide?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
-          <p>Standard 10 Amp power outlets within reach of the cart, and parking close by for loading and unloading. The setup area must not be a footpath, slope, or uneven surface, and ramp or lift access is needed if there are stairs. Full details are in our Terms &amp; Conditions.</p>
+          <p>A standard 10 Amp power point near the cart, and parking close by so we can load and unload. We need a flat, stable spot (not a footpath or slope), and a ramp or lift if there are stairs. The full details are in our Terms &amp; Conditions.</p>
         </details>
       </div>
     </div>
