@@ -10,10 +10,12 @@
    - Formspree (booking submissions)
    - Nominatim (address autocomplete)
    - OSRM (routing/travel distance), if used
+   - Our own /api/ endpoints (payment orders, subscriber count) —
+     order status must always be live, never a saved copy
    ============================================================ */
 
 const STATIC_CACHE  = 'bnb-static-v1';
-const RUNTIME_CACHE = 'bnb-runtime-v1';
+const RUNTIME_CACHE = 'bnb-runtime-v2'; // bumped: clears old cached /api/ responses
 const CURRENT_CACHES = [STATIC_CACHE, RUNTIME_CACHE];
 
 // Hostnames that must always go straight to the network — booking
@@ -90,6 +92,10 @@ self.addEventListener('fetch', (event) => {
 
   // Never intercept the dynamic/live endpoints listed above.
   if (BYPASS_HOSTNAMES.some((host) => url.hostname.includes(host))) return;
+
+  // Never cache our own API calls (payment orders, subscribe, subscriber
+  // count). A saved copy could show "unpaid" after a customer has paid.
+  if (url.origin === self.location.origin && url.pathname.startsWith('/api/')) return;
 
   // Images — cache-first, this is the bulk of the page weight
   // (webp photography, logos, textures).
