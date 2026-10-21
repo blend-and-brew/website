@@ -1983,10 +1983,12 @@ height:100vh;
 
 .calc-pkg-note:hover,
 .calc-pkg-note:focus-visible{
-  width:106px;
-  height:106px;
-  padding:8px 7px;
-  border-radius:12px;
+  /* opens into a circle the height of the package squares (JS keeps
+     --calc-pkg-h in sync with their real height) */
+  width:var(--calc-pkg-h,113px);
+  height:var(--calc-pkg-h,113px);
+  padding:20px 17px;
+  border-radius:50%;
   border-color:var(--brass);
   background:rgba(224,168,95,0.08);
 }
@@ -2011,7 +2013,7 @@ height:100vh;
 
 .calc-pkg-note-text{
   font-size:9.5px;
-  line-height:1.32;
+  line-height:1.3;
   letter-spacing:0.005em;
   text-align:center;
   opacity:0;
@@ -3439,6 +3441,27 @@ height:100vh;
   letter-spacing: 0.04em;
   margin-bottom: 6px;
   color: var(--ink-soft);
+}
+
+/* Small outline icon at the start of each field title — no fill, just a
+   thin stroke in the label's own text colour (currentColor), so it always
+   matches. The CSS fill/stroke here override the fill="currentColor"
+   attribute on each inline SVG, so every booking field icon is covered. */
+.form-group label .field-icon{
+  display:inline-block;
+  width:14px;
+  height:14px;
+  margin-right:7px;
+  vertical-align:-2px;
+  flex:0 0 auto;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.6;
+  stroke-linejoin:round;
+  stroke-linecap:round;
+}
+.form-group label .field-icon *{
+  fill:none;
 }
 
 .form-group input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
@@ -5913,7 +5936,7 @@ void main() {
          <div class="wrap">
           <div class="section-head reveal">
             <div class="eyebrow"><span class="bulb-dot"></span> Gallery &amp; reviews</div>
-            <h2>Moments from past Sydney events.</h2>
+            <h2>Past events.</h2>
           </div>
 
             <div class="gallery-layout reveal">
@@ -7142,26 +7165,15 @@ document.addEventListener("DOMContentLoaded", () => {
           sinceReview = 0;
         }
       });
-      // The logo is kept rare and never next to itself: every column gets
-      // one, but it appears only once per TWO loops of that column (a second
-      // copy of the loop without it follows), so a column never shows two
-      // logos close together. Its slot alternates (after the 1st / 2nd photo)
-      // so neighbouring columns' logos are staggered, not level.
-      if (logoIdx.length){
-        let photosSeen = 0, at = base.length;
-        const after = (i % 2 === 0) ? 1 : 2;
-        for (let b = 0; b < base.length; b++){
-          if (items[base[b]].image && ++photosSeen === after){ at = b + 1; break; }
-        }
-        const plain = base.slice();
-        base.splice(at, 0, logoIdx[0]);
-        base.push(...plain);
-      }
       let seq = base.slice();
       const cycleOf = (list) => list.reduce((sum, idx) => sum + tileHeightFor(idx) + c.gap, 0);
       let cycle = cycleOf(seq);
       while (cycle < c.buildHeight + c.maxTileHeight){ seq = seq.concat(base); cycle = cycleOf(seq); }
 
+      // photo tiles are recorded (with their position in the column) so the
+      // logo can later be swapped into one of them -- see logoTick()
+      const tiles = [];
+      let runY = 0;
       // two identical cycles back to back = seamless loop
       for (let rep = 0; rep < 2; rep++){
         for (let j = 0; j < seq.length; j++){
@@ -7170,7 +7182,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const tile = document.createElement(item.href ? 'a' : 'div');
           tile.className = 'dw-tile';
           tile.style.width = c.tileWidth + 'px';
-          tile.style.height = tileHeightFor(itemIdx) + 'px';
+          const th = tileHeightFor(itemIdx);
+          tile.style.height = th + 'px';
           if (item.href){ tile.href = item.href; tile.target = '_blank'; tile.rel = 'noopener'; }
 
           if (item.review){
@@ -7187,15 +7200,6 @@ document.addEventListener("DOMContentLoaded", () => {
             tile.appendChild(stars);
             tile.appendChild(quote);
             tile.appendChild(author);
-          } else if (item.logo){
-            tile.classList.add('dw-logo');
-            const img = document.createElement('img');
-            img.src = item.logo;
-            img.alt = item.alt || '';
-            img.loading = 'lazy';
-            img.decoding = 'async';
-            img.draggable = false;
-            tile.appendChild(img);
           } else {
             const img = document.createElement('img');
             img.src = item.image;
@@ -7208,8 +7212,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // trigger the wall's click-to-pause
             tile.addEventListener('click', (e) => {
               e.stopPropagation();
+              if (tile.classList.contains('dw-logo')) return; // logo never opens the viewer
               openLightbox(item.image, item.alt);
             });
+            tiles.push({ el: tile, img, h: th, top: runY, j, rep, origSrc: item.image, origAlt: item.alt || '', pair: null });
           }
 
           const dim = document.createElement('span');
@@ -7219,8 +7225,15 @@ document.addEventListener("DOMContentLoaded", () => {
           tile.appendChild(dim);
 
           col.appendChild(tile);
+          runY += th + c.gap;
         }
       }
+      // link each tile to its twin in the other copy of the loop, so the
+      // logo can be shown on both and the loop stays seamless at the wrap
+      tiles.filter(t => t.rep === 0).forEach(t => {
+        const twin = tiles.find(u => u.rep === 1 && u.j === t.j);
+        if (twin){ t.pair = twin; twin.pair = t; }
+      });
 
       // deterministic per-column speed + starting phase
       const r = ((i * 7919) % 13) / 12;
@@ -7228,7 +7241,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 1st & 3rd columns run against the middle one
       const dir = (i % 2 === 1) ? upDir : -upDir;
       const offset = ((i * 0.37) % 1) * cycle;
-      const colState = { el: col, speed, dir, cycle, offset, depthFactor: 0.5 + r, rate: 1, hover: false };
+      const colState = { el: col, speed, dir, cycle, offset, depthFactor: 0.5 + r, rate: 1, hover: false, tiles };
       // hovering a column pauses just that column; the others keep drifting
       col.addEventListener('pointerenter', () => { colState.hover = true; });
       col.addEventListener('pointerleave', () => { colState.hover = false; kick(); });
@@ -7239,7 +7252,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stage.appendChild(plane);
     root.appendChild(stage);
 
-    const inst = { root, cols, visible: false, paused: false, px: 0, py: 0, tx: 0, ty: 0 };
+    const inst = { root, cols, visible: false, paused: false, px: 0, py: 0, tx: 0, ty: 0, logo: { active: null, nextAt: 0, lastCol: -1, last: 0 } };
 
     if (c.parallax){
       root.addEventListener('pointermove', (e) => {
@@ -7271,6 +7284,82 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ---- logo: one at a time, in a random column ----
+  // The logo is not a fixed tile. Every so often one photo tile that is just
+  // off-screen (about to scroll into view) in a randomly chosen column is
+  // swapped to the logo, on both copies of the looping column so the loop
+  // stays seamless. Once it has scrolled fully out of view it is swapped
+  // back, and after a pause another random column gets its turn. Only one
+  // logo exists per wall at any moment. Swaps only ever happen off-screen.
+  function setLogo(t, on){
+    if (!t || !t.img) return;
+    if (on){
+      t.img.loading = 'eager';
+      t.img.src = LOGO_SRC;
+      t.img.alt = 'Blend & Brew logo';
+      t.el.classList.add('dw-logo');
+    } else {
+      t.img.src = t.origSrc;
+      t.img.alt = t.origAlt;
+      t.el.classList.remove('dw-logo');
+    }
+  }
+  function tileTop(col, t){
+    const ty = col.dir === 1 ? -col.offset : col.offset - col.cycle;
+    return ty + t.top;
+  }
+  function logoTick(inst, now){
+    const L = inst.logo;
+    if (!L || !logoIdx.length) return;
+    if (now - L.last < 300) return;   // cheap: only check a few times a second
+    L.last = now;
+    const H = inst.root.clientHeight;
+    const M = 60;
+    const onScreen = (col, t) => { const top = tileTop(col, t); return top + t.h > -M && top < H + M; };
+
+    if (L.active){
+      const a = L.active;
+      const vis = onScreen(a.col, a.t) || onScreen(a.col, a.t.pair);
+      if (vis) a.seen = true;
+      else if (a.seen){                // it has been and gone: put the photo back
+        setLogo(a.t, false); setLogo(a.t.pair, false);
+        L.active = null;
+        L.nextAt = now + 6000 + Math.random() * 10000;
+      }
+      return;
+    }
+    if (!L.nextAt) L.nextAt = now + 1500;
+    if (now < L.nextAt) return;
+
+    // distance until a tile starts to enter view (columns move up or down)
+    const enterDist = (col, t) => {
+      const top = tileTop(col, t);
+      return col.dir === 1 ? top - H : -(top + t.h);
+    };
+    const want = ratios[logoIdx[0]];   // logo's own shape, to pick a similarly shaped tile
+    const colOrder = inst.cols.map((_, k) => k).filter(k => k !== L.lastCol)
+      .sort(() => Math.random() - 0.5);
+    for (const k of colOrder){
+      const col = inst.cols[k];
+      let best = null, bestScore = Infinity;
+      col.tiles.forEach(t => {
+        if (t.rep !== 0 || !t.pair) return;
+        if (onScreen(col, t) || onScreen(col, t.pair)) return;
+        const d = Math.min(enterDist(col, t), enterDist(col, t.pair));
+        if (!(d > M && d < 320)) return;   // not about to enter soon: leave it
+        const aspect = t.h / config.tileWidth;
+        const score = (want ? Math.abs(aspect - want) : 0) + Math.random() * 0.3 + d / 800;
+        if (score < bestScore){ bestScore = score; best = t; }
+      });
+      if (best){
+        setLogo(best, true); setLogo(best.pair, true);
+        L.active = { col, t: best, seen: false };
+        L.lastCol = k;
+        return;
+      }
+    }
+  }
+
   let rafId = null, last = 0;
   function frame(now){
     const dt = Math.min(0.05, (now - last) / 1000);
@@ -7287,6 +7376,7 @@ document.addEventListener("DOMContentLoaded", () => {
       inst.px += (inst.tx - inst.px) * 0.08;
       inst.py += (inst.ty - inst.py) * 0.08;
       paint(inst);
+      logoTick(inst, now);
     });
     rafId = anyVisible ? requestAnimationFrame(frame) : null;
   }
@@ -7465,7 +7555,7 @@ document.addEventListener("DOMContentLoaded", () => {
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow"><span class="bulb-dot"></span> Gallery &amp; reviews</div>
-      <h2>Moments from past Sydney events.</h2>
+      <h2>Past events.</h2>
     </div>
   </div>
   <div class="mg-track" id="mgTrack" role="region" aria-label="Photos and reviews, swipe sideways" tabindex="0"></div>
@@ -7837,6 +7927,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const pkgSection      = document.getElementById('bookingPkgSection');
   const pkgHeaderToggle = document.getElementById('pkgHeaderToggle');
 
+  // Service time the customer has set themselves via the booking's start/end
+  // times when it differs from the package's own (1hr/2hr/3hr) service time.
+  // null = "follows the package". While it differs, the package reads as
+  // Custom. It is reset whenever the package / coffee total changes.
+  let customServiceHours = null;
+  let lastPkgKey;   // coffees (or 'none') last rendered, to spot a package change
+  function isCustomServiceTime(c){
+    return customServiceHours !== null && Math.abs(customServiceHours - serviceHoursForCoffees(c)) > 0.001;
+  }
+  function fmtHours(h){ return String(Math.round(h * 100) / 100); } // 2 -> "2", 1.5 -> "1.5"
+
   let mode = 'coffees';
   // Start as if the customer already picked a package: this makes "The Latte"
   // (the slider's default position) an actual selection from page load —
@@ -8050,11 +8151,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function syncPackageSelection(coffees){
+    const customTime = isCustomServiceTime(coffees);
     pkgBtns.forEach(b => {
-      b.classList.toggle('active', parseInt(b.dataset.count, 10) === coffees);
+      b.classList.toggle('active', !customTime && parseInt(b.dataset.count, 10) === coffees);
     });
     bookingPkgBtns.forEach(b => {
-      const isMatch = userInteracted && parseInt(b.dataset.count, 10) === coffees;
+      const isMatch = userInteracted && !customTime && parseInt(b.dataset.count, 10) === coffees;
       b.classList.toggle('active', isMatch);
     });
   }
@@ -8079,8 +8181,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // real package match — any other value, whether reached by dragging
     // the slider, typing into Servings, or using the up/down steppers,
     // reads as "Custom" here and on the pill above the calendar.
-    const match = packageForCoffees(coffees);
-    const hoursLabel = serviceHoursForCoffees(coffees) + 'hr service';
+    // ...and so does a package whose service time has been changed via the
+    // booking's start/end times (it no longer equals the package's hours).
+    const customTime = isCustomServiceTime(coffees);
+    const match = customTime ? null : packageForCoffees(coffees);
+    const shownHours = customTime ? customServiceHours : serviceHoursForCoffees(coffees);
+    const hoursLabel = fmtHours(shownHours) + 'hr service';
     if (pkgStatusText) pkgStatusText.textContent = match ? `${match.name} (${coffees} coffees / ${hoursLabel})` : `Custom (${coffees} coffees / ${hoursLabel})`;
     if (packageInput) packageInput.value = match ? match.name : 'CUSTOM';
     if (servingsInput) servingsInput.value = coffees;
@@ -8094,7 +8200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // many hours of service this total (preset or Custom) actually included
     // — rather than re-deriving it from the package name, which breaks for
     // Custom/in-between totals.
-    if (packageServiceHoursInput) packageServiceHoursInput.value = serviceHoursForCoffees(coffees);
+    if (packageServiceHoursInput) packageServiceHoursInput.value = shownHours;
     if (pkgStatusClear) pkgStatusClear.style.display = 'inline-flex';
 
     if (guestCountInput){
@@ -8114,6 +8220,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function render(){
     const coffees = effectiveCoffees();
+    // A different package / coffee total (or selecting / clearing one) drops
+    // any custom service time and tells the booking times to re-snap.
+    const pkgKey = userInteracted ? coffees : 'none';
+    let pkgChanged = false;
+    if (lastPkgKey !== undefined && lastPkgKey !== pkgKey){ customServiceHours = null; pkgChanged = true; }
+    lastPkgKey = pkgKey;
     const guests = roundGuestEstimate(guestsForCoffees(coffees));
     const price = Math.round(priceForCoffees(coffees) / 5) * 5;
 
@@ -8139,7 +8251,20 @@ document.addEventListener("DOMContentLoaded", () => {
     updateRulerGapFill();
     syncPackageSelection(coffees);
     updatePkgStatus(coffees, price);
+    if (pkgChanged && typeof window.bbOnPackageChanged === 'function') window.bbOnPackageChanged();
   }
+
+  // Used by the booking start/end time script (further down the page).
+  // Hours of service the selected package includes, or null if none selected.
+  window.bbPackageHours = () => userInteracted ? serviceHoursForCoffees(effectiveCoffees()) : null;
+  // Hours the customer's start/end times actually add up to when they differ
+  // from the package (shows the package as Custom), or null to follow it.
+  window.bbSetCustomServiceHours = (h) => {
+    const next = (h === null || h === undefined) ? null : h;
+    if (next === customServiceHours) return;
+    customServiceHours = next;
+    render();
+  };
 
   function setMode(newMode){
     if (mode === newMode) return;
@@ -8163,9 +8288,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (idx === -1) return;
     userInteracted = true;
     overflowServings = null;
+    customServiceHours = null;
     slider.value = idx;
     render();
     updateServingsOverflowIndicator();
+    // picking a package (even the one already selected) re-applies its own
+    // service time to the booking's end time
+    if (typeof window.bbOnPackageChanged === 'function') window.bbOnPackageChanged();
     if (window.updateWizardTabCompletion) window.updateWizardTabCompletion();
   }
 
@@ -8293,6 +8422,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const note = document.getElementById('calcPkgNote');
   const bookSection = document.getElementById('book');
   if (!note || !bookSection) return;
+
+  // Size the opened circle to the height of the package squares beside it.
+  // Measured (not hard-coded) so it follows font loading and screen size.
+  const pkgRow = note.closest('.calc-packages-row');
+  const syncNoteSize = () => {
+    if (!pkgRow) return;
+    const h = Math.max(0, ...Array.from(pkgRow.querySelectorAll('.calc-pkg')).map(el => el.offsetHeight));
+    if (h) pkgRow.style.setProperty('--calc-pkg-h', h + 'px');
+  };
+  syncNoteSize();
+  window.addEventListener('resize', syncNoteSize);
+  window.addEventListener('load', syncNoteSize);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncNoteSize);
 
   note.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -8527,22 +8669,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="wizard-page-eyebrow">Personal details</div>
 
                     <div class="form-group">
-                      <label for="fullName">Full Name</label>
+                      <label for="fullName"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Full Name</label>
                       <input type="text" id="fullName" name="fullName" required placeholder="First and Last name">
                     </div>
 
                     <div class="form-group">
-                      <label for="organisation">Organisation <span style="text-transform:uppercase;letter-spacing:0.04em;font-weight:400;opacity:0.4;">(Optional)</span></label>
+                      <label for="organisation"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>Organisation <span style="text-transform:uppercase;letter-spacing:0.04em;font-weight:400;opacity:0.4;">(Optional)</span></label>
                       <input type="text" id="organisation" name="organisation" placeholder="e.g. Coffee Pty Ltd">
                     </div>
 
                     <div class="form-group">
-                      <label for="email">Email</label>
+                      <label for="email"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Email</label>
                       <input type="email" id="email" name="email" required placeholder="example@email.com">
                     </div>
 
                     <div class="form-group">
-                      <label for="phone">Phone</label>
+                      <label for="phone"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>Phone</label>
                       <input
                         type="tel"
                         id="phone"
@@ -8554,7 +8696,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
 
                     <div class="form-group">
-                      <label for="hearAboutUs">How did you hear about us?</label>
+                      <label for="hearAboutUs"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 11v2h4v-2h-4zm-2 6.61c.96.71 2.21 1.65 3.2 2.39.4-.53.8-1.07 1.2-1.6-.99-.74-2.24-1.68-3.2-2.4-.4.54-.8 1.08-1.2 1.61zM20.4 5.6c-.4-.53-.8-1.07-1.2-1.6-.99.74-2.24 1.68-3.2 2.4.4.53.8 1.07 1.2 1.6.96-.72 2.21-1.65 3.2-2.4zM4 9c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v4h2v-4h1l5 3V6L8 9H4zm11.5 3c0-1.33-.58-2.53-1.5-3.35v6.69c.92-.81 1.5-2.01 1.5-3.34z"/></svg>How did you hear about us?</label>
                       <select id="hearAboutUs" name="hearAboutUs" class="select-placeholder">
                         <option value="" disabled selected>Select one</option>
                         <option>Instagram</option>
@@ -8577,7 +8719,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <div class="form-row">
                       <div class="form-group">
-                        <label for="eventType">Event type</label>
+                        <label for="eventType"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>Event type</label>
                         <select id="eventType" name="eventType" required>
                           <option value="" disabled selected>Select one</option>
                           <option>Wedding</option>
@@ -8597,7 +8739,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       </div>
 
                       <div class="form-group">
-                        <label for="guestCount">Servings</label>
+                        <label for="guestCount"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/></svg>Servings</label>
                         <div class="servings-input-wrap">
                           <input type="number" id="guestCount" name="guestCount" min="1" max="400" placeholder="e.g. 200" required>
                           <div class="servings-spin">
@@ -8615,7 +8757,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <!-- BOOKING TIMES -->
                     <div class="form-row">
                       <div class="form-group">
-                        <label for="startTimeTrigger">Service start time</label>
+                        <label for="startTimeTrigger"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>Service start time</label>
 
                         <!-- Desktop: interactive dropdown -->
                         <div class="time-select" id="startTimeSelect">
@@ -8639,7 +8781,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       </div>
 
                       <div class="form-group">
-                        <label for="endTimeTrigger">Service end time</label>
+                        <label for="endTimeTrigger"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6z"/></svg>Service end time</label>
 
                         <!-- Desktop: interactive dropdown -->
                         <div class="time-select" id="endTimeSelect">
@@ -8663,7 +8805,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <!-- AUTOCOMPLETE LOCATION -->
                     <div class="form-group">
                       <div class="address-wrapper">
-                        <label>Where is the wagon heading?</label>
+                        <label><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Where is the wagon heading?</label>
 
                         <div class="address-row">
                           <!-- LEFT: House number -->
@@ -8701,7 +8843,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <!-- UTILITIES -->
                     <div class="form-group utilities-single">
-                      <label><strong>Does your venue provide?</strong> <span style="text-transform:uppercase; letter-spacing:0.04em; font-weight:400; opacity:0.4;">(Please Tick)</span></label>
+                      <label><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.01 7L16 3h-2v4h-4V3H8v4h-.01C7 6.99 6 7.99 6 8.99v5.49L9.5 18v3h5v-3l3.5-3.51v-5.5c0-1-1-2-1.99-1.99z"/></svg><strong>Does your venue provide?</strong> <span style="text-transform:uppercase; letter-spacing:0.04em; font-weight:400; opacity:0.4;">(Please Tick)</span></label>
 
                       <div class="utility-checklist">
                         <label class="tc-check-row utility-check-row" id="rowElectricity">
@@ -8740,7 +8882,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
 
                     <div class="form-group">
-                      <label for="notes">Anything else?</label>
+                      <label for="notes"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Anything else?</label>
                       <textarea id="notes" name="notes" placeholder="Indoor/outdoor, power access, timing..."></textarea>
                     </div>
                   </div>
@@ -9051,6 +9193,8 @@ document.addEventListener("DOMContentLoaded", () => {
         setValue(label);
       });
     }
+
+    return { setValue };
   }
 
   // Recompute the hidden "serviceHours" field (e.g. "2.5 hrs") whenever
@@ -9134,17 +9278,94 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  initTimePicker({
+  // ---- package service time <-> start/end times ----
+  // With a package selected, choosing a service start time fills the end time
+  // with start + the package's service hours (Piccolo = 1hr, etc.). The end
+  // time can still be changed by hand; when the resulting length no longer
+  // equals the package's service time the package reads as Custom (with the
+  // real hours) in the Package pill, and goes back to the named package if the
+  // times are set back to its service time. Picking a package re-applies its
+  // service time to the end time. Moving the start keeps a hand-set length.
+  const LAST_END_MIN = 23 * 60 + 30;   // latest end the (same-day) picker offers
+  let autoSetting = false;             // true while the script (not the user) sets the end time
+  let endManual = false;               // the user has chosen the end time themselves
+  let lastDurMin = null;               // length (minutes) of the last complete start/end pair
+  let startPicker = null, endPicker = null;
+
+  function minutesToLabel(min){
+    const h = Math.floor(min / 60), m = min % 60;
+    const period = h < 12 ? 'AM' : 'PM';
+    let hour12 = h % 12;
+    if (hour12 === 0) hour12 = 12;
+    return hour12 + ':' + String(m).padStart(2, '0') + ' ' + period;
+  }
+
+  function setEndAuto(min){
+    if (!endPicker) return;
+    autoSetting = true;
+    try { endPicker.setValue(minutesToLabel(min)); } finally { autoSetting = false; }
+  }
+
+  function reconcileTimes(source){
+    const pkgH = typeof window.bbPackageHours === 'function' ? window.bbPackageHours() : null;
+    const startMin = labelToMinutes(startHiddenEl.value);
+    let endMin = labelToMinutes(endHiddenEl.value);
+
+    if (pkgH !== null && startMin !== null && source === 'start'){
+      const keepDur = (endManual && lastDurMin !== null && lastDurMin > 0) ? lastDurMin : null;
+      let want = null;
+      if (keepDur !== null) want = startMin + keepDur;                       // keep the hand-set length
+      else if (!endManual || endMin === null) want = startMin + Math.round(pkgH * 60);  // package length
+      if (want !== null && want <= LAST_END_MIN && want !== endMin) setEndAuto(want);
+      if (keepDur === null && endMin === null) endManual = false;
+      endMin = labelToMinutes(endHiddenEl.value);
+    }
+
+    if (endMin === null) endManual = false;   // blank (never set, or cleared by a later start time)
+
+    const startNow = labelToMinutes(startHiddenEl.value);
+    const endNow = labelToMinutes(endHiddenEl.value);
+    let custom = null;
+    if (startNow !== null && endNow !== null && endNow > startNow){
+      lastDurMin = endNow - startNow;
+      const durH = lastDurMin / 60;
+      if (pkgH !== null && Math.abs(durH - pkgH) > 0.001) custom = durH;
+    } else {
+      lastDurMin = null;
+    }
+    if (typeof window.bbSetCustomServiceHours === 'function') window.bbSetCustomServiceHours(custom);
+  }
+
+  // The package (or coffee total) changed: re-apply its service time.
+  window.bbOnPackageChanged = () => {
+    endManual = false;
+    lastDurMin = null;
+    const pkgH = typeof window.bbPackageHours === 'function' ? window.bbPackageHours() : null;
+    const startMin = labelToMinutes(startHiddenEl.value);
+    if (pkgH !== null && startMin !== null){
+      const want = startMin + Math.round(pkgH * 60);
+      if (want <= LAST_END_MIN) setEndAuto(want);
+    }
+    reconcileTimes('package');
+  };
+
+  startPicker = initTimePicker({
     hidden: 'startTime', select: 'startTimeSelect', trigger: 'startTimeTrigger',
     triggerLabel: 'startTimeTriggerLabel', panel: 'startTimePanel', native: 'startTimeNative',
     nativeLabel: 'startTimeNativeLabel'
-  }, () => { updateServiceHours(); refreshEndAvailability(); });
+  }, () => {
+    updateServiceHours(); refreshEndAvailability();
+    if (!autoSetting) reconcileTimes('start');
+  });
 
-  initTimePicker({
+  endPicker = initTimePicker({
     hidden: 'endTime', select: 'endTimeSelect', trigger: 'endTimeTrigger',
     triggerLabel: 'endTimeTriggerLabel', panel: 'endTimePanel', native: 'endTimeNative',
     nativeLabel: 'endTimeNativeLabel'
-  }, updateServiceHours, { validate: endTimeIsValid, onOpen: refreshEndAvailability });
+  }, () => {
+    updateServiceHours();
+    if (!autoSetting){ endManual = true; reconcileTimes('end'); }
+  }, { validate: endTimeIsValid, onOpen: refreshEndAvailability });
 });
 </script>
 
@@ -10174,7 +10395,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ----- Calendar -----
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbwqiFF63MQD7r29LSMgeRAvoCdFfqmhtITJ0FvQo60o2ch1SrCaP3nbyVCCGGzFNrNksw/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxu2gPhWJ_eeBWHgoYSxiOMyCGSEBhd_P5tv2H6l-C9jUoYCQIXQC30J-pyoeIZldxpVg/exec";
 
 const calGrid = document.getElementById('calGrid');
 const calMonthLabel = document.getElementById('calMonthLabel');
