@@ -12,12 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- ============ SQUARE WEB PAYMENTS SDK ============
-     Sandbox URL is used here so you can test end-to-end before going
-     live. Swap to the production URL (https://web.squarecdn.com/v1/square.js)
-     once you're ready to accept real cards — see the setup notes at the
-     bottom of this file for exactly what needs to change. -->
-<script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+<!-- Square SDK is loaded dynamically (sandbox or production) based on the worker config. -->
 
 <style>
 :root{
@@ -672,7 +667,7 @@ img{max-width:100%;display:block;}
   </div>
 
   <div class="pay-eyebrow">Secure payment</div>
-  <h1 class="pay-title">Complete your payment</h1>
+  <h1 class="pay-title" id="payTitle">Complete your payment</h1>
 
   <!-- ============ ORDER SUMMARY (populated from URL params) ============ -->
   <div class="pay-summary" id="paySummary">
@@ -715,9 +710,11 @@ img{max-width:100%;display:block;}
 
   <!-- ============ EXPANDED QUOTE DETAILS (collapsed by default) ============ -->
   <div class="pay-quote-details" id="payQuoteDetails">
-    <iframe id="quoteDetailsFrame" class="pay-quote-iframe" title="Full quote details" loading="lazy"></iframe>
+    <iframe id="quoteDetailsFrame" sandbox="" class="pay-quote-iframe" title="Full quote details" loading="lazy"></iframe>
   </div>
 
+
+  <div class="pay-error" id="fatalError"></div>
 
   <!-- ============ PAYMENT FORM ============ -->
   <div id="paymentFormWrap">
@@ -883,7 +880,32 @@ document.addEventListener("DOMContentLoaded", async () => {
   //    payment.html?amount=350&ref=BB-2043&name=Sarah%20James&desc=The%20Latte%20package%20deposit
   //    Any missing values fall back to sensible defaults below.
   // ============================================================
-  const params = new URLSearchParams(window.location.search);
+  // ---- Load the order from the server. The amount is NEVER read from the URL. ----
+  const API_BASE = 'https://www.blendandbrew.com.au/api/pay';
+  function fatal(msg){
+    document.getElementById('paymentFormWrap').style.display = 'none';
+    const f = document.getElementById('fatalError');
+    f.textContent = msg;
+    f.classList.add('show');
+  }
+  const orderId = new URLSearchParams(window.location.search).get('id');
+  if (!orderId){ fatal('This payment link is incomplete. Please use the link we sent you.'); return; }
+  let order, squareCfg;
+  try {
+    const r = await fetch(API_BASE + '/order?id=' + encodeURIComponent(orderId));
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.success) throw new Error(j.error || 'This payment link is not valid.');
+    order = j.order; squareCfg = j.square;
+  } catch (e){
+    fatal(e.message || 'Could not load this payment. Please try again shortly.');
+    return;
+  }
+  const orderFields = {
+    amount: (order.amount / 100).toFixed(2), ref: order.ref, name: order.name,
+    date: order.date, location: order.location, start: order.start, end: order.end,
+    breakdown: order.breakdown, q: order.quoteHtml,
+  };
+  const params = { get: (k) => { const v = orderFields[k]; return (v === undefined || v === '') ? null : v; } };
 
   const amountDollars = parseFloat(params.get('amount'));
   const hasValidAmount = !isNaN(amountDollars) && amountDollars > 0;
@@ -964,7 +986,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const breakdownParam = params.get('breakdown');
   if (breakdownParam){
     try {
-      const items = JSON.parse(fromBase64Utf8(breakdownParam));
+      const items = breakdownParam;
       if (Array.isArray(items) && items.length){
         const breakdownToggleRow = document.getElementById('payBreakdownToggleRow');
         const breakdownToggle = document.getElementById('breakdownToggle');
@@ -1009,7 +1031,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const quoteParam = params.get('q');
   if (quoteParam){
     try {
-      const quoteHtml = fromBase64Utf8(quoteParam);
+      const quoteHtml = quoteParam;
       const viewQuoteRow = document.getElementById('payViewQuoteRow');
       const viewQuoteToggle = document.getElementById('viewQuoteToggle');
       const viewQuoteToggleLabel = document.getElementById('viewQuoteToggleLabel');
@@ -1059,6 +1081,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     payBtnLabel.textContent = isLoading ? 'Processing…' : 'Pay now';
   }
 
+  if (order.status === 'paid'){
+    document.getElementById('paymentFormWrap').style.display = 'none';
+    document.getElementById('payTitle').style.display = 'none';
+    document.getElementById('successText').textContent = 'This booking has already been paid. Thank you!';
+    document.getElementById('successReceiptIdText').textContent = order.receiptId ? (refValue + ' · #' + order.receiptId) : refValue;
+    document.getElementById('printReceiptBtn').style.display = 'none';
+    document.getElementById('paySuccess').classList.add('show');
+    return;
+  }
+
   if (!hasValidAmount){
     showError('No payment amount was specified in the link. Please use a link that includes a valid "amount" value, e.g. payment.html?amount=350&ref=BB-2043.');
     payBtn.disabled = true;
@@ -1070,14 +1102,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   //    Replace these two placeholder values with your own Square
   //    credentials — see the setup notes at the bottom of this file.
   // ============================================================
-  const SQUARE_APPLICATION_ID = 'sandbox-sq0idb-pIN0fJ7l6gZBEhZCQg-yVw';
-  const SQUARE_LOCATION_ID    = 'L7FM3WCWEHZCE';
+  const SQUARE_APPLICATION_ID = squareCfg.applicationId;
+  const SQUARE_LOCATION_ID    = squareCfg.locationId;
+  const PAYMENT_ENDPOINT = API_BASE + '/charge';
 
-  // Where the card token gets sent to actually charge the card.
-  // This must be a server endpoint (see payment-worker.js) — Square
-  // does not allow charging a card directly from browser JavaScript,
-  // for security reasons.
-  const PAYMENT_ENDPOINT = 'https://www.blendandbrew.com.au/payment';
+  await new Promise((resolve) => {
+    const s = document.createElement('script');
+    s.src = squareCfg.env === 'production'
+      ? 'https://web.squarecdn.com/v1/square.js'
+      : 'https://sandbox.web.squarecdn.com/v1/square.js';
+    s.onload = resolve; s.onerror = resolve;
+    document.head.appendChild(s);
+  });
 
   if (!window.Square){
     showError('Payment form failed to load. Please refresh the page or try again shortly.');
@@ -1151,12 +1187,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          orderId: orderId,
           sourceId: tokenResult.token,
-          amount: amountCents,
-          currency: 'AUD',
-          reference: refValue,
-          cardholderName: nameInput.value.trim(),
-          note: descValue
+          cardholderName: nameInput.value.trim()
         })
       });
 
@@ -1168,6 +1201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // ============ SUCCESS ============
       document.getElementById('paymentFormWrap').style.display = 'none';
+      document.getElementById('payTitle').style.display = 'none';
       document.getElementById('successText').textContent =
         `Thank you! Your payment of $${amountDollars.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} has been processed.`;
       // Show our own booking reference as the primary label, with Square's
