@@ -1209,6 +1209,23 @@ height:100vh;
   line-height:1;
 }
 
+/* Logo tile — the brand mark fills its tile edge to edge (the tile takes
+   the logo's own shape, like the photos do). It gets the same soft cream
+   wash as the photo tiles (the shared ::after rule above) so it sits at the
+   same brightness, but stays in colour (no greyscale) and fades to full
+   strength on hover like the photos. Not clickable into the lightbox. */
+.dw-tile.dw-logo{
+  padding:0;
+  background:var(--walnut-soft);
+  cursor:default;
+}
+.dw-tile.dw-logo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:brightness(1.08);
+}
+
 @media (prefers-reduced-motion: reduce){
   .dw-tile,.dw-tile img{transition:none;}
 }
@@ -6853,22 +6870,22 @@ document.addEventListener("DOMContentLoaded", () => {
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const items = [
-    { image: 'images/Cart_Wedding_Image.webp',           alt: 'Blend & Brew mobile coffee wagon serving guests at a Sydney wedding reception' },
     { image: 'images/BlendandBrew_Event_120926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
     { image: 'images/BlendandBrew_Accent1.webp',         alt: 'Blend & Brew coffee wagon detail' },
-    { image: 'images/BlendandBrew_Event_130926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
     { image: 'images/LatteArt_Image.webp',               alt: 'Latte art crafted by a Blend & Brew certified barista' },
-    { image: 'images/BlendandBrew_Event_230926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
     { image: 'images/BlendandBrew_Accent2.webp',         alt: 'Blend & Brew coffee wagon detail' },
     { image: 'images/BlendandBrew_Event_250926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
-    { image: 'images/BlendandBrew_Event_280926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
     { image: 'images/BlendandBrew_Accent3.webp',         alt: 'Blend & Brew coffee wagon detail' },
     { image: 'images/BlendandBrew_Accent4.webp',         alt: 'Blend & Brew coffee wagon detail' },
     { image: 'images/BlendandBrew_Accent5.webp',         alt: 'Blend & Brew coffee wagon detail' },
     { image: 'images/BlendandBrew_Accent6.webp',         alt: 'Blend & Brew coffee wagon detail' },
     { image: 'images/BlendandBrew_Event_121026.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
-    { image: 'images/BlendandBrew_Event_031026.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
   ];
+  // Brand logo tile: decorative filler for the drift wall only. It uses the
+  // `logo` key (not `image`), so it is never part of the lightbox photo list
+  // and the mobile gallery strip skips it.
+  const LOGO_SRC = 'images/BB_MiniLogo(Beige)_Image.webp';
+  items.push({ logo: LOGO_SRC, alt: 'Blend & Brew logo' });
   window.__bbGalleryItems = items; // reused by the mobile gallery strip
 
   // ---- live Google reviews ----
@@ -6982,8 +6999,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (Math.abs(dx) > 50) showLightboxPhoto(lightboxIndex + (dx < 0 ? 1 : -1));
     });
   }
-  let photoIdx = [], reviewIdx = [];
+  let photoIdx = [], reviewIdx = [], logoIdx = [];
   function indexItems(){
+    logoIdx   = items.map((it, k) => it.logo   ? k : -1).filter(k => k >= 0);
     photoIdx  = items.map((it, k) => it.image  ? k : -1).filter(k => k >= 0);
     reviewIdx = items.map((it, k) => it.review ? k : -1).filter(k => k >= 0);
   }
@@ -7040,7 +7058,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fitTileWidth();
     const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready.catch(() => {}) : Promise.resolve();
     return Promise.all([fontsReady].concat(items.map((item, idx) => {
-      if (!item.image) return Promise.resolve();
+      if (!item.image && !item.logo) return Promise.resolve();
       return new Promise((resolve) => {
         const probe = new Image();
         const timer = setTimeout(resolve, 8000); // never hold the wall up for a slow image
@@ -7049,7 +7067,7 @@ document.addEventListener("DOMContentLoaded", () => {
           clearTimeout(timer); resolve();
         };
         probe.onerror = () => { clearTimeout(timer); resolve(); };
-        probe.src = item.image;
+        probe.src = item.image || item.logo;
       });
     }))).then(measureReviews);
   }
@@ -7057,7 +7075,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const c = config;
     const r = ratios[idx];
     if (items[idx].review && reviewHeights[idx]) return reviewHeights[idx];
-    if (!items[idx].image || !r) return c.tileHeight;
+    if (!(items[idx].image || items[idx].logo) || !r) return c.tileHeight;
     return Math.round(Math.min(c.maxTileHeight, Math.max(c.tileHeight, c.tileWidth * r)));
   }
 
@@ -7124,6 +7142,21 @@ document.addEventListener("DOMContentLoaded", () => {
           sinceReview = 0;
         }
       });
+      // The logo is kept rare and never next to itself: every column gets
+      // one, but it appears only once per TWO loops of that column (a second
+      // copy of the loop without it follows), so a column never shows two
+      // logos close together. Its slot alternates (after the 1st / 2nd photo)
+      // so neighbouring columns' logos are staggered, not level.
+      if (logoIdx.length){
+        let photosSeen = 0, at = base.length;
+        const after = (i % 2 === 0) ? 1 : 2;
+        for (let b = 0; b < base.length; b++){
+          if (items[base[b]].image && ++photosSeen === after){ at = b + 1; break; }
+        }
+        const plain = base.slice();
+        base.splice(at, 0, logoIdx[0]);
+        base.push(...plain);
+      }
       let seq = base.slice();
       const cycleOf = (list) => list.reduce((sum, idx) => sum + tileHeightFor(idx) + c.gap, 0);
       let cycle = cycleOf(seq);
@@ -7154,6 +7187,15 @@ document.addEventListener("DOMContentLoaded", () => {
             tile.appendChild(stars);
             tile.appendChild(quote);
             tile.appendChild(author);
+          } else if (item.logo){
+            tile.classList.add('dw-logo');
+            const img = document.createElement('img');
+            img.src = item.logo;
+            img.alt = item.alt || '';
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            img.draggable = false;
+            tile.appendChild(img);
           } else {
             const img = document.createElement('img');
             img.src = item.image;
