@@ -881,7 +881,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   //    Any missing values fall back to sensible defaults below.
   // ============================================================
   // ---- Load the order from the server. The amount is NEVER read from the URL. ----
-  const API_BASE = 'https://www.blendandbrew.com.au/api/pay';
+const API_BASE = 'https://www.blendandbrew.com.au/api/pay';
   function fatal(msg){
     document.getElementById('paymentFormWrap').style.display = 'none';
     const f = document.getElementById('fatalError');
