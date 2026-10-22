@@ -1750,10 +1750,11 @@ height:100vh;
 /* Coffees / Guests toggle */
 .calc-toggle{
   position:relative;
-  display:inline-flex;
+  display:inline-grid;
+  grid-template-columns:1fr 1fr; /* equal halves so the sliding thumb always sits exactly behind the active button */
   background:rgba(244,239,230,0.04);
   border:1px solid var(--line-on-dark);
-  border-radius:30px;
+  border-radius:999px;
   padding:4px;
   margin-bottom:30px;
 }
@@ -1765,7 +1766,7 @@ height:100vh;
   width:calc(50% - 4px);
   height:calc(100% - 8px);
   background:var(--brass);
-  border-radius:26px;
+  border-radius:999px;
   transition:transform .35s cubic-bezier(.2,.7,.2,1);
   z-index:0;
 }
@@ -1787,7 +1788,8 @@ height:100vh;
   text-transform:uppercase;
   color:var(--cream-dim);
   cursor: var(--cursor-pointer);
-  border-radius:26px;
+  border-radius:999px;
+  text-align:center;
   transition:color .3s ease;
 }
 
@@ -3443,25 +3445,32 @@ height:100vh;
   color: var(--ink-soft);
 }
 
-/* Small outline icon at the start of each field title — no fill, just a
-   thin stroke in the label's own text colour (currentColor), so it always
-   matches. The CSS fill/stroke here override the fill="currentColor"
-   attribute on each inline SVG, so every booking field icon is covered. */
+/* Solid icon at the start of each field title, filled in the dark ink
+   colour. The inline SVGs are filled Material-style shapes, so they just need
+   fill (no outline stroke) to read as solid. */
 .form-group label .field-icon{
   display:inline-block;
-  width:14px;
-  height:14px;
+  width:15px;
+  height:15px;
   margin-right:7px;
   vertical-align:-2px;
   flex:0 0 auto;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.6;
-  stroke-linejoin:round;
-  stroke-linecap:round;
+  color:var(--ink);
+  fill:currentColor;
+  stroke:none;
 }
 .form-group label .field-icon *{
+  fill:currentColor;
+  stroke:none;
+}
+/* Speech bubble stays an outline rather than solid */
+.form-group label .field-icon.field-icon-outline,
+.form-group label .field-icon.field-icon-outline *{
   fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linejoin:round;
+  stroke-linecap:round;
 }
 
 .form-group input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
@@ -4991,11 +5000,18 @@ background: var(--cream);
   color: var(--cream);
   font-size: 18px;
   line-height: 1;
+  padding: 0;
   cursor: var(--cursor-pointer);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: border-color .2s ease, background .2s ease, color .2s ease;
+}
+.tc-modal-close svg{
+  width: 14px;
+  height: 14px;
+  display: block;
+  pointer-events: none;
 }
 
 .tc-modal-close:hover{
@@ -7413,7 +7429,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <h3 id="mobileMenuModalTitle">The Menu</h3>
         <p class="tc-modal-sub">Made your way</p>
       </div>
-      <button class="tc-modal-close" id="mobileMenuModalClose" aria-label="Close menu">&times;</button>
+      <button class="tc-modal-close" id="mobileMenuModalClose" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
     </div>
     <div class="tc-modal-body">
 
@@ -8781,7 +8797,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       </div>
 
                       <div class="form-group">
-                        <label for="endTimeTrigger"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6z"/></svg>Service end time</label>
+                        <label for="endTimeTrigger"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M6 2H18V6.5L13.6 12L18 17.5V22H6V17.5L10.4 12L6 6.5Z M7.7 3.8H16.3V6.1L12.6 10.6H11.4L7.7 6.1Z M7.7 20.2H16.3V17.9L12.6 13.4H11.4L7.7 17.9Z M10 7.6H14L12.8 9.4H11.2Z M9.2 18.8L12 15.8L14.8 18.8Z"/></svg>Service end time</label>
 
                         <!-- Desktop: interactive dropdown -->
                         <div class="time-select" id="endTimeSelect">
@@ -8882,7 +8898,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
 
                     <div class="form-group">
-                      <label for="notes"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Anything else?</label>
+                      <label for="notes"><svg class="field-icon field-icon-outline" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Anything else?</label>
                       <textarea id="notes" name="notes" placeholder="Indoor/outdoor, power access, timing..."></textarea>
                     </div>
                   </div>
@@ -9145,21 +9161,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (opts.onOpen) opts.onOpen();
 
-      // If nothing has been chosen yet, scroll the list to start at
-      // 12:00 PM rather than the very top (12:00 AM). Deferred a frame
-      // so the panel has actually become visible (display:block) first.
-      if (!hidden.value){
-        requestAnimationFrame(() => {
-          const noonOption = panel.querySelector('.time-select-option[data-label="12:00 PM"]');
-          // Scroll only the dropdown's own internal list (via scrollTop) rather
-          // than noonOption.scrollIntoView(), which walks up every scrollable
-          // ancestor — including the page itself — and was shifting the whole
-          // page down whenever the panel opened for the first time.
-          if (noonOption){
-            panel.scrollTop = noonOption.offsetTop - (panel.clientHeight / 2) + (noonOption.offsetHeight / 2);
-          }
-        });
-      }
+      // Scroll the list so the already-chosen time sits in the middle of the
+      // dropdown; if nothing has been chosen yet, start at 12:00 PM instead of
+      // the very top (12:00 AM). Deferred a frame so the panel has actually
+      // become visible (display:block) first.
+      requestAnimationFrame(() => {
+        let target = null;
+        if (hidden.value){
+          panel.querySelectorAll('.time-select-option').forEach(o => {
+            if (o.dataset.label === hidden.value) target = o;
+          });
+        }
+        if (!target) target = panel.querySelector('.time-select-option[data-label="12:00 PM"]');
+        // Scroll only the dropdown's own internal list (via scrollTop) rather
+        // than scrollIntoView(), which walks up every scrollable ancestor —
+        // including the page itself — and would shift the whole page.
+        if (target){
+          panel.scrollTop = target.offsetTop - (panel.clientHeight / 2) + (target.offsetHeight / 2);
+        }
+      });
     }
     function closePanel(){
       select.classList.remove('open');
@@ -10086,7 +10106,7 @@ function getFullAddress() {
         <h3 id="tcModalTitle">Terms &amp; Conditions</h3>
         <p class="tc-modal-sub">Blend &amp; Brew &middot; Mobile Coffee Wagon</p>
       </div>
-      <button class="tc-modal-close" id="tcModalClose" aria-label="Close">&times;</button>
+      <button class="tc-modal-close" id="tcModalClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
     </div>
     <div class="tc-modal-body">
 
@@ -10200,7 +10220,7 @@ function getFullAddress() {
       <div class="tc-modal-titles">
         <h3 id="faqModalTitle">FAQ</h3>
       </div>
-      <button class="tc-modal-close" id="faqModalClose" aria-label="Close">&times;</button>
+      <button class="tc-modal-close" id="faqModalClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
     </div>
     <div class="tc-modal-body">
       <div class="faq-list">
