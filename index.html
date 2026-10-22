@@ -1214,10 +1214,9 @@ height:100vh;
    wash as the photo tiles (the shared ::after rule above) so it sits at the
    same brightness, but stays in colour (no greyscale) and fades to full
    strength on hover like the photos. Not clickable into the lightbox.
-   The tile is forced square from the script (see setLogo). */
+   It only ever replaces a square photo tile (see logoTick). */
 .dw-tile.dw-logo{
   padding:0;
-  aspect-ratio:1 / 1;
   background:var(--walnut-soft);
   cursor:default;
 }
@@ -7316,21 +7315,10 @@ document.addEventListener("DOMContentLoaded", () => {
       t.img.src = LOGO_SRC;
       t.img.alt = 'Blend & Brew logo';
       t.el.classList.add('dw-logo');
-      // Logo tile is always a true square (tile width x tile width). The slot
-      // keeps its original height, so the extra space is split into equal
-      // margins above and below -- the column layout and loop stay seamless.
-      const side = config.tileWidth;
-      const m = Math.max(0, (t.h - side) / 2);
-      t.el.style.height = side + 'px';
-      t.el.style.marginTop = m + 'px';
-      t.el.style.marginBottom = m + 'px';
     } else {
       t.img.src = t.origSrc;
       t.img.alt = t.origAlt;
       t.el.classList.remove('dw-logo');
-      t.el.style.height = t.h + 'px';
-      t.el.style.marginTop = '';
-      t.el.style.marginBottom = '';
     }
   }
   function tileTop(col, t){
@@ -7373,7 +7361,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let best = null, bestScore = Infinity;
       col.tiles.forEach(t => {
         if (t.rep !== 0 || !t.pair) return;
-        if (t.h < config.tileWidth - 1) return;   // slot too short to hold a square logo
+        if (Math.abs(t.h / config.tileWidth - 1) > 0.12) return;   // only already-square slots, so no gaps open up around the logo
         if (onScreen(col, t) || onScreen(col, t.pair)) return;
         const d = Math.min(enterDist(col, t), enterDist(col, t.pair));
         if (!(d > M && d < 320)) return;   // not about to enter soon: leave it
