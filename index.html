@@ -1748,10 +1748,10 @@ height:100vh;
   text-align:center;
 }
 
-/* All sliding-pill toggles (calc, Gallery/Wagon/Menu, booking wizard) share
-   one edge gap: the pill sits exactly 3px inside the container on every side,
-   in every position. */
-:root{--pill-gap:3px;}
+/* Sliding-pill toggles: the pill sits a fixed gap inside the container on every
+   side, in every position. Calc and Gallery/Wagon/Menu use --pill-gap (4px);
+   the booking wizard toggle uses its own tighter 2px (--pill-gap-wizard). */
+:root{--pill-gap:4px;--pill-gap-wizard:2px;}
 
 /* Coffees / Guests toggle */
 .calc-toggle{
@@ -4751,15 +4751,15 @@ background: var(--cream);
   background: var(--cream-dim);
   border: 1px solid var(--line);
   border-radius: 999px;
-  padding: var(--pill-gap);
+  padding: var(--pill-gap-wizard);
 }
 
 .wizard-toggle-thumb{
   position: absolute;
-  top: var(--pill-gap);
-  left: var(--pill-gap);
-  width: calc((100% - var(--pill-gap) * 2) / 3);
-  height: calc(100% - var(--pill-gap) * 2);
+  top: var(--pill-gap-wizard);
+  left: var(--pill-gap-wizard);
+  width: calc((100% - var(--pill-gap-wizard) * 2) / 3);
+  height: calc(100% - var(--pill-gap-wizard) * 2);
   background: var(--brass);
   border-radius: 999px;
   transition: transform .35s cubic-bezier(.2,.7,.2,1);
@@ -7890,7 +7890,21 @@ document.addEventListener("DOMContentLoaded", () => {
     return anchors[anchors.length - 1].p;
   }
 
+  // Hand-set guest estimates for every slider stop. Coffee counts are the
+  // fixed source; these just read as clean, evenly climbing headcounts
+  // (multiples of 5) at roughly 0.8 guests per coffee. The five package
+  // anchors (25/50/100/150/200 coffees = 20/40/80/120/160 guests) are kept
+  // exactly. Between 25-50 and 50-100 coffees the slider moves in 5-coffee
+  // steps but guests can only move in 5s at ~0.8 per coffee, so a few
+  // neighbouring stops unavoidably share a number (30, 50, 70).
+  const guestTable = {
+    25:20, 30:25, 35:30, 40:30, 45:35, 50:40,
+    55:45, 60:50, 65:50, 70:55, 75:60, 80:65, 85:70, 90:70, 95:75, 100:80,
+    110:90, 120:95, 130:100, 140:110, 150:120, 175:140, 200:160
+  };
+
   function guestsForCoffees(c){
+    if (guestTable[c] !== undefined) return guestTable[c];
     if (c > COFFEE_MAX){
       const a = anchors[anchors.length - 2], b = anchors[anchors.length - 1];
       const rate = (b.g - a.g) / (b.c - a.c);
