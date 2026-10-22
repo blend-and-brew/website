@@ -4,19 +4,27 @@
   "main": "payment-worker.js",
   "compatibility_date": "2026-08-31",
 
-  // This binds the worker to www.blendandbrew.com.au/payment specifically —
-  // matches the "website" worker's existing www.blendandbrew.com.au/*
-  // wildcard route. Cloudflare matches the more specific route pattern
-  // first, so this /payment path routes here while everything else on
-  // www.blendandbrew.com.au/* continues to the "website" worker as before.
+  // More specific than the "website" worker's www.blendandbrew.com.au/* route,
+  // so /api/pay/* comes here and everything else still goes to the website.
   "routes": [
     {
-      "pattern": "www.blendandbrew.com.au/payment",
+      "pattern": "www.blendandbrew.com.au/api/pay/*",
       "zone_name": "blendandbrew.com.au"
     }
-  ]
+  ],
 
-  // Note: SQUARE_ACCESS_TOKEN is NOT set here — it's a secret, added
-  // via `wrangler secret put SQUARE_ACCESS_TOKEN` after first deploy,
-  // never committed to this file or version control.
+  "kv_namespaces": [
+    { "binding": "ORDERS", "id": "43f2fb3acc5b49aca71532206bea8515" }
+  ],
+
+  // Public values (safe to commit). Square's Application ID is visible in the
+  // browser anyway. Switch SQUARE_ENV to "production" + use production IDs to go live.
+  "vars": {
+    "SQUARE_ENV": "sandbox",
+    "SQUARE_LOCATION_ID": "L7FM3WCWEHZCE",
+    "SQUARE_APPLICATION_ID": "PASTE_YOUR_SANDBOX_APPLICATION_ID_HERE"
+  }
+
+  // Secrets (NOT here): SQUARE_ACCESS_TOKEN and ADMIN_KEY, set with
+  // `npx wrangler secret put <NAME>`.
 }
