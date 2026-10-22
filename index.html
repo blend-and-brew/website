@@ -1748,6 +1748,11 @@ height:100vh;
   text-align:center;
 }
 
+/* All sliding-pill toggles (calc, Gallery/Wagon/Menu, booking wizard) share
+   one edge gap: the pill sits exactly 3px inside the container on every side,
+   in every position. */
+:root{--pill-gap:3px;}
+
 /* Coffees / Guests toggle */
 .calc-toggle{
   position:relative;
@@ -1756,16 +1761,16 @@ height:100vh;
   background:rgba(244,239,230,0.04);
   border:1px solid var(--line-on-dark);
   border-radius:999px;
-  padding:4px;
+  padding:var(--pill-gap);
   margin-bottom:30px;
 }
 
 .calc-toggle-thumb{
   position:absolute;
-  top:4px;
-  left:4px;
-  width:calc(50% - 4px);
-  height:calc(100% - 8px);
+  top:var(--pill-gap);
+  left:var(--pill-gap);
+  width:calc((100% - var(--pill-gap) * 2) / 2);
+  height:calc(100% - var(--pill-gap) * 2);
   background:var(--brass);
   border-radius:999px;
   transition:transform .35s cubic-bezier(.2,.7,.2,1);
@@ -2509,7 +2514,6 @@ height:100vh;
 }
 
 .wcar-toggle{
-  --tg-pad:5px;                 /* even breathing room all round the sliding pill */
   position:relative;
   display:flex;
   width:100%;
@@ -2517,17 +2521,17 @@ height:100vh;
   background:var(--cream-dim);
   border:1px solid var(--line);
   border-radius:999px;
-  padding:var(--tg-pad);
+  padding:var(--pill-gap);
   box-shadow:inset 0 1px 3px rgba(60,40,20,0.08);
 }
 
 .wcar-toggle-thumb{
   position:absolute;
-  top:var(--tg-pad);
-  left:var(--tg-pad);
+  top:var(--pill-gap);
+  left:var(--pill-gap);
   /* exactly one button wide: (inner width / 3) */
-  width:calc((100% - var(--tg-pad) * 2) / 3);
-  height:calc(100% - var(--tg-pad) * 2);
+  width:calc((100% - var(--pill-gap) * 2) / 3);
+  height:calc(100% - var(--pill-gap) * 2);
   background:var(--brass);
   border-radius:999px;          /* full pill, concentric with the container */
   transition:transform .35s cubic-bezier(.2,.7,.2,1);
@@ -4746,18 +4750,18 @@ background: var(--cream);
   max-width: 260px;
   background: var(--cream-dim);
   border: 1px solid var(--line);
-  border-radius: 30px;
-  padding: 2px;
+  border-radius: 999px;
+  padding: var(--pill-gap);
 }
 
 .wizard-toggle-thumb{
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: calc(33.333% - 1.33px);
-  height: calc(100% - 4px);
+  top: var(--pill-gap);
+  left: var(--pill-gap);
+  width: calc((100% - var(--pill-gap) * 2) / 3);
+  height: calc(100% - var(--pill-gap) * 2);
   background: var(--brass);
-  border-radius: 24px;
+  border-radius: 999px;
   transition: transform .35s cubic-bezier(.2,.7,.2,1);
   z-index: 0;
   box-shadow: 0 3px 8px rgba(140,91,40,0.28);
@@ -4776,7 +4780,7 @@ background: var(--cream);
   letter-spacing: 0.02em;
   color: var(--ink-soft);
   cursor: var(--cursor-pointer);
-  border-radius: 24px;
+  border-radius: 999px;
   transition: color .3s ease;
   white-space: nowrap;
 }
