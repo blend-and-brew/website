@@ -20,9 +20,9 @@
   // Public values (safe to commit). Square's Application ID is visible in the
   // browser anyway. Switch SQUARE_ENV to "production" + use production IDs to go live.
   "vars": {
-    "SQUARE_ENV": "sandbox",
-    "SQUARE_LOCATION_ID": "L7FM3WCWEHZCE",
-    "SQUARE_APPLICATION_ID": "sandbox-sq0idb-pIN0fJ7l6gZBEhZCQg-yVw"
+    "SQUARE_ENV": "production",
+    "SQUARE_LOCATION_ID": "LXCYAQP5MB9YG",
+    "SQUARE_APPLICATION_ID": "sq0idp-K-ujSIU2RU6xP_CKwN4foA"
   }
 
   // Secrets (NOT here): SQUARE_ACCESS_TOKEN and ADMIN_KEY, set with
