@@ -2509,27 +2509,30 @@ height:100vh;
 }
 
 .wcar-toggle{
+  --tg-pad:5px;                 /* even breathing room all round the sliding pill */
   position:relative;
   display:flex;
   width:100%;
-  max-width:300px;
+  max-width:320px;
   background:var(--cream-dim);
   border:1px solid var(--line);
-  border-radius:30px;
-  padding:3px;
+  border-radius:999px;
+  padding:var(--tg-pad);
+  box-shadow:inset 0 1px 3px rgba(60,40,20,0.08);
 }
 
 .wcar-toggle-thumb{
   position:absolute;
-  top:3px;
-  left:3px;
-  width:calc(33.333% - 2px);
-  height:calc(100% - 6px);
+  top:var(--tg-pad);
+  left:var(--tg-pad);
+  /* exactly one button wide: (inner width / 3) */
+  width:calc((100% - var(--tg-pad) * 2) / 3);
+  height:calc(100% - var(--tg-pad) * 2);
   background:var(--brass);
-  border-radius:24px;
+  border-radius:999px;          /* full pill, concentric with the container */
   transition:transform .35s cubic-bezier(.2,.7,.2,1);
   z-index:0;
-  box-shadow:0 3px 8px rgba(140,91,40,0.28);
+  box-shadow:0 2px 6px rgba(140,91,40,0.25);
 }
 
 .wcar-toggle-btn{
@@ -2538,14 +2541,15 @@ height:100vh;
   flex:1 1 0;
   border:none;
   background:transparent;
-  padding:9px 10px;
+  padding:10px 14px;
   font-family:'Syne',sans-serif;
   font-weight:600;
   font-size:12px;
+  line-height:1.2;
   letter-spacing:0.02em;
   color:var(--ink-soft);
   cursor: var(--cursor-pointer);
-  border-radius:24px;
+  border-radius:999px;
   transition:color .3s ease;
   white-space:nowrap;
 }
