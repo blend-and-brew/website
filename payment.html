@@ -173,9 +173,11 @@ img{max-width:100%;display:block;}
   justify-content:center;
   margin-bottom:26px;
 }
-.pay-logo img{
-  width:128px;height:128px;
-}
+   .pay-logo img{
+     width:auto;height:auto;
+     max-width:128px;max-height:128px;
+     object-fit:contain;
+   }
 
 .pay-eyebrow{
   text-align:center;
@@ -1028,7 +1030,7 @@ const API_BASE = 'https://www.blendandbrew.com.au/api/pay';
   // the payment link as ?q=<base64>. If present, decode it and let the
   // buyer expand it inline (in an iframe) right on this page, so they can
   // double-check what's included before paying — no popup to get blocked.
-  const quoteParam = params.get('q');
+  const quoteParam = null;
   if (quoteParam){
     try {
       const quoteHtml = quoteParam;
