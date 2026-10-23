@@ -4,11 +4,13 @@
   "main": "payment-worker.js",
   "compatibility_date": "2026-08-31",
 
-  // More specific than the "website" worker's www.blendandbrew.com.au/* route,
-  // so /api/pay/* comes here and everything else still goes to the website.
   "routes": [
     {
       "pattern": "www.blendandbrew.com.au/api/pay/*",
+      "zone_name": "blendandbrew.com.au"
+    },
+    {
+      "pattern": "cogs.blendandbrew.com.au/api/pay/*",
       "zone_name": "blendandbrew.com.au"
     }
   ],
@@ -17,14 +19,9 @@
     { "binding": "ORDERS", "id": "43f2fb3acc5b49aca71532206bea8515" }
   ],
 
-  // Public values (safe to commit). Square's Application ID is visible in the
-  // browser anyway. Switch SQUARE_ENV to "production" + use production IDs to go live.
   "vars": {
     "SQUARE_ENV": "production",
     "SQUARE_LOCATION_ID": "LXCYAQP5MB9YG",
     "SQUARE_APPLICATION_ID": "sq0idp-K-ujSIU2RU6xP_CKwN4foA"
   }
-
-  // Secrets (NOT here): SQUARE_ACCESS_TOKEN and ADMIN_KEY, set with
-  // `npx wrangler secret put <NAME>`.
 }
