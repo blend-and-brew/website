@@ -1,7 +1,9 @@
 /**
  * Blend & Brew — Payment Worker
- * Routes (all under www.blendandbrew.com.au/api/pay):
- *   POST /create  (COGS, needs X-Admin-Key)  -> saves a quote as an order, returns { success, id }
+ * Routes (under www.blendandbrew.com.au/api/pay AND cogs.blendandbrew.com.au/api/pay):
+ *   POST /create  (COGS)  -> saves a quote as an order, returns { success, id }
+ *                            Allowed if EITHER the request carries a valid Cloudflare Access
+ *                            login token (from the cogs hostname) OR the old X-Admin-Key.
  *   GET  /order   (payment.html, public)     -> returns the order + public Square config
  *   POST /charge  (payment.html, public)     -> charges the card for the order's saved amount
  *
@@ -14,6 +16,11 @@ const ALLOWED_ORIGINS = [
   'https://blendandbrew.com.au',
   'https://cogs.blendandbrew.com.au',
 ];
+
+// Cloudflare Access (Zero Trust) settings for the COGS application.
+// Neither value is secret - they only tell the worker which Access app to trust.
+const ACCESS_TEAM_DOMAIN = 'blend-and-brew.cloudflareaccess.com';
+const ACCESS_AUD = '9258fa35b7de5e4751136b980835e98bfa57651f49c970bb767e68f6387a1562';
 
 function cors(origin) {
   const allow = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -48,10 +55,83 @@ async function sha256hex(text) {
 const orderKey = (id) => 'order:' + id;
 const refKey = (ref) => 'ref:' + ref.toLowerCase();
 
+/* ------------------------ CLOUDFLARE ACCESS LOGIN ------------------------ */
+// Cloudflare adds a signed token (Cf-Access-Jwt-Assertion) to every request that
+// passes through Access. We check the signature, issuer, audience and expiry, so
+// a request only counts as "Simon, logged in" if Cloudflare really vouched for it.
+
+let jwksCache = { keys: null, fetchedAt: 0 };
+
+async function getAccessKeys(force) {
+  const now = Date.now();
+  if (!force && jwksCache.keys && now - jwksCache.fetchedAt < 10 * 60 * 1000) return jwksCache.keys;
+  const res = await fetch('https://' + ACCESS_TEAM_DOMAIN + '/cdn-cgi/access/certs');
+  if (!res.ok) throw new Error('Could not fetch Access signing keys (' + res.status + ')');
+  const data = await res.json();
+  jwksCache = { keys: Array.isArray(data.keys) ? data.keys : [], fetchedAt: now };
+  return jwksCache.keys;
+}
+
+function b64urlToBytes(s) {
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  const bin = atob(s);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+function b64urlToJson(s) {
+  return JSON.parse(new TextDecoder().decode(b64urlToBytes(s)));
+}
+
+async function verifyAccessLogin(request) {
+  try {
+    const token = request.headers.get('Cf-Access-Jwt-Assertion');
+    if (!token) return false;
+    const parts = token.split('.');
+    if (parts.length !== 3) return false;
+
+    const header = b64urlToJson(parts[0]);
+    const payload = b64urlToJson(parts[1]);
+    if (header.alg !== 'RS256' || !header.kid) return false;
+
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.iss !== 'https://' + ACCESS_TEAM_DOMAIN) return false;
+    const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+    if (!aud.includes(ACCESS_AUD)) return false;
+    if (typeof payload.exp !== 'number' || payload.exp <= now) return false;
+    if (typeof payload.nbf === 'number' && payload.nbf > now + 60) return false;
+
+    let keys = await getAccessKeys(false);
+    let jwk = keys.find((k) => k.kid === header.kid);
+    if (!jwk) {
+      keys = await getAccessKeys(true); // keys may have rotated
+      jwk = keys.find((k) => k.kid === header.kid);
+    }
+    if (!jwk) return false;
+
+    const key = await crypto.subtle.importKey(
+      'jwk', jwk, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']
+    );
+    return await crypto.subtle.verify(
+      'RSASSA-PKCS1-v1_5', key,
+      b64urlToBytes(parts[2]),
+      new TextEncoder().encode(parts[0] + '.' + parts[1])
+    );
+  } catch (err) {
+    console.error('Access token check failed:', err);
+    return false;
+  }
+}
+
 /* ------------------------------ CREATE ------------------------------ */
 async function handleCreate(request, env, origin) {
+  // Allowed if the old admin key matches, OR Cloudflare Access vouches for the login.
   const key = request.headers.get('X-Admin-Key') || '';
-  if (!env.ADMIN_KEY || !(await safeEqual(key, env.ADMIN_KEY))) {
+  const keyOk = !!env.ADMIN_KEY && !!key && (await safeEqual(key, env.ADMIN_KEY));
+  const accessOk = keyOk ? false : await verifyAccessLogin(request);
+  if (!keyOk && !accessOk) {
     return json({ success: false, error: 'Unauthorized' }, 401, origin);
   }
 
