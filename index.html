@@ -3481,10 +3481,18 @@ height:100vh;
 }
 .form-group label .field-icon{
   transform-origin: center;
-  backface-visibility: hidden;
+}
+/* Own keyframes (rather than the menu's) so the icon settles back to exactly
+   scale(1) / 0deg and never snaps at the end. No backface-visibility/layer
+   promotion here: that put every icon on its own GPU layer, and re-rasterising
+   them is what made neighbouring icons look fuzzy while one animated. */
+@keyframes fieldIconWiggle{
+  0%{transform:scale(1) rotate(0deg);}
+  50%{transform:scale(1.08) rotate(-3deg);}
+  100%{transform:scale(1) rotate(0deg);}
 }
 .form-group label:not(.tc-check-row):hover .field-icon{
-  animation: menuIconWiggle .45s ease-out;
+  animation: fieldIconWiggle .45s ease-out;
 }
 @media (prefers-reduced-motion: reduce){
   .form-group label:not(.tc-check-row):hover .field-icon{ animation: none; }
@@ -5479,7 +5487,16 @@ html, body{
   cursor: var(--cursor-arrow);
 }
 
-a, button, [role="button"], label.tc-check-row, .toggle-option,
+/* Browsers give <label> their own built-in "cursor: default" (the plain OS
+   arrow), which overrides the cursor inherited from <body>. That is what made
+   the OS cursor appear over the booking field titles and their icons. Setting
+   it here (and on everything inside a label) keeps our cursor on at all times.
+   The clickable tick-box rows are re-set to the pointer by the grouped rule below. */
+label, label *{
+  cursor: var(--cursor-arrow);
+}
+
+a, button, [role="button"], label.tc-check-row, label.tc-check-row *, .toggle-option,
 .cal-day.available, .cal-day.selected, .gear-card,
 .calc-toggle-btn, .calc-pkg, .wcar-toggle-btn, .wcar-arrow, .hotspot,
 .booking-pkg-option, .booking-pkg-header, .booking-pkg-clear,
@@ -8861,7 +8878,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       </div>
 
                       <div class="form-group">
-                        <label for="endTimeTrigger"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M6 2H18V6.5L13.6 12L18 17.5V22H6V17.5L10.4 12L6 6.5Z M7.7 3.8H16.3V6.1L12.6 10.6H11.4L7.7 6.1Z M7.7 20.2H16.3V17.9L12.6 13.4H11.4L7.7 17.9Z M10 7.6H14L12.8 9.4H11.2Z M9.2 18.8L12 15.8L14.8 18.8Z"/></svg>Service end time</label>
+                        <label for="endTimeTrigger"><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M6 2H18V6.5L13.6 12L18 17.5V22H6V17.5L10.4 12L6 6.5Z M7.7 3.8H16.3V6.1L12.6 10.6H11.4L7.7 6.1Z M10 7.6H14L12.8 9.4H11.2Z"/></svg>Service end time</label>
 
                         <!-- Desktop: interactive dropdown -->
                         <div class="time-select" id="endTimeSelect">
