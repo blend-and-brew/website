@@ -3472,6 +3472,24 @@ height:100vh;
   fill:currentColor;
   stroke:none;
 }
+/* Icon wiggle on hover — same animation as the menu column icons
+   (menuIconWiggle), triggered by hovering the icon or its title. The label
+   is shrunk to its text width so empty space beside it doesn't trigger it. */
+.form-group label:not(.tc-check-row){
+  width: fit-content;
+  max-width: 100%;
+}
+.form-group label .field-icon{
+  transform-origin: center;
+  backface-visibility: hidden;
+}
+.form-group label:not(.tc-check-row):hover .field-icon{
+  animation: menuIconWiggle .45s ease-out;
+}
+@media (prefers-reduced-motion: reduce){
+  .form-group label:not(.tc-check-row):hover .field-icon{ animation: none; }
+}
+
 /* Speech bubble stays an outline rather than solid */
 .form-group label .field-icon.field-icon-outline,
 .form-group label .field-icon.field-icon-outline *{
