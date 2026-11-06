@@ -2994,58 +2994,19 @@ height:100vh;
 
 .booking-card{
   border:1px solid var(--line);
-  border-radius:16px; /* rounds the card's own border + drop shadow so no square frame shows behind the rounded cover/pages */
-  overflow:visible; /* was hidden — that clipped the 3D page-turn to the card's own rectangle. Clipping now lives on the two halves themselves (below), so the flipping page can swing past that boundary instead of being masked by it. */
+  border-radius:16px;
+  overflow:visible;
   display:grid;
   grid-template-columns:1fr 1fr;
   align-items:stretch; /* ensures equal height columns */
-  /* Drop shadow via filter (not box-shadow) so it follows the book's actual
-     visible shape — the closed half-width book, the flipping pages, and the
-     open card — instead of always shadowing the full rectangle, which would
-     include the empty left half while the book is closed. */
   filter:drop-shadow(0 24px 28px rgba(0,0,0,0.55)) drop-shadow(0 6px 10px rgba(0,0,0,0.35));
 }
 
 .booking-left{
-  border-right:none; /* was a 1px translucent line that read as a dark seam over the section's dark background; the calendar face now fills that gap itself (see .booking-left-front) */
+  border-right:none;
   min-width:0;
   position:relative;
-  z-index:4; /* sits below the two fake pages (z 5 / 6) while closed, so they flick open first. The closed cover must paint above the form fields it swings
-    over — some browsers stack native form controls (input/select) above
-    ordinary positioned content regardless of DOM/paint order, so this is
-    made explicit rather than relying on default stacking rules. */
-}
-
-/* ============ BOOKING CARD PAN-IN (runs before the book-open flip) ============
-   The whole card starts shifted 50% of its own width to the left (and
-   invisible), then pans right into its normal resting position. Only once
-   that pan has finished does the book-open flip below begin — the two
-   stages are chained in JS (see the "Booking card: pan-in then book-open"
-   script near the bottom of the page), not run in parallel. Kept as its
-   own class/observer rather than the generic .reveal fade-up, since that
-   uses a translateY transform which would collide with this translateX. */
-.booking-pan-reveal{
-  /* no opacity fade — the card is fully visible and only pans (transform).
-     The closed book is the card's RIGHT half, so its centre sits W/4 right
-     of the card's centre; shifting the card left by 25% of its own width
-     puts the closed book dead-centre on the page at any screen size,
-     and the pan then slides it out to the open, centred card. */
-  transform:translateX(-25%);
-  transition:transform .833s cubic-bezier(.2,.7,.2,1);
-}
-.booking-pan-reveal.in{
-  transform:translateX(0);
-}
-@media (max-width:880px){
-  /* stacked mobile layout has no closed book to centre — the card is already full-width and centred */
-  .booking-pan-reveal{ transform:none; transition:none; }
-}
-@media (prefers-reduced-motion: reduce){
-  .booking-pan-reveal{
-    opacity:1 !important;
-    transform:none !important;
-    transition:none !important;
-  }
+  z-index:3;
 }
 
 .booking-right{
@@ -3055,107 +3016,9 @@ height:100vh;
   z-index:1;
 }
 
-/* ============ BOOK-OPEN REVEAL (calendar panel) ============
-   A true two-sided page flip. #bookingLeftFlip (.booking-left) is the
-   hinge, rotating about its right edge — the "spine" shared with the
-   form panel — from 180deg (closed: its BACK face lands exactly on top
-   of the form panel, reading as a closed cover resting over the
-   field-filling section) to 0deg (open: its FRONT face, the real
-   calendar, sits flat in its own slot). Front and back are separate
-   stacked faces (below) so the closed state shows a plain cover rather
-   than mirrored calendar content — the standard CSS flip-card technique.
-   Triggered via IntersectionObserver (see the script near the bottom of
-   the page); .book-open is added once and never removed. Desktop only —
-   on mobile the two panels stack vertically, so a hinge flip wouldn't
-   read as a book opening; the faces collapse back to a normal stacked
-   block there. */
-.booking-card{
-  perspective:2400px;
-  position:relative; /* anchors the two fake pages, which are absolutely positioned over the card's left half */
-}
-.booking-left{
-  /* No overflow/clip on this element — it carries transform-style:preserve-3d
-     below for the flip, and overflow other than visible would force it to
-     flatten, re-clipping the rotation to a flat rectangle. Corner rounding
-     for this half instead lives on the two flat faces below. */
-  transform-style:preserve-3d;
-  transform-origin:right center;
-  transform:rotateY(180deg);
-  transition:transform 1.2s cubic-bezier(.2,.7,.2,1);
-  will-change:transform;
-}
-.booking-left.book-open{
-  transform:rotateY(0deg);
-  z-index:3; /* lands on top of both fake pages */
-  /* flips LAST. Each page starts exactly HALF-WAY through the previous one's flip (.4s flip, .2s apart). Uses a symmetric ease-in-out so half the time really is half the visual travel (the old front-loaded ease made pages look finished almost immediately). z-index swaps at the flip's midpoint (delay + .2s), when the page is edge-on, so the change is invisible */
-  transition:transform .4s cubic-bezier(.45,.05,.55,.95) .4s, z-index 0s linear .6s;
-}
-
-/* ============ FAKE PAGES (flick open before the calendar) ============
-   Two extra pages hinged on the same spine as the calendar page, using the
-   same flip (rotateY 180 -> 0). Closed, they stack on top of the calendar
-   cover (page 1 topmost); they flick open one by one, each landing on top
-   of the previous, and the calendar page flips open last on top of them.
-   Both sides are plain cream, matching the booking-fields page
-   (the back reuses .booking-left-back for its geometry/rounding only). Desktop only, like the calendar flip. */
-.booking-fake-page{
-  position:absolute;
-  top:0;
-  bottom:0;
-  left:0;
-  width:50%;
-  transform-style:preserve-3d;
-  transform-origin:right center;
-  transform:rotateY(180deg);
-  transition:transform .4s cubic-bezier(.45,.05,.55,.95);
-  will-change:transform;
-  pointer-events:none;
-}
-.booking-fake-page.fake-1{ z-index:6; }
-.booking-fake-page.fake-2{ z-index:5; }
-.booking-fake-front{
-  background:var(--cream); /* same cream as the booking-fields page (.booking-right) */
-  border-radius:16px 0 0 16px;
-}
-/* back face: plain cream (overrides the wood cover image it inherits from
-   .booking-left-back) — except page 1, whose back is the top of the closed
-   stack and keeps the original wood cover image. */
-.booking-fake-page.fake-2 .booking-left-back{
-  background:var(--cream);
-  border-left:none;
-  /* pulled in 3px at the spine edge so the wood cover on top fully overhangs it — stops a cream fringe peeking out along the closed book's left edge */
-  -webkit-clip-path:inset(4px 4px 4px 3px round 0 14px 14px 0);
-  clip-path:inset(4px 4px 4px 3px round 0 14px 14px 0);
-}
-/* (cream pages are also pulled ~2px in on top/bottom/outer edge so they can't show as a pale rim around the wood cover) the calendar page's own back (the side facing out while closed) is cream too */
-.booking-left > .booking-left-back{
-  background:var(--cream);
-  border-left:none;
-  -webkit-clip-path:inset(4px 4px 4px 3px round 0 14px 14px 0);
-  clip-path:inset(4px 4px 4px 3px round 0 14px 14px 0);
-}
-.booking-fake-page.book-open{
-  transform:rotateY(0deg);
-}
-/* flick order: page 1, then page 2 (staggered), z-index drops (page 1 -> 1, page 2 -> 2) at each flip's midpoint */
-.booking-fake-page.fake-1.book-open{
-  z-index:1;
-  transition:transform .4s cubic-bezier(.45,.05,.55,.95) 0s, z-index 0s linear .2s;
-}
-.booking-fake-page.fake-2.book-open{
-  z-index:2;
-  transition:transform .4s cubic-bezier(.45,.05,.55,.95) .2s, z-index 0s linear .4s;
-}
-@media (max-width:880px){
-  .booking-fake-page{ display:none; }
-}
-@media (prefers-reduced-motion: reduce){
-  .booking-fake-page{ display:none; }
-}
 .booking-left-face{
   position:absolute;
   inset:0;
-  backface-visibility:hidden;
 }
 .booking-left-front{
   padding:44px;
@@ -3180,41 +3043,11 @@ height:100vh;
   position:relative;
   z-index:1;
 }
-.booking-left-back{
-  transform:rotateY(180deg); /* pre-flipped so it faces the viewer correctly once the parent hits 180deg */
-  /* Bleeds ~2px past .booking-left-face's own inset:0 edges (overriding it
-     below) rather than sitting flush — a 1fr/1fr grid split doesn't always
-     divide the card's width into two whole-pixel halves, so the mirrored
-     cover could otherwise land a hair short of the panel it's meant to
-     fully cover, leaving a thin sliver of the cream page behind it visible
-     as a stray "white" line around the image. */
-  inset:-2px;
-  background: url("images/Blend&Brew_BookingCover(Wood).webp") center / 100% 100% no-repeat; /* stretched to fill the box exactly in both directions — "cover" would crop/overshoot beyond the edges to preserve aspect ratio */
-  border-left:none; /* the old translucent-cream 1px border showed as a pale line down the closed book's spine edge now that the pages beneath the cover are cream */
-  overflow:hidden;
-
-  /* Rounds the visible TOP-RIGHT and BOTTOM-RIGHT corners of the panning
-     cover so they match the open pages (.booking-right's 16px radius).
-     This element is pre-flipped by rotateY(180deg), so this face's own
-     mirroring puts its LOCAL right edge on the card's outer right edge
-     (its local left is the spine).
-     Uses clip-path instead of the old multi-layer mask: masks combined
-     with backface-visibility:hidden inside a preserve-3d flip are
-     unreliable and were being dropped by browsers, leaving square
-     corners. clip-path is applied to the element's own box, so the
-     2px bleed is trimmed off at the outer edges (top/bottom/visible
-     right) to land the curve exactly on the card boundary, while the
-     spine side (local right) keeps its bleed to hide any seam. */
-  -webkit-clip-path:inset(1px 1px 1px 0 round 0 17px 17px 0);
-  clip-path:inset(1px 1px 1px 0 round 0 17px 17px 0);
-}
 @media (max-width:880px){
   .booking-left{
-    transform:none !important;
-    transition:none !important;
     background: url("images/Booking_Texture_Image.webp") center / cover no-repeat;
     border-radius:16px 16px 0 0; /* stacked layout: rounded top corners instead of left */
-    overflow:hidden; /* safe here — no active 3D transform/preserve-3d on mobile (transform:none above) */
+    overflow:hidden;
   }
   .booking-left-face{
     position:static;
@@ -3224,15 +3057,6 @@ height:100vh;
     padding:0;
     background:none;
     overflow:visible; /* clears the desktop-only overflow-x:hidden/border-radius pairing — clipping is handled by .booking-left itself here */
-  }
-  .booking-left-back{
-    display:none;
-  }
-}
-@media (prefers-reduced-motion: reduce){
-  .booking-left{
-    transform:none !important;
-    transition:none !important;
   }
 }
 
@@ -3258,33 +3082,6 @@ height:100vh;
   padding:44px;
   min-width:0;
   background:var(--cream); /* moved off .booking-card so the card itself has no fill — the empty grid slot behind the flipping cover reads as transparent instead of a solid cream ghost panel */
-}
-
-/* Belt-and-suspenders: native form controls (input/select) can ignore
-   normal CSS stacking order in some browsers and render above overlapping
-   content regardless of z-index — so on top of the explicit z-index above,
-   the right page's own content stays invisible until the cover has
-   actually swung open, guaranteeing it can never show through/over the
-   closed cover no matter how a given browser paints the overlap. */
-.booking-right > *{
-  opacity:0;
-  transition:opacity .3s ease .5s; /* waits for the calendar page (last to flip, starts at .4s) */
-}
-.booking-left.book-open ~ .booking-right > *{
-  opacity:1;
-}
-@media (prefers-reduced-motion: reduce){
-  .booking-right > *{
-    opacity:1;
-    transition:none;
-  }
-}
-/* mobile: no book animation at all — the form is simply there (no pan, no page flips, no delayed fade-in) */
-@media (max-width:880px){
-  .booking-right > *{
-    opacity:1;
-    transition:none;
-  }
 }
 
 /* ============ CALENDAR ============ */
@@ -5186,16 +4983,16 @@ footer .wrap{
 
 .footer-socials{
   display: flex;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 14px;
+  margin-top: 14px;
 }
 
 .footer-social-link{
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: 2px solid var(--line-on-dark);
   color: var(--cream);
@@ -5211,6 +5008,8 @@ footer .wrap{
 
 .footer-social-link svg{
   display: block;
+  width: 24px;
+  height: 24px;
   color: var(--cream);
 }
 
@@ -5219,6 +5018,12 @@ footer .wrap{
   .footer-socials{ gap: 16px; }
   .footer-social-link{ width: 64px; height: 64px; }
   .footer-social-link svg{ width: 30px; height: 30px; }
+}
+
+/* Instagram glyph: a little larger on desktop, smaller on mobile */
+.footer-social-link[aria-label="Instagram"] svg{ width: 28px; height: 28px; }
+@media (max-width:900px){
+  .footer-social-link[aria-label="Instagram"] svg{ width: 26px; height: 26px; }
 }
 
 footer p.tag{
@@ -8667,17 +8472,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </p>
     </div>
 
-    <div class="booking-card booking-pan-reveal">
-      <!-- two decorative pages that flick open before the calendar -->
-      <div class="booking-fake-page fake-1" aria-hidden="true">
-        <div class="booking-left-face booking-fake-front"></div>
-        <div class="booking-left-face booking-left-back"></div>
-      </div>
-      <div class="booking-fake-page fake-2" aria-hidden="true">
-        <div class="booking-left-face booking-fake-front"></div>
-        <div class="booking-left-face booking-left-back"></div>
-      </div>
-
+    <div class="booking-card">
       <div class="booking-left" id="bookingLeftFlip">
         <div class="booking-left-face booking-left-front">
           <div class="cal-head">
@@ -8699,7 +8494,6 @@ document.addEventListener("DOMContentLoaded", () => {
             <span><span class="legend-dot sel"></span> Selected</span>
           </div>
         </div>
-        <div class="booking-left-face booking-left-back" aria-hidden="true"></div>
       </div>
 
       <div class="booking-right">
@@ -10124,9 +9918,9 @@ function getFullAddress() {
              rel="noopener"
              aria-label="Instagram">
             <svg viewBox="0 0 24 24" width="15" height="15">
-              <rect x="6" y="6" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
-              <circle cx="12" cy="12" r="3.2" fill="currentColor"/>
-              <circle cx="16.5" cy="7.5" r="0.8" fill="currentColor"/>
+              <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+              <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/>
             </svg>
           </a>
 
@@ -10461,38 +10255,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
   revealEls.forEach(el => { if(!el.classList.contains('in')) io.observe(el); });
-
-  // ----- Booking card: pan-in, then book-open reveal -----
-  // Two chained stages: the whole card first pans in from 50% left of its
-  // resting position (.booking-pan-reveal → .in), then — only once that
-  // pan transition has actually finished — the calendar's page-flip
-  // (.booking-left → .book-open) begins. Sequenced with a timeout matched
-  // to the pan's own transition duration below, rather than running both
-  // in parallel.
-  (function(){
-    const bookingCard = document.querySelector('.booking-card.booking-pan-reveal');
-    const bookingLeft = document.querySelector('.booking-left');
-    if (!bookingCard || !bookingLeft) return;
-
-    const PAN_DURATION_MS = 833; // matches .booking-pan-reveal's transition-duration
-
-    const panIO = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting){
-          entry.target.classList.add('in');
-          panIO.unobserve(entry.target);
-
-          const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          setTimeout(() => {
-            // CSS transition-delays stagger them: page 1, page 2, then the calendar
-            document.querySelectorAll('.booking-fake-page').forEach(pg => pg.classList.add('book-open'));
-            bookingLeft.classList.add('book-open');
-          }, reduceMotion ? 0 : PAN_DURATION_MS);
-        }
-      });
-    }, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
-    panIO.observe(bookingCard);
-  })();
 
 // ----- Calendar -----
 
