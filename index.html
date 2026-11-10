@@ -853,7 +853,7 @@ height:100vh;
 
 
 /* Tighter heading-to-content gap inside the carousel only */
-.wagon-carousel-page .section-head{
+.cart-carousel-page .section-head{
   margin-bottom:32px;
 }
 
@@ -1733,9 +1733,9 @@ height:100vh;
 }
 /* Desktop: review bar and social banner share one fixed height */
 @media (min-width:901px){
-  .wagon-carousel-page .gallery-actions{height:92px;}
-  .wagon-carousel-page .review-bar,
-  .wagon-carousel-page .social-banner{
+  .cart-carousel-page .gallery-actions{height:92px;}
+  .cart-carousel-page .review-bar,
+  .cart-carousel-page .social-banner{
     height:100%;
     padding-top:0;
     padding-bottom:0;
@@ -1751,7 +1751,7 @@ height:100vh;
 }
 
 /* Sliding-pill toggles: the pill sits a fixed gap inside the container on every
-   side, in every position. Calc and Gallery/Wagon/Menu use --pill-gap (4px);
+   side, in every position. Calc and Gallery/Cart/Menu use --pill-gap (4px);
    the booking wizard toggle uses its own tighter 2px (--pill-gap-wizard). */
 :root{--pill-gap:4px;--pill-gap-wizard:2px;}
 
@@ -2411,20 +2411,20 @@ height:100vh;
   .calc-pkg{min-width:0; flex:1 1 calc(50% - 8px); padding:12px 10px;}
 }
 
-/* ============ WAGON INTERACTIVE ============ */
+/* ============ CART INTERACTIVE ============ */
 
-.wagon-section{
+.cart-section{
   position:relative;
   overflow:hidden;
 }
 
-/* Bottom of the gallery/wagon/menu section pulled up: the shared
+/* Bottom of the gallery/cart/menu section pulled up: the shared
    .section-tight bottom padding (80px) is cut to 16px. */
-#wagonSection{
+#cartSection{
   padding-bottom:60px;
 }
 
-.wagon-section::before{
+.cart-section::before{
   content:'';
   position:absolute;
   top:-50px;
@@ -2439,18 +2439,18 @@ height:100vh;
   transform: translate(-20%, -25%);
 }
 
-.wagon-section .wrap{
+.cart-section .wrap{
   position:relative;
   z-index:1;
 }
 
-/* ============ WAGON CAROUSEL (Gallery / Wagon / Menu) ============ */
+/* ============ CART CAROUSEL (Gallery / Cart / Menu) ============ */
 
-.wagon-carousel{
+.cart-carousel{
   position:relative;
 }
 
-.wagon-carousel-viewport{
+.cart-carousel-viewport{
   width:100%;
   overflow:hidden;
   transition:height .3s ease;
@@ -2460,7 +2460,7 @@ height:100vh;
     fonts/images have finished settling into their final size. */
 }
 
-.wagon-carousel-track{
+.cart-carousel-track{
   display:flex;
   width:300%;
   align-items:flex-start; /* each page keeps its own natural height; the
@@ -2468,7 +2468,7 @@ height:100vh;
   transition:transform .55s cubic-bezier(.2,.7,.2,1);
 }
 
-.wagon-carousel-page{
+.cart-carousel-page{
   flex:0 0 calc(100% / 3);
   min-width:0;
   box-sizing:border-box;
@@ -2486,7 +2486,7 @@ height:100vh;
   margin:0 0 20px;
 }
 
-.wagon-carousel-nav{
+.cart-carousel-nav{
   display:flex;
   align-items:center;
   justify-content:center;
@@ -2568,10 +2568,10 @@ height:100vh;
   .wcar-toggle{max-width:none;}
   .wcar-toggle-btn{font-size:11px;padding:8px 4px;}
   .wcar-arrow{width:34px;height:34px;}
-  .wagon-carousel-nav{gap:10px;}
+  .cart-carousel-nav{gap:10px;}
 }
 
-.wagon-stage{
+.cart-stage{
   position:relative;
   display:grid;
   grid-template-columns: minmax(180px, 1fr) minmax(0, 2.4fr) minmax(180px, 1fr);
@@ -2605,7 +2605,7 @@ height:100vh;
 }
 .connector-svg circle.active{opacity:1;}
 
-.wagon-side{
+.cart-side{
   position:relative;
   z-index:4;
   background:var(--cream-dim);
@@ -2616,19 +2616,19 @@ height:100vh;
   pointer-events:none;
   transition:opacity .35s ease, transform .35s ease, border-color .35s ease;
 }
-.wagon-side-left{transform:translateX(-14px);}
-.wagon-side-right{transform:translateX(14px);}
-.wagon-side.active{
+.cart-side-left{transform:translateX(-14px);}
+.cart-side-right{transform:translateX(14px);}
+.cart-side.active{
   min-height:260px;
   opacity:1;
   transform:translateX(0);
   border-color:var(--brass);
   pointer-events:auto;
 }
-.wagon-side h3{font-size:17px;margin:0 0 8px;color:var(--ink);}
-.wagon-side .info-desc{font-size:13.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 14px;}
+.cart-side h3{font-size:17px;margin:0 0 8px;color:var(--ink);}
+.cart-side .info-desc{font-size:13.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 14px;}
 
-.wagon-card-img{
+.cart-card-img{
   width:100%;
   height:auto;
   object-fit:contain;
@@ -2636,16 +2636,16 @@ height:100vh;
   margin-bottom:12px;
 }
 
-.wagon-check-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
-.wagon-check-list li{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-soft);}
-.wagon-check-list li .check{
+.cart-check-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
+.cart-check-list li{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-soft);}
+.cart-check-list li .check{
   flex:0 0 16px;width:16px;height:16px;border-radius:50%;
   border:1px solid var(--brass);display:flex;align-items:center;justify-content:center;color:var(--brass);
 }
 
-.wagon-check-list li .check svg{width:9px;height:9px;}
-.wagon-image-wrap{position:relative;}
-.wagon-image{
+.cart-check-list li .check svg{width:9px;height:9px;}
+.cart-image-wrap{position:relative;}
+.cart-image{
   width:100%;
   display:block;
   border-radius:10px;
@@ -2736,7 +2736,7 @@ height:100vh;
   }
 }
 
-.wagon-mobile{
+.cart-mobile{
   display:none;
   margin-top:0;
   background:var(--cream-dim);
@@ -2753,7 +2753,7 @@ height:100vh;
   margin-left:auto;
   margin-right:auto;
 }
-.wagon-mobile.active{
+.cart-mobile.active{
   opacity:1;
   transform:translateY(0);
   border-color:var(--brass);
@@ -2762,24 +2762,24 @@ height:100vh;
   padding:22px;
 }
 
-.wagon-hint{
+.cart-hint{
   display:flex;align-items:center;justify-content:center;gap:8px;
   margin:14px auto 0;width:fit-content;
   padding:0;
   color:var(--ink-soft);
   font-size:13px;
 }
-.wagon-hint svg{width:15px;height:15px;flex:0 0 auto;color:var(--brass);}
+.cart-hint svg{width:15px;height:15px;flex:0 0 auto;color:var(--brass);}
 
-#wagonCarouselViewport{
+#cartCarouselViewport{
   position:relative;
 }
 
 @media (max-width:900px){
-  .wagon-stage{grid-template-columns:1fr;max-width:640px;}
-  .wagon-side{display:none;}
+  .cart-stage{grid-template-columns:1fr;max-width:640px;}
+  .cart-side{display:none;}
   .connector-svg{display:none;}
-  .wagon-mobile{display:block;}
+  .cart-mobile{display:block;}
 }
 
 /* ============ MOBILE: GALLERY REMOVED, MENU AS POPUP ============ */
@@ -2789,11 +2789,11 @@ height:100vh;
 }
 
 @media (max-width:900px){
-  /* the Gallery/Wagon/Menu toggle + arrows, and the swipe hint below it,
-     are desktop-only affordances for the carousel — on mobile the wagon
+  /* the Gallery/Cart/Menu toggle + arrows, and the swipe hint below it,
+     are desktop-only affordances for the carousel — on mobile the cart
      page is the only stop, and the menu opens as a popup instead */
-  .wagon-carousel-nav{display:none;}
-  .wagon-hint{display:none;}
+  .cart-carousel-nav{display:none;}
+  .cart-hint{display:none;}
 
   .mobile-menu-btn{
     display:flex;
@@ -2978,7 +2978,7 @@ height:100vh;
   }
 }
 
-/* ============ BOOKING — WAGON ============ */
+/* ============ BOOKING — CART ============ */
 
 
 #book::before {
@@ -5354,7 +5354,7 @@ textarea{
   "name": "Blend & Brew",
   "alternateName": "Blend and Brew Coffee Cart",
   "slogan": "Crafted for your occasion.",
-  "description": "Mobile coffee wagon and coffee cart hire for weddings, corporate events, private parties, markets and festivals across Western & Greater Sydney.",
+  "description": "Mobile coffee cart hire for weddings, corporate events, private parties, markets and festivals across Western & Greater Sydney.",
   "image": "https://www.blendandbrew.com.au/images/BlendandBrew_Event_250926.webp",
   "logo": "https://www.blendandbrew.com.au/images/BBLogo_Condensed.webp",
   "url": "https://www.blendandbrew.com.au/",
@@ -5420,13 +5420,13 @@ textarea{
         </div>
 
 <div class="hero-eyebrow">
-            <span class="eyebrow-part">Mobile Coffee Wagon</span><span class="eyebrow-sep"> • </span><span class="eyebrow-part">Western & Greater Sydney</span>
+            <span class="eyebrow-part">Mobile Coffee Cart</span><span class="eyebrow-sep"> • </span><span class="eyebrow-part">Western & Greater Sydney</span>
         </div>
 
 <div class="hero-divider"></div>
 
 <h1>
-  <span class="sr-only">Blend & Brew — Mobile Coffee Cart &amp; Coffee Wagon Hire in Western & Greater Sydney</span>
+  <span class="sr-only">Blend & Brew — Mobile Coffee Cart Hire in Western & Greater Sydney</span>
   <span class="line1" aria-hidden="true">CRAFTED FOR <em>YOUR</em></span>
   <span class="line2" aria-hidden="true">OCCASION.</span>
 </h1>
@@ -5794,7 +5794,7 @@ void main() {
 
 <div class="rule"></div></div>
         <h3>We blend and brew</h3>
-        <p>The wagon is set up and ready to serve your occasion.</p>
+        <p>The cart is set up and ready to serve your occasion.</p>
       </div>
     </div>
   </div>
@@ -5804,16 +5804,16 @@ void main() {
 
 
 
-<!-- ================= WAGON / GALLERY / MENU CAROUSEL ================= -->
+<!-- ================= CART / GALLERY / MENU CAROUSEL ================= -->
 
-<section class="section section-tight wagon-section" id="wagonSection">
+<section class="section section-tight cart-section" id="cartSection">
 
-  <div class="wagon-carousel" id="wagonCarousel">
-    <div class="wagon-carousel-viewport" id="wagonCarouselViewport">
-      <div class="wagon-carousel-track" id="wagonCarouselTrack">
+  <div class="cart-carousel" id="cartCarousel">
+    <div class="cart-carousel-viewport" id="cartCarouselViewport">
+      <div class="cart-carousel-track" id="cartCarouselTrack">
 
         <!-- PAGE 0 — GALLERY & REVIEWS -->
-        <div class="wagon-carousel-page" data-page="0" id="stories">
+        <div class="cart-carousel-page" data-page="0" id="stories">
          <div class="wrap">
           <div class="section-head reveal">
             <div class="eyebrow"><span class="bulb-dot"></span> Gallery &amp; reviews</div>
@@ -6030,9 +6030,9 @@ function bannerIconHover(el, color, bgImage){
          </div>
 
 
-          <!-- On mobile, the Gallery page is unreachable (see wagon carousel
+          <!-- On mobile, the Gallery page is unreachable (see cart carousel
                script), so its social banner is relocated to sit directly
-               under the "View Menu" button on the Wagon page instead. On
+               under the "View Menu" button on the Cart page instead. On
                desktop it's moved back to its original spot in the Gallery
                section above. -->
           <script>
@@ -6066,16 +6066,16 @@ function bannerIconHover(el, color, bgImage){
           </script>
           </div>
 
-          <!-- PAGE 1 — WAGON INTERACTIVE (default view) -->
-          <div class="wagon-carousel-page" data-page="1" id="menu">
+          <!-- PAGE 1 — CART INTERACTIVE (default view) -->
+          <div class="cart-carousel-page" data-page="1" id="menu">
            <div class="wrap">
             <div class="section-head reveal">
-              <div class="eyebrow"><span class="bulb-dot"></span> On the wagon</div>
-              <h2>Take a look inside our coffee wagon.</h2>
-              <p class="note">Explore the wagon to discover more.</p>
+              <div class="eyebrow"><span class="bulb-dot"></span> On the cart</div>
+              <h2>Take a look inside our coffee cart.</h2>
+              <p class="note">Explore the cart to discover more.</p>
             </div>
 
-            <div class="wagon-stage reveal" id="wagonStage">
+            <div class="cart-stage reveal" id="cartStage">
 
                   <svg class="connector-svg" id="connectorSvg">
                     <line id="connectorLine" x1="0" y1="0" x2="0" y2="0"></line>
@@ -6083,16 +6083,16 @@ function bannerIconHover(el, color, bgImage){
                   </svg>
 
                   <!-- LEFT SIDE CARD -->
-                  <div class="wagon-side wagon-side-left" id="cardLeft">
-                    <img class="wagon-card-img info-img" alt="" style="display:none;">
+                  <div class="cart-side cart-side-left" id="cardLeft">
+                    <img class="cart-card-img info-img" alt="" style="display:none;">
                     <h3 class="info-title"></h3>
                     <p class="info-desc"></p>
-                    <ul class="wagon-check-list info-list"></ul>
+                    <ul class="cart-check-list info-list"></ul>
                   </div>
 
                   <!-- CENTER IMAGE -->
-                  <div class="wagon-image-wrap">
-                    <img src="images/Cart_Image.webp" alt="Coffee wagon setup" class="wagon-image" loading="lazy" decoding="async">
+                  <div class="cart-image-wrap">
+                    <img src="images/Cart_Image.webp" alt="Coffee cart setup" class="cart-image" loading="lazy" decoding="async">
 
                     <button class="hotspot" data-target="grinder" data-side="left" style="top:45%; left:42.5%;">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -6117,20 +6117,20 @@ function bannerIconHover(el, color, bgImage){
                   </div>
 
                   <!-- RIGHT SIDE CARD -->
-                  <div class="wagon-side wagon-side-right" id="cardRight">
-                    <img class="wagon-card-img info-img" alt="" style="display:none;">
+                  <div class="cart-side cart-side-right" id="cardRight">
+                    <img class="cart-card-img info-img" alt="" style="display:none;">
                     <h3 class="info-title"></h3>
                     <p class="info-desc"></p>
-                    <ul class="wagon-check-list info-list"></ul>
+                    <ul class="cart-check-list info-list"></ul>
                   </div>
 
                 </div>
 
-            <div class="wagon-mobile" id="cardMobile">
-                  <img class="wagon-card-img info-img" alt="" style="display:none;">
+            <div class="cart-mobile" id="cardMobile">
+                  <img class="cart-card-img info-img" alt="" style="display:none;">
                   <h3 class="info-title"></h3>
                   <p class="info-desc"></p>
-                  <ul class="wagon-check-list info-list"></ul>
+                  <ul class="cart-check-list info-list"></ul>
                 </div>
 
             <button type="button" class="mobile-menu-btn" id="mobileMenuTrigger">
@@ -6141,7 +6141,7 @@ function bannerIconHover(el, color, bgImage){
           </div>
 
           <!-- PAGE 2 — DRINKS MENU -->
-          <div class="wagon-carousel-page" data-page="2" id="drinksMenu">
+          <div class="cart-carousel-page" data-page="2" id="drinksMenu">
            <div class="wrap">
             <div class="drinks-menu-inner">
 
@@ -6260,11 +6260,11 @@ function bannerIconHover(el, color, bgImage){
       </div>
 
       <div class="wrap">
-      <div class="wagon-carousel-nav">
-        <div class="wcar-toggle" id="wcarToggle" role="tablist" aria-label="Wagon section navigation">
+      <div class="cart-carousel-nav">
+        <div class="wcar-toggle" id="wcarToggle" role="tablist" aria-label="Cart section navigation">
           <span class="wcar-toggle-thumb" id="wcarToggleThumb"></span>
           <button type="button" class="wcar-toggle-btn" data-page="0" role="tab" aria-selected="false">Gallery</button>
-          <button type="button" class="wcar-toggle-btn active" data-page="1" role="tab" aria-selected="true">Wagon</button>
+          <button type="button" class="wcar-toggle-btn active" data-page="1" role="tab" aria-selected="true">Cart</button>
           <button type="button" class="wcar-toggle-btn" data-page="2" role="tab" aria-selected="false">Menu</button>
         </div>
       </div>
@@ -6273,11 +6273,11 @@ function bannerIconHover(el, color, bgImage){
     </div>
 </section>
 
-<!-- ================= WAGON INTERACTIVE SCRIPT ================= -->
+<!-- ================= CART INTERACTIVE SCRIPT ================= -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-const wagonData = {
+const cartData = {
   machine: {
     title: "La Carimali Nimble 2",
     image: "images/CoffeeMachine3_Image.webp",
@@ -6302,7 +6302,7 @@ const wagonData = {
     title: "Display shelf",
     image: "images/Decorations_Image.webp",
     points: [
-      "Make the wagon uniquely yours",
+      "Make the cart uniquely yours",
       "Perfect for florals and styling",
       "Display welcome signs or branding"
     ]
@@ -6320,7 +6320,7 @@ const wagonData = {
 };
 
 
-  const stage = document.getElementById('wagonStage');
+  const stage = document.getElementById('cartStage');
   const cardLeft = document.getElementById('cardLeft');
   const cardRight = document.getElementById('cardRight');
   const cardMobile = document.getElementById('cardMobile');
@@ -6380,7 +6380,7 @@ const wagonData = {
   }
 
   function showContent(id, hotspotEl){
-    const data = wagonData[id];
+    const data = cartData[id];
     if (!data) return;
     activeId = id;
 
@@ -6526,7 +6526,7 @@ const wagonData = {
 
   // click outside resets (mobile-friendly, also clears any click-pin)
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.wagon-stage') && !e.target.closest('.wagon-mobile')) {
+    if (!e.target.closest('.cart-stage') && !e.target.closest('.cart-mobile')) {
       resetPanel();
     }
   });
@@ -6542,19 +6542,19 @@ const wagonData = {
 });
 </script>
 
-<!-- ================= WAGON CAROUSEL SCRIPT (Gallery / Wagon / Menu) ================= -->
+<!-- ================= CART CAROUSEL SCRIPT (Gallery / Cart / Menu) ================= -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const track       = document.getElementById('wagonCarouselTrack');
-  const viewport    = document.getElementById('wagonCarouselViewport');
-  const realPages   = Array.from(document.querySelectorAll('.wagon-carousel-page'));
+  const track       = document.getElementById('cartCarouselTrack');
+  const viewport    = document.getElementById('cartCarouselViewport');
+  const realPages   = Array.from(document.querySelectorAll('.cart-carousel-page'));
   const toggleBtns  = Array.from(document.querySelectorAll('.wcar-toggle-btn'));
   const toggleThumb = document.getElementById('wcarToggleThumb');
   const prevBtn     = document.getElementById('wcarPrev');
   const nextBtn     = document.getElementById('wcarNext');
   if (!track || !realPages.length) return;
 
-  const REAL_COUNT = realPages.length; // Gallery, Wagon, Menu
+  const REAL_COUNT = realPages.length; // Gallery, Cart, Menu
 
   // Infinite loop: clone the last real page and prepend it, clone the
   // first real page and append it. The track then always has a "next"
@@ -6586,7 +6586,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // trackIndex 0 = clone of the last page, 1..REAL_COUNT = real pages
   // in order, REAL_COUNT+1 = clone of the first page.
-  let trackIndex = 2; // Wagon (real index 1) is the default, centre page
+  let trackIndex = 2; // Cart (real index 1) is the default, centre page
 
   function realIndexForTrack(idx){
     if (idx <= 0) return REAL_COUNT - 1;
@@ -6595,14 +6595,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // The carousel viewport height is locked to the tallest of the three
-  // real pages (Gallery / Wagon / Menu) so the section never resizes as
+  // real pages (Gallery / Cart / Menu) so the section never resizes as
   // you move between them — only the active page's content is ever
   // shown, but the surrounding layout stays put.
-  // The carousel height is locked to the tallest page. When the Wagon or
+  // The carousel height is locked to the tallest page. When the Cart or
   // Menu page is taller than the Gallery, the Gallery page would leave a
   // blank gap between the social banner and the toggle. Instead, grow the
   // drift wall by exactly that difference so the banner sits right above
-  // the toggle, the same as the wagon image does on its page.
+  // the toggle, the same as the cart image does on its page.
   function fitGalleryWalls(){
     const walls = Array.from(track.querySelectorAll('.driftwall'));
     if (!walls.length) return;
@@ -6623,7 +6623,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fitGalleryWalls();
     // On mobile the gallery/menu carousel pages are never shown (gallery
     // is removed and the menu opens as a popup instead), so only the
-    // wagon page's height should be reserved — otherwise the section
+    // cart page's height should be reserved — otherwise the section
     // would carry extra empty space sized for content the visitor can't
     // reach.
     const pagesToMeasure = window.innerWidth <= 900
@@ -6697,7 +6697,7 @@ document.addEventListener("DOMContentLoaded", () => {
     viewport.addEventListener('touchend', (e) => {
       if (touchStartX === null) return;
       // Gallery is removed and the menu is a popup on mobile, so there's
-      // nowhere to swipe to — the wagon page is the only stop.
+      // nowhere to swipe to — the cart page is the only stop.
       if (window.innerWidth <= 900){ touchStartX = null; return; }
       const dx = e.changedTouches[0].clientX - touchStartX;
       if (Math.abs(dx) > 40){
@@ -6741,11 +6741,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  window.updateWagonCarouselHeight = updateViewportHeight;
+  window.updateCartCarouselHeight = updateViewportHeight;
 
   // Exposed so other controls (side nav, footer links) can jump straight
   // to a specific page of the carousel.
-  window.goToWagonCarouselPage = goToReal;
+  window.goToCartCarouselPage = goToReal;
 
   // Anchors that point at #stories / #menu / #drinksMenu (side nav items,
   // the footer "Gallery" link, etc.) should switch the visible carousel
@@ -6757,7 +6757,7 @@ document.addEventListener("DOMContentLoaded", () => {
       a.addEventListener('click', () => {
         // On mobile, gallery and the sliding menu page are unreachable
         // (gallery is removed and the menu opens as a popup instead) —
-        // only ever slide to the wagon page itself.
+        // only ever slide to the cart page itself.
         if (window.innerWidth <= 900 && id !== 'menu') return;
         setTimeout(() => goToReal(pageForId[id]), 50);
       });
@@ -6768,25 +6768,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- ================= DRIFT WALL (gallery) =================
      Vanilla-JS re-creation of the React Bits "DriftWall" component, driven
-     by the same props. Kept AFTER the wagon carousel script on purpose: that
+     by the same props. Kept AFTER the cart carousel script on purpose: that
      script clones the Gallery page for its infinite loop on DOMContentLoaded,
      so this runs second and brings the clone to life too. -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const items = [
-    { image: 'images/BlendandBrew_Event_120926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
-    { image: 'images/BlendandBrew_Accent1.webp',         alt: 'Blend & Brew coffee wagon detail' },
+    { image: 'images/BlendandBrew_Event_120926.webp',    alt: 'Blend & Brew mobile coffee cart at a Sydney event' },
+    { image: 'images/BlendandBrew_Accent1.webp',         alt: 'Blend & Brew coffee cart detail' },
     { image: 'images/LatteArt_Image.webp',               alt: 'Latte art crafted by a Blend & Brew certified barista' },
-    { image: 'images/BlendandBrew_Accent2.webp',         alt: 'Blend & Brew coffee wagon detail' },
-    { image: 'images/BlendandBrew_Event_250926.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
-    { image: 'images/BlendandBrew_Accent3.webp',         alt: 'Blend & Brew coffee wagon detail' },
-    { image: 'images/BlendandBrew_Accent4.webp',         alt: 'Blend & Brew coffee wagon detail' },
-    { image: 'images/BlendandBrew_Accent5.webp',         alt: 'Blend & Brew coffee wagon detail' },
-    { image: 'images/BlendandBrew_Accent6.webp',         alt: 'Blend & Brew coffee wagon detail' },
-    { image: 'images/BlendandBrew_Event_121026.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
-    { image: 'images/BlendandBrew_Event_241026.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
-    { image: 'images/BlendandBrew_Event_161026.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
-    { image: 'images/BlendandBrew_Event_261026.webp',    alt: 'Blend & Brew mobile coffee wagon at a Sydney event' },
+    { image: 'images/BlendandBrew_Accent2.webp',         alt: 'Blend & Brew coffee cart detail' },
+    { image: 'images/BlendandBrew_Event_250926.webp',    alt: 'Blend & Brew mobile coffee cart at a Sydney event' },
+    { image: 'images/BlendandBrew_Accent3.webp',         alt: 'Blend & Brew coffee cart detail' },
+    { image: 'images/BlendandBrew_Accent4.webp',         alt: 'Blend & Brew coffee cart detail' },
+    { image: 'images/BlendandBrew_Accent5.webp',         alt: 'Blend & Brew coffee cart detail' },
+    { image: 'images/BlendandBrew_Accent6.webp',         alt: 'Blend & Brew coffee cart detail' },
+    { image: 'images/BlendandBrew_Event_121026.webp',    alt: 'Blend & Brew mobile coffee cart at a Sydney event' },
+    { image: 'images/BlendandBrew_Event_241026.webp',    alt: 'Blend & Brew mobile coffee cart at a Sydney event' },
+    { image: 'images/BlendandBrew_Event_161026.webp',    alt: 'Blend & Brew mobile coffee cart at a Sydney event' },
+    { image: 'images/BlendandBrew_Event_261026.webp',    alt: 'Blend & Brew mobile coffee cart at a Sydney event' },
   ];
   // Brand logo tile: decorative filler for the drift wall only. It uses the
   // `logo` key (not `image`), so it is never part of the lightbox photo list
@@ -7275,7 +7275,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // includes the carousel's cloned Gallery page (see note above)
   reviewsReady.then(() => { indexItems(); return measure(); }).then(() => {
     document.querySelectorAll('[data-driftwall]').forEach(build);
-    if (window.updateWagonCarouselHeight) window.updateWagonCarouselHeight();
+    if (window.updateCartCarouselHeight) window.updateCartCarouselHeight();
     kick();
   });
 });
@@ -8390,7 +8390,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {
       "@type": "Question",
-      "name": "How do I book the coffee wagon?",
+      "name": "How do I book the coffee cart?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Pick a free date in the booking calendar and tell us a bit about your event. We'll get back to you to sort out the details, then we turn up and start brewing."
@@ -8462,7 +8462,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <section class="section section-tight section-dark" id="book">
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="eyebrow"><span class="bulb-dot"></span> Book the wagon</div>
+      <div class="eyebrow"><span class="bulb-dot"></span> Book the cart</div>
       <h2>Pick a date, tell us the plan.</h2>
 <p class="note">
 ⚡We require access to <b style="color:var(--brass-bright);">standard 10Amp power outlets</b> to ensure smooth service throughout your event.
@@ -8693,7 +8693,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <!-- AUTOCOMPLETE LOCATION -->
                     <div class="form-group">
                       <div class="address-wrapper">
-                        <label><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Where is the wagon heading?</label>
+                        <label><svg class="field-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Where is the cart heading?</label>
 
                         <div class="address-row">
                           <!-- LEFT: House number -->
@@ -9126,7 +9126,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const endNativeLabelEl   = document.getElementById('endTimeNativeLabel');
 
   // End time must fall strictly after start time (same-day service only —
-  // this wagon doesn't book overnight-spanning slots).
+  // this cart doesn't book overnight-spanning slots).
   function endTimeIsValid(endLabel){
     const startMin = labelToMinutes(startHiddenEl.value);
     const endMin = labelToMinutes(endLabel);
@@ -9321,7 +9321,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // The wizard's viewport height is locked to each page's measured
     // height, taken before this swap happened — recalculating it directly
     // (rather than via a global resize event, which every other resize
-    // listener on the page also picks up, including the wagon carousel
+    // listener on the page also picks up, including the cart carousel
     // higher up — causing it to subtly reflow and shift everything below
     // it, including this booking section) makes the recalculation happen
     // again in case the field's own height differs from the select's.
@@ -9378,7 +9378,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // The wizard's viewport height is locked to each page's measured
     // height, taken before this swap happened — recalculating it directly
     // (rather than via a global resize event, which every other resize
-    // listener on the page also picks up, including the wagon carousel
+    // listener on the page also picks up, including the cart carousel
     // higher up — causing it to subtly reflow and shift everything below
     // it, including this booking section) makes the recalculation happen
     // again in case the field's own height differs from the select's.
@@ -9894,7 +9894,7 @@ function getFullAddress() {
         </div>
 
         <p class="tag">
-          Coffee wagon for weddings, corporate events, parties and markets.
+          Coffee cart for weddings, corporate events, parties and markets.
         </p>
 
         <div class="footer-socials">
@@ -9989,7 +9989,7 @@ function getFullAddress() {
     <div class="tc-modal-header">
       <div class="tc-modal-titles">
         <h3 id="tcModalTitle">Terms &amp; Conditions</h3>
-        <p class="tc-modal-sub">Blend &amp; Brew &middot; Mobile Coffee Wagon</p>
+        <p class="tc-modal-sub">Blend &amp; Brew &middot; Mobile Coffee Cart</p>
       </div>
       <button class="tc-modal-close" id="tcModalClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
     </div>
@@ -10014,7 +10014,7 @@ function getFullAddress() {
     <ul>
       <li><strong>Power:</strong> functional standard 10A power outlets located within reach of the coffee cart. Blend &amp; Brew is not responsible for delays or inability to operate caused by inadequate, unavailable, interrupted or unsafe venue power.</li>
       <li><strong>Access and parking:</strong> reasonable access to a loading zone or temporary parking space at, or immediately adjacent to, the venue for approximately 30 minutes before and after the booked service period, to allow for setup and pack-down, which are provided free of charge. If suitable loading access is unavailable, Blend &amp; Brew may be unable to provide the service as quoted and may require the client to arrange reasonable alternative access.</li>
-      <li><strong>Surface and space:</strong> a stable, reasonably level and suitable setup surface, with sufficient space for the wagon and safe operation of the coffee service. For safety, we're unable to operate from an unsuitable location, including an unsuitable slope, unstable ground, stairs, a footpath, or an obstructed pedestrian area. Ramp or lift access is required where stairs are present.</li>
+      <li><strong>Surface and space:</strong> a stable, reasonably level and suitable setup surface, with sufficient space for the cart and safe operation of the coffee service. For safety, we're unable to operate from an unsuitable location, including an unsuitable slope, unstable ground, stairs, a footpath, or an obstructed pedestrian area. Ramp or lift access is required where stairs are present.</li>
       <li><strong>Shelter:</strong> effective shelter, such as a marquee or veranda, where the cart will be exposed to wet or windy conditions.</li>
       <li><strong>Approvals:</strong> unless expressly agreed otherwise in writing, any venue permission, event approval, council approval, access permission or other approval required for Blend &amp; Brew to provide services at the nominated location.</li>
     </ul>
@@ -10126,7 +10126,7 @@ function getFullAddress() {
           <p>Proper barista coffee, like flat whites, cappuccinos, lattes, long blacks, macchiatos and mochas, plus tea, hot chocolate and babycinos for the little ones. Fancy a splash of vanilla, caramel or hazelnut? Just ask!</p>
         </details>
         <details class="faq-item">
-          <summary>How do I book the coffee wagon?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
+          <summary>How do I book the coffee cart?<svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></summary>
           <p>Pick a free date in the booking calendar and tell us a bit about your event. We'll get back to you to sort out the details, then we turn up and start brewing.</p>
         </details>
         <details class="faq-item">
