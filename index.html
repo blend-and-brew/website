@@ -422,7 +422,7 @@ height:100vh;
 .hero-logo-wrap{
   position:relative;
   display:inline-block;
-  width:clamp(345px, 50.5vh, 642px);
+  width:clamp(288px, 42vh, 535px);
   margin-top:0px;
   margin-bottom:var(--hero-gap);
   border-radius:50%;
@@ -514,11 +514,11 @@ height:100vh;
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  gap:6px;
+  gap:calc(var(--hero-gap) * .6);
   width:100%;
   text-transform:uppercase;
   letter-spacing:.28em;
-  font-size:14px;
+  font-size:17px;
   font-weight:600;
   color:rgba(255,255,255,.82);
 
@@ -527,6 +527,18 @@ height:100vh;
 
 .hero-eyebrow .eyebrow-sep{
   display:none;
+}
+.hero-eyebrow .eyebrow-part{
+  line-height:1;
+  /* trim the empty space above/below the capitals so the gap between the
+     two lines is the true visible gap, whatever each line's font size */
+  text-box:trim-both cap alphabetic;
+}
+.hero-eyebrow .eyebrow-part:first-child{
+  font-size:2em;      /* 200% of the base eyebrow size */
+}
+.hero-eyebrow .eyebrow-part:last-child{
+  font-size:1.5em;    /* estimate; script below fits it to the exact width of line 1 */
 }
 
 .hero h1{
@@ -547,8 +559,8 @@ height:100vh;
 }
 
 .hero-divider{
-  width:620px;
-  max-width:80%;
+  width:558px;        /* 10% shorter than 620px */
+  max-width:72%;
   height:1px;
   margin:0 auto var(--hero-gap);
   background:rgba(255,255,255,.35);
@@ -5226,16 +5238,21 @@ footer p.tag{
 
   .hero-eyebrow{
     flex-direction:column;
-    gap:4px;
-    font-size:9px;
+    font-size:11px;
     letter-spacing:.18em;
   }
   .hero-eyebrow .eyebrow-sep{
     display:none;
   }
+  .hero-eyebrow .eyebrow-part:first-child{
+    letter-spacing:.1em; /* keeps the larger line inside narrow phone widths */
+  }
+  .hero-eyebrow .eyebrow-part:last-child{
+    font-size:1.35em;
+  }
 
   .hero-logo-wrap{
-    width:clamp(165px, 30vh, 255px);
+    width:clamp(138px, 25vh, 212px);
     margin-bottom:var(--hero-gap);
   }
 
@@ -10987,5 +11004,27 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
+<script>
+/* Fit "Western & Greater Sydney" to the exact width of "Mobile Coffee Cart" */
+(function(){
+  function fit(){
+    var parts = document.querySelectorAll('.hero-eyebrow .eyebrow-part');
+    if (parts.length < 2) return;
+    var a = parts[0], b = parts[parts.length - 1];
+    b.style.fontSize = '';                       // reset to the CSS estimate first
+    var w1 = a.getBoundingClientRect().width;
+    var w2 = b.getBoundingClientRect().width;
+    if (!w1 || !w2) return;
+    var size = parseFloat(getComputedStyle(b).fontSize);
+    b.style.fontSize = (size * w1 / w2) + 'px';  // letter-spacing is in em, so width scales linearly
+  }
+  var t;
+  function later(){ clearTimeout(t); t = setTimeout(fit, 60); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fit); else fit();
+  window.addEventListener('load', fit);
+  window.addEventListener('resize', later);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+})();
+</script>
 </body>
 </html>
