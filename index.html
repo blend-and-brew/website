@@ -348,9 +348,9 @@ body::-webkit-scrollbar {
     ),
     linear-gradient(
       160deg,
-      rgba(28,18,13,.88) 0%,
-      rgba(40,26,18,.82) 25%,
-      rgba(14,9,6,.93) 100%
+      rgba(30,27,24,.78) 0%,
+      rgba(36,32,29,.72) 25%,
+      rgba(20,18,16,.86) 100%
     );
   z-index:1;
 }
@@ -5014,6 +5014,8 @@ footer .wrap{
 }
 
 .footer-social-link{
+  --icon-size: 28px;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5033,18 +5035,51 @@ footer .wrap{
   transform: translateY(-2px);
 }
 
+/* Hover: the circle fills solid cream and the icon becomes a see-through
+   cut-out. The fill is a ::before disc with the icon's own shape masked out
+   of it (full-disc mask minus icon mask), so the dark footer shows through
+   the icon rather than a flat colour being painted over it. The real svg
+   fades out at the same time. */
+.footer-social-link::before{
+  content: '';
+  position: absolute;
+  inset: -2px; /* reaches under the 2px border so the fill and ring read as one solid disc */
+  border-radius: 50%;
+  background: var(--cream);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s ease-out;
+  -webkit-mask-image: var(--icon-mask), linear-gradient(#000, #000);
+  mask-image: var(--icon-mask), linear-gradient(#000, #000);
+  -webkit-mask-size: var(--icon-size) var(--icon-size), 100% 100%;
+  mask-size: var(--icon-size) var(--icon-size), 100% 100%;
+  -webkit-mask-position: center, center;
+  mask-position: center, center;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.footer-social-link:hover::before{ opacity: 1; }
+
+.footer-social-link[aria-label="Facebook"]{ --icon-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 2 24 24'%3E%3Cpath fill='%23000' d='M14 9h3V5h-3a4 4 0 0 0-4 4v3H7v4h3v7h4v-7h3l1-4h-4V9a1 1 0 0 1 1-1z'/%3E%3C/svg%3E"); }
+.footer-social-link[aria-label="Instagram"]{ --icon-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Crect x='3.9' y='3.9' width='16.2' height='16.2' rx='4.5' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3Ccircle cx='12' cy='12' r='3.8' fill='%23000'/%3E%3Ccircle cx='16.9' cy='7.1' r='1.1' fill='%23000'/%3E%3C/svg%3E"); }
+.footer-social-link[aria-label="LinkedIn"]{ --icon-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Crect x='3.5' y='9' width='3.8' height='12' fill='%23000'/%3E%3Ccircle cx='5.4' cy='5' r='2.3' fill='%23000'/%3E%3Cpath fill='%23000' d='M10 9h3.6v1.7c.7-1.1 2-1.9 3.8-1.9 3.4 0 4.1 2.3 4.1 5.2V21h-3.8v-6.1c0-1.5-.3-2.6-1.9-2.6-1.6 0-2.4 1.1-2.4 2.7V21H10z'/%3E%3C/svg%3E"); }
+.footer-social-link[aria-label="Email"]{ --icon-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' transform='translate%2812 12%29 scale%281.125%29 translate%28-12 -12%29' d='M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z'/%3E%3C/svg%3E"); }
+
 .footer-social-link svg{
   display: block;
-  width: 28px;
-  height: 28px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   color: var(--cream);
+  transition: opacity .4s ease-out;
 }
+.footer-social-link:hover svg{ opacity: 0; }
 
 /* Mobile: footer social icons at double size */
 @media (max-width:900px){
   .footer-socials{ gap: 14px; }
-  .footer-social-link{ width: 52px; height: 52px; }
-  .footer-social-link svg{ width: 25px; height: 25px; }
+  .footer-social-link{ width: 52px; height: 52px; --icon-size: 25px; }
 }
 
 
@@ -5089,13 +5124,13 @@ footer p.tag{
   border-top: 1px solid var(--line-on-dark);
   padding-top: 22px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;   /* copyright with the ABN stacked underneath */
+  justify-content: flex-start;
+  align-items: flex-start;
   font-size: 12.5px;
   color: var(--cream-dim);
   opacity: 0.6;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 4px;
 }
 
 .footer-logo{
@@ -9998,6 +10033,7 @@ function getFullAddress() {
 
     <div class="footer-bottom">
       <span>&copy; 2026 Blend and Brew.</span>
+      <span>ABN 24 329 154 012</span>
     </div>
 
   </div>
