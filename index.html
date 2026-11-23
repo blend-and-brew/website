@@ -68,6 +68,7 @@
   --cursor-not-allowed: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M6 3.9 Q4 3 4.9 5 L10.9 18.6 Q12 21 12.9 18.5 L14.2 14.8 Q14.6 13.6 15.8 13.2 L20.1 11.7 Q22 11.1 20.2 10.3 Z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.4' stroke-linejoin='round'/%3E%3Ccircle cx='21' cy='21' r='5.5' fill='%23D9453D' stroke='%23F4EFE6' stroke-width='2.2'/%3E%3Cpath d='M19 19l4 4M23 19l-4 4' fill='none' stroke='%23F4EFE6' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") 4 3, not-allowed;
   --cursor-wait: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M6 3.9 Q4 3 4.9 5 L10.9 18.6 Q12 21 12.9 18.5 L14.2 14.8 Q14.6 13.6 15.8 13.2 L20.1 11.7 Q22 11.1 20.2 10.3 Z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.4' stroke-linejoin='round'/%3E%3Ccircle cx='21' cy='21' r='5.5' fill='%233B6FD6' stroke='%23F4EFE6' stroke-width='2.2'/%3E%3Cpath d='M21 18.2v3l2.2 1.8' fill='none' stroke='%23F4EFE6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, wait;
   --cursor-alias: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M6 3.9 Q4 3 4.9 5 L10.9 18.6 Q12 21 12.9 18.5 L14.2 14.8 Q14.6 13.6 15.8 13.2 L20.1 11.7 Q22 11.1 20.2 10.3 Z' fill='%23181614' stroke='%23F4EFE6' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M3 27c0-5 3-8 8-8' fill='none' stroke='%23F4EFE6' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M3 27c0-5 3-8 8-8' fill='none' stroke='%23181614' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M7 16l4 3-4 3' fill='none' stroke='%23F4EFE6' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 16l4 3-4 3' fill='none' stroke='%23181614' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, alias;
+  --cursor-grabbing: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cg fill='%23F4EFE6' stroke='%23F4EFE6' stroke-width='4.4' stroke-linejoin='round'%3E%3Crect x='6' y='10' width='14' height='11' rx='4.5'/%3E%3Ccircle cx='8.4' cy='9.6' r='2.4'/%3E%3Ccircle cx='11.7' cy='8.7' r='2.4'/%3E%3Ccircle cx='15' cy='8.7' r='2.4'/%3E%3Ccircle cx='18.2' cy='9.6' r='2.4'/%3E%3Cellipse cx='6.4' cy='15.2' rx='2.3' ry='3.4'/%3E%3C/g%3E%3Cg fill='%23181614'%3E%3Crect x='6' y='10' width='14' height='11' rx='4.5'/%3E%3Ccircle cx='8.4' cy='9.6' r='2.4'/%3E%3Ccircle cx='11.7' cy='8.7' r='2.4'/%3E%3Ccircle cx='15' cy='8.7' r='2.4'/%3E%3Ccircle cx='18.2' cy='9.6' r='2.4'/%3E%3Cellipse cx='6.4' cy='15.2' rx='2.3' ry='3.4'/%3E%3C/g%3E%3Cpath d='M10.1 10.2v3M13.4 10.2v3M16.7 10.2v3' fill='none' stroke='%23F4EFE6' stroke-width='1.1' stroke-linecap='round'/%3E%3C/svg%3E") 13 12, grabbing;
   --cursor-text: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23F4EFE6' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M8 3h8M12 3v18M8 21h8' fill='none' stroke='%23181614' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") 12 12, text;
 }
 *{box-sizing:border-box;}
@@ -139,6 +140,9 @@ button{font-family:inherit;}
   white-space:nowrap;
   border:0;
 }
+
+/* While click-drag scrolling: same dark/cream cursor on everything */
+html.is-panning, html.is-panning *{cursor:var(--cursor-grabbing) !important;}
 
 /* ============ SECURITY ============ */
 
@@ -422,7 +426,7 @@ height:100vh;
 .hero-logo-wrap{
   position:relative;
   display:inline-block;
-  width:clamp(288px, 42vh, 535px);
+  width:clamp(234px, 34vh, 434px);
   margin-top:0px;
   margin-bottom:var(--hero-gap);
   border-radius:50%;
@@ -514,10 +518,10 @@ height:100vh;
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  gap:calc(var(--hero-gap) * .6);
+  gap:16px;
   width:100%;
   text-transform:uppercase;
-  letter-spacing:.28em;
+  letter-spacing:.22em;
   font-size:17px;
   font-weight:600;
   color:rgba(255,255,255,.82);
@@ -525,20 +529,15 @@ height:100vh;
   margin-bottom:0px;
 }
 
+.hero-eyebrow{white-space:nowrap;}
 .hero-eyebrow .eyebrow-sep{
   display:none;
 }
-.hero-eyebrow .eyebrow-part{
-  line-height:1;
-  /* trim the empty space above/below the capitals so the gap between the
-     two lines is the true visible gap, whatever each line's font size */
-  text-box:trim-both cap alphabetic;
-}
-.hero-eyebrow .eyebrow-part:first-child{
-  font-size:2em;      /* 200% of the base eyebrow size */
-}
-.hero-eyebrow .eyebrow-part:last-child{
-  font-size:1.5em;    /* estimate; script below fits it to the exact width of line 1 */
+/* dots at the start and end of "Mobile Coffee Cart" */
+.hero-eyebrow .eyebrow-part:first-child::before,
+.hero-eyebrow .eyebrow-part:first-child::after{
+  content:"\2022";
+  margin:0 .6em;
 }
 
 .hero h1{
@@ -559,8 +558,8 @@ height:100vh;
 }
 
 .hero-divider{
-  width:558px;        /* 10% shorter than 620px */
-  max-width:72%;
+  width:502px;
+  max-width:65%;
   height:1px;
   margin:0 auto var(--hero-gap);
   background:rgba(255,255,255,.35);
@@ -753,6 +752,15 @@ height:100vh;
   transform:translateX(-26px);
   transition:opacity .65s cubic-bezier(.2,.7,.2,1), transform .65s cubic-bezier(.2,.7,.2,1);
 }
+/* "Pick a date" step doubles as a button that jumps to the booking section */
+.step-link{cursor:var(--cursor-pointer);}
+.step-link .ring{transition:transform .25s ease, box-shadow .25s ease;}
+.step-link:hover .ring,
+.step-link:focus-visible .ring{transform:scale(1.1); box-shadow:0 0 14px 2px rgba(224,168,95,.45);}
+.step-link:hover h3,
+.step-link:focus-visible h3{color:var(--brass-bright);}
+.step-link h3{transition:color .25s ease;}
+.step-link:focus-visible{outline:2px solid var(--brass-bright); outline-offset:6px; border-radius:6px;}
 .steps-row.in .step:nth-child(1){transition-delay:.05s;}
 .steps-row.in .step:nth-child(2){transition-delay:.55s;}
 .steps-row.in .step:nth-child(3){transition-delay:1.05s;}
@@ -5233,26 +5241,19 @@ footer p.tag{
   .hero-content{
     height:100vh;
     height:100dvh;
+    padding-left:14px;   /* a little more room for the one-line subtext */
+    padding-right:14px;
     padding-bottom:clamp(40px, 10vh, 70px); /* reserves room so the lede never sits under the scroll cue */
   }
 
   .hero-eyebrow{
-    flex-direction:column;
-    font-size:11px;
-    letter-spacing:.18em;
-  }
-  .hero-eyebrow .eyebrow-sep{
-    display:none;
-  }
-  .hero-eyebrow .eyebrow-part:first-child{
-    letter-spacing:.1em; /* keeps the larger line inside narrow phone widths */
-  }
-  .hero-eyebrow .eyebrow-part:last-child{
-    font-size:1.35em;
+    font-size:12.5px;
+    letter-spacing:.16em;
+    gap:11px;
   }
 
   .hero-logo-wrap{
-    width:clamp(138px, 25vh, 212px);
+    width:clamp(112px, 20vh, 171px);
     margin-bottom:var(--hero-gap);
   }
 
@@ -5768,7 +5769,7 @@ void main() {
       <h2>From book to brew in three steps.</h2>
     </div>
     <div class="steps-row steps-stagger">
-      <div class="step">
+      <div class="step step-link" id="stepPickDate" role="button" tabindex="0" aria-label="Pick a date: go to the booking section">
         <div class="step-mark">
 <div class="ring">
   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
@@ -11005,25 +11006,88 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <script>
-/* Fit "Western & Greater Sydney" to the exact width of "Mobile Coffee Cart" */
+/* Click-and-drag to scroll the page (mouse users without a scroll wheel).
+   Drag down = page moves down with the pointer, like grabbing the page. */
 (function(){
-  function fit(){
-    var parts = document.querySelectorAll('.hero-eyebrow .eyebrow-part');
-    if (parts.length < 2) return;
-    var a = parts[0], b = parts[parts.length - 1];
-    b.style.fontSize = '';                       // reset to the CSS estimate first
-    var w1 = a.getBoundingClientRect().width;
-    var w2 = b.getBoundingClientRect().width;
-    if (!w1 || !w2) return;
-    var size = parseFloat(getComputedStyle(b).fontSize);
-    b.style.fontSize = (size * w1 / w2) + 'px';  // letter-spacing is in em, so width scales linearly
+  if (!window.PointerEvent) return;
+  var SKIP = 'a,button,input,select,textarea,label,summary,video,audio,iframe,canvas,[role="button"],[role="slider"],[contenteditable],[data-no-pan]';
+  var THRESHOLD = 5;                 // px of movement before a click becomes a drag
+  var down = false, dragging = false, id = null;
+  var startY = 0, startScroll = 0, lastY = 0, lastT = 0, vel = 0, raf = 0, suppressClick = false;
+
+  // Leave alone anything that scrolls or is fixed on its own (menus, modals, lightboxes, carousels)
+  function ownsInput(el){
+    for (var n = el; n && n !== document.body && n !== document.documentElement; n = n.parentElement){
+      var cs = getComputedStyle(n);
+      if (cs.position === 'fixed') return true;
+      if (/(auto|scroll)/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 1) return true;
+      if (/(auto|scroll)/.test(cs.overflowX) && n.scrollWidth  > n.clientWidth  + 1) return true;
+    }
+    return false;
   }
-  var t;
-  function later(){ clearTimeout(t); t = setTimeout(fit, 60); }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fit); else fit();
-  window.addEventListener('load', fit);
-  window.addEventListener('resize', later);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  function jump(y){ window.scrollTo({ top: y, behavior: 'instant' }); }   // bypass html{scroll-behavior:smooth}
+
+  document.addEventListener('pointerdown', function(e){
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    if (e.target.closest(SKIP) || ownsInput(e.target)) return;
+    cancelAnimationFrame(raf);
+    down = true; dragging = false; id = e.pointerId;
+    startY = lastY = e.clientY; startScroll = window.scrollY; lastT = performance.now(); vel = 0;
+  });
+
+  document.addEventListener('pointermove', function(e){
+    if (!down || e.pointerId !== id) return;
+    var dy = e.clientY - startY;
+    if (!dragging){
+      if (Math.abs(dy) < THRESHOLD) return;
+      dragging = true;
+      document.documentElement.classList.add('is-panning');
+    }
+    var now = performance.now(), dt = Math.max(1, now - lastT);
+    vel = 0.8 * vel + 0.2 * ((lastY - e.clientY) / dt);        // px per ms, positive = scrolling down
+    lastY = e.clientY; lastT = now;
+    jump(startScroll - dy);
+    e.preventDefault();
+  }, { passive: false });
+
+  function end(e){
+    if (!down || (e && e.pointerId !== id)) return;
+    down = false;
+    document.documentElement.classList.remove('is-panning');
+    if (dragging){
+      suppressClick = true;                                    // a drag should not also count as a click
+      setTimeout(function(){ suppressClick = false; }, 0);
+      if (performance.now() - lastT > 80) vel = 0;             // paused before release: no fling
+      var v = vel * 16;                                        // px per frame
+      (function glide(){
+        if (Math.abs(v) < 0.4) return;
+        jump(window.scrollY + v);
+        v *= 0.94;
+        raf = requestAnimationFrame(glide);
+      })();
+    }
+    dragging = false;
+  }
+  document.addEventListener('pointerup', end);
+  document.addEventListener('pointercancel', end);
+  window.addEventListener('blur', function(){ end(); });
+  document.addEventListener('click', function(e){
+    if (suppressClick){ e.stopPropagation(); e.preventDefault(); }
+  }, true);
+  window.addEventListener('wheel', function(){ cancelAnimationFrame(raf); }, { passive: true });
+})();
+</script>
+<script>
+/* "Pick a date" step (icon + text) scrolls to the booking section */
+(function(){
+  var step = document.getElementById('stepPickDate');
+  var book = document.getElementById('book');
+  if (!step || !book) return;
+  function go(){ book.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  step.addEventListener('click', go);
+  step.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); }
+  });
 })();
 </script>
 </body>
