@@ -404,11 +404,15 @@ body::-webkit-scrollbar {
 
 .hero-content{
   --hero-gap:clamp(16px, 3vh, 30px); /* one even gap: logo > divider > eyebrow */
+  --cue-zone:112px;      /* height the scroll cue occupies from the bottom edge, plus breathing room */
+  --eyebrow-h:56px;     /* two stacked eyebrow lines */
+  --lede-h:16px;        /* the Est. line */
+  --hero-pad-top:clamp(36px, 9vh, 84px);
   width:100%;
   max-width:1100px;
   margin:0 auto;
   padding:0 32px;
-  padding-top:clamp(24px, 6vh, 60px);
+  padding-top:var(--hero-pad-top);
   padding-bottom:0px;
   display:flex;
   flex-direction:column;
@@ -419,14 +423,16 @@ height:100vh;
 
 @media (min-width:880px){
   .hero-content{
-    padding-top:clamp(40px, 10vh, 110px);
+    --hero-pad-top:clamp(56px, 13vh, 140px);
   }
 }
 
 .hero-logo-wrap{
   position:relative;
   display:inline-block;
-  width:clamp(234px, 34vh, 434px);
+  /* the logo is the flexible part: it shrinks before the eyebrow, lede,
+     scroll cue or their gaps get squeezed */
+  width:clamp(64px, min(max(234px, 34vh), calc(100vh - var(--hero-pad-top, 60px) - (var(--hero-gap) * 3) - 1px - var(--eyebrow-h) - var(--lede-h) - var(--cue-zone) - 24px)), 434px);
   margin-top:0px;
   margin-bottom:var(--hero-gap);
   border-radius:50%;
@@ -558,8 +564,8 @@ height:100vh;
 }
 
 .hero-divider{
-  width:502px;
-  max-width:65%;
+  width:400px;
+  max-width:52%;
   height:1px;
   margin:0 auto var(--hero-gap);
   background:rgba(255,255,255,.35);
@@ -575,14 +581,15 @@ height:100vh;
   color:rgba(255,255,255,.82);
 
   margin-top:auto;
-  margin-bottom:clamp(16px, 5vh, 40px);
+  padding-top:var(--hero-gap);   /* never touches the eyebrow */
+  margin-bottom:max(clamp(16px, 5vh, 40px), var(--cue-zone));  /* never touches the scroll cue */
 
   opacity:.9;
 }
 
 @media (min-width:880px){
   .hero p.lede{
-    margin-bottom:clamp(40px, 12vh, 120px);
+    margin-bottom:max(clamp(40px, 12vh, 120px), var(--cue-zone));
   }
 }
 
@@ -754,7 +761,14 @@ height:100vh;
 }
 /* "Pick a date" step doubles as a button that jumps to the booking section */
 .step-link{cursor:var(--cursor-pointer);}
-.step-link .ring{transition:transform .25s ease, box-shadow .25s ease;}
+.step-link .ring{
+  transition:transform .25s ease, box-shadow .25s ease;
+  /* keep the ring on its own layer at rest too, so the icon is rasterised the
+     same way before and during hover (no half-pixel jump when hover starts) */
+  will-change:transform;
+  backface-visibility:hidden;
+}
+.step-link .ring svg{display:block; flex:0 0 auto;}
 .step-link:hover .ring,
 .step-link:focus-visible .ring{transform:scale(1.1); box-shadow:0 0 14px 2px rgba(224,168,95,.45);}
 .step-link:hover h3,
@@ -1686,6 +1700,39 @@ height:100vh;
 .review-bar-left{display:flex;align-items:center;gap:16px;min-width:0;}
 .review-bar-stars{display:flex;gap:3px;color:var(--brass-bright);flex-shrink:0;}
 .review-bar-stars svg{width:16px;height:16px;display:block;fill:currentColor;filter:drop-shadow(0 0 6px rgba(242,200,121,0.35));}
+
+/* Star wave: hovering (or tapping) the five stars sends a Mexican wave
+   along them; the last star then jumps and jiggles. JS adds .is-waving and
+   removes it once the last star has finished, so the wave always plays out. */
+.review-bar-stars{padding:8px 0;margin:-8px 0;} /* slightly bigger hover target, no layout change */
+@media (prefers-reduced-motion:no-preference){
+  .review-bar-stars.is-waving svg{animation:starWave .6s ease-in-out both;}
+  /* the wave builds: each star lifts, grows and glows a little more than the one before */
+  .review-bar-stars.is-waving svg:nth-child(1){animation-delay:0s;   --lift:-2px;   --grow:1.06; --glow:.4;}
+  .review-bar-stars.is-waving svg:nth-child(2){animation-delay:.07s; --lift:-3.5px; --grow:1.12; --glow:.55;}
+  .review-bar-stars.is-waving svg:nth-child(3){animation-delay:.14s; --lift:-5px;   --grow:1.18; --glow:.7;}
+  .review-bar-stars.is-waving svg:nth-child(4){animation-delay:.21s; --lift:-7px;   --grow:1.25; --glow:.85;}
+  .review-bar-stars.is-waving svg:nth-child(5){
+    animation:starFinale 1.5s ease-in-out .28s both;
+    transform-origin:50% 60%;
+  }
+}
+@keyframes starWave{
+  0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 0 6px rgba(242,200,121,0.35));}
+  40%{transform:translateY(var(--lift,-7px)) scale(var(--grow,1.25));filter:drop-shadow(0 0 11px rgba(242,200,121,var(--glow,.85)));}
+  70%{transform:translateY(calc(var(--lift,-7px) * -.15)) scale(.97);}
+}
+@keyframes starFinale{
+  0%{transform:translateY(0) scale(1) rotate(0);filter:drop-shadow(0 0 6px rgba(242,200,121,0.35));}
+  16%{transform:translateY(-15px) scale(1.45) rotate(0);filter:drop-shadow(0 0 13px rgba(242,200,121,0.95));}
+  32%{transform:translateY(0) scale(1.18,.82) rotate(0);}       /* squash on landing */
+  42%{transform:translateY(0) scale(1.1) rotate(-20deg);}
+  52%{transform:translateY(0) scale(1.1) rotate(17deg);}
+  62%{transform:translateY(0) scale(1.08) rotate(-13deg);}
+  72%{transform:translateY(0) scale(1.05) rotate(9deg);}
+  82%{transform:translateY(0) scale(1.02) rotate(-4deg);}
+  100%{transform:translateY(0) scale(1) rotate(0);filter:drop-shadow(0 0 6px rgba(242,200,121,0.35));}
+}
 .review-bar-text{display:flex;flex-direction:column;gap:2px;min-width:0;}
 .review-bar-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--cream);}
 .review-bar-sub{font-size:12.5px;line-height:1.4;color:var(--cream-dim);opacity:0.8;}
@@ -5282,7 +5329,10 @@ footer p.tag{
     height:100dvh;
     padding-left:14px;   /* a little more room for the one-line subtext */
     padding-right:14px;
-    padding-bottom:clamp(40px, 10vh, 70px); /* reserves room so the lede never sits under the scroll cue */
+    padding-bottom:0;
+    --cue-zone:92px;     /* scroll cue (scaled) + breathing room */
+    --eyebrow-h:42px;
+    --lede-h:14px;
   }
 
   .hero-eyebrow{
@@ -5292,7 +5342,7 @@ footer p.tag{
   }
 
   .hero-logo-wrap{
-    width:clamp(112px, 20vh, 171px);
+    width:clamp(64px, min(max(112px, 20vh), calc(100dvh - var(--hero-pad-top) - (var(--hero-gap) * 3) - 1px - var(--eyebrow-h) - var(--lede-h) - var(--cue-zone) - 24px)), 171px);
     margin-bottom:var(--hero-gap);
   }
 
@@ -5300,7 +5350,8 @@ footer p.tag{
   width:100%;
   font-size:10px;
   letter-spacing:.22em;
-  margin-bottom:clamp(12px, 4vh, 28px);
+  /* old bottom padding (10vh) + margin (4vh), but never less than the scroll cue's footprint */
+  margin-bottom:max(calc(clamp(40px, 10vh, 70px) + clamp(12px, 4vh, 28px)), var(--cue-zone));
 }
 
   .hero-actions{justify-content:center;}
@@ -11224,6 +11275,40 @@ if ('serviceWorker' in navigator) {
     i = (i + 1) % frames.length;
     root.style.setProperty('--cursor-wait', 'url("' + frames[i] + '") 15 15, wait');
   }, 160);
+})();
+</script>
+
+<script>
+/* Review stars: Mexican wave on hover/tap, last star jumps and jiggles.
+   One delegated listener, so it also works on the carousel's cloned pages. */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  var timers = new WeakMap();
+  function done(box){
+    box.classList.remove('is-waving');
+    clearTimeout(timers.get(box));
+    timers.delete(box);
+  }
+  function play(box){
+    if (box.classList.contains('is-waving')) return;
+    box.classList.add('is-waving');
+    timers.set(box, setTimeout(function(){ done(box); }, 2400)); /* safety net */
+  }
+  document.addEventListener('pointerover', function(e){
+    var box = e.target.closest && e.target.closest('.review-bar-stars');
+    if (!box || box.contains(e.relatedTarget)) return;   /* only on actually entering the stars */
+    play(box);
+  });
+  document.addEventListener('click', function(e){
+    var box = e.target.closest && e.target.closest('.review-bar-stars');
+    if (box) play(box);
+  });
+  document.addEventListener('animationend', function(e){
+    var svg = e.target;
+    if (!svg.matches || !svg.matches('.review-bar-stars svg:last-child')) return;
+    done(svg.parentNode);
+  });
 })();
 </script>
 </body>
