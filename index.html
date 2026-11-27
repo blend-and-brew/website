@@ -348,9 +348,9 @@ body::-webkit-scrollbar {
     ),
     linear-gradient(
       160deg,
-      rgba(30,27,24,.78) 0%,
-      rgba(36,32,29,.72) 25%,
-      rgba(20,18,16,.86) 100%
+      rgba(30,27,24,.86) 0%,
+      rgba(36,32,29,.8) 25%,
+      rgba(20,18,16,.92) 100%
     );
   z-index:1;
 }
@@ -363,7 +363,7 @@ body::-webkit-scrollbar {
   background: radial-gradient(
     ellipse 75% 75% at 50% 45%,
     rgba(0,0,0,0) 45%,
-    rgba(0,0,0,0.55) 100%
+    rgba(0,0,0,0.65) 100%
   );
   z-index:1;
 }
@@ -376,6 +376,23 @@ body::-webkit-scrollbar {
   align-items:center;
   position:relative;
   z-index:2;
+}
+
+/* Soft dark pool behind the logo/text. Sits inside .hero-grid's stacking
+   context, so it paints above the rays but below the content — the white
+   logo gets contrast without dimming the beams at the edges of the hero. */
+.hero-grid::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  background:radial-gradient(
+    ellipse 42% 58% at 50% 48%,
+    rgba(10,8,6,.6) 0%,
+    rgba(10,8,6,.34) 50%,
+    rgba(10,8,6,0) 100%
+  );
 }
 
 /* ============ HERO SIDE RAYS (WebGL background effect) ============
@@ -423,7 +440,7 @@ height:100vh;
 
 @media (min-width:880px){
   .hero-content{
-    --hero-pad-top:clamp(56px, 13vh, 140px);
+    --hero-pad-top:clamp(66px, 15vh, 160px);
   }
 }
 
@@ -432,7 +449,7 @@ height:100vh;
   display:inline-block;
   /* the logo is the flexible part: it shrinks before the eyebrow, lede,
      scroll cue or their gaps get squeezed */
-  width:clamp(64px, min(max(234px, 34vh), calc(100vh - var(--hero-pad-top, 60px) - (var(--hero-gap) * 3) - 1px - var(--eyebrow-h) - var(--lede-h) - var(--cue-zone) - 24px)), 434px);
+  width:clamp(64px, min(max(257px, 37.4vh), calc(100vh - var(--hero-pad-top, 60px) - (var(--hero-gap) * 3) - 1px - var(--eyebrow-h) - var(--lede-h) - var(--cue-zone) - 24px)), 477px);
   margin-top:0px;
   margin-bottom:var(--hero-gap);
   border-radius:50%;
@@ -536,6 +553,9 @@ height:100vh;
 }
 
 .hero-eyebrow{white-space:nowrap;}
+.hero-eyebrow .eyebrow-part:last-child{
+  font-size:14px;
+}
 .hero-eyebrow .eyebrow-sep{
   display:none;
 }
@@ -5126,7 +5146,7 @@ footer .wrap{
 /* Mobile: footer social icons at double size */
 @media (max-width:900px){
   .footer-socials{ gap: 14px; }
-  .footer-social-link{ width: 52px; height: 52px; --icon-size: 25px; }
+  .footer-social-link{ width: 45px; height: 45px; --icon-size: 21.6px; }
 }
 
 
@@ -5333,6 +5353,17 @@ footer p.tag{
     --cue-zone:92px;     /* scroll cue (scaled) + breathing room */
     --eyebrow-h:42px;
     --lede-h:14px;
+    --hero-pad-top:clamp(66px, 15vh, 160px); /* same placement as desktop */
+  }
+
+  /* dark pool behind the logo, re-centred for the mobile layout */
+  .hero-grid::before{
+    background:radial-gradient(
+      ellipse 80% 38% at 50% 36%,
+      rgba(10,8,6,.6) 0%,
+      rgba(10,8,6,.34) 50%,
+      rgba(10,8,6,0) 100%
+    );
   }
 
   .hero-eyebrow{
@@ -5340,9 +5371,12 @@ footer p.tag{
     letter-spacing:.16em;
     gap:11px;
   }
+  .hero-eyebrow .eyebrow-part:last-child{
+    font-size:11px;
+  }
 
   .hero-logo-wrap{
-    width:clamp(64px, min(max(112px, 20vh), calc(100dvh - var(--hero-pad-top) - (var(--hero-gap) * 3) - 1px - var(--eyebrow-h) - var(--lede-h) - var(--cue-zone) - 24px)), 171px);
+    width:clamp(64px, min(66.3vw, 31.8vh, calc(100dvh - var(--hero-pad-top) - (var(--hero-gap) * 3) - 1px - var(--eyebrow-h) - var(--lede-h) - var(--cue-zone) - 24px)), 477px);
     margin-bottom:var(--hero-gap);
   }
 
@@ -5617,8 +5651,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const config = {
       speed: 1.12,     // was 2.8 — slowed by 60%
       rayColor1: '#f5f4f0',
-      rayColor2: '#d9702a',
-      intensity: 1.6,   // was 3.4 — pulled back below the original 2.8 as well, too strong against the deeper overlay
+      rayColor2: '#e0813a',
+      intensity: 1.7,   // was 3.4 — pulled back below the original 2.8 as well, too strong against the deeper overlay
       spread: 4.4,     // was 2.2 — 3x wider fan
       origin: 'top-left',
       // originX/originY position the ray source itself (in resolution-
@@ -5630,10 +5664,10 @@ document.addEventListener("DOMContentLoaded", () => {
       originY: -0.2,
       tilt: 30,        // was 25 — compensates for the shifted origin so the
                        // ray fan still sweeps through the hero's centre
-      saturation: 1.3,
-      blend: 0.8,
-      falloff: 0.11,   // was 0.22 — quartered, ~4x further reach before fading
-      opacity: 0.72     // was 1.0 — 10% more transparent
+      saturation: 1.2,
+      blend: 0.72,
+      falloff: 0.08,   // was 0.22 — quartered, ~4x further reach before fading
+      opacity: 0.74     // was 1.0 — 10% more transparent
     };
 
     function hexToRgb(hex){
